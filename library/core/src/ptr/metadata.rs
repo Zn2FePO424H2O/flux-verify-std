@@ -108,6 +108,7 @@ pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 #[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
+#[flux_rs::ignore]
 pub const fn from_raw_parts<T: ?Sized>(
     data_pointer: *const impl Thin,
     metadata: <T as Pointee>::Metadata,
@@ -122,6 +123,7 @@ pub const fn from_raw_parts<T: ?Sized>(
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 #[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
+#[flux_rs::ignore]
 pub const fn from_raw_parts_mut<T: ?Sized>(
     data_pointer: *mut impl Thin,
     metadata: <T as Pointee>::Metadata,
