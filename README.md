@@ -1,1 +1,7 @@
-run ./test_flux to test flux on std.
+# README 
+
+To run `flux` on `std` do 
+
+```
+$ ./test_flux
+```
