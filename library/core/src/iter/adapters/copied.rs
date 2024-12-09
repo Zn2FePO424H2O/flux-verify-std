@@ -16,6 +16,7 @@ use crate::{array, ptr};
 #[stable(feature = "iter_copied", since = "1.36.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[derive(Clone, Debug)]
+#[flux_rs::ignore(no)]
 pub struct Copied<I> {
     it: I,
 }

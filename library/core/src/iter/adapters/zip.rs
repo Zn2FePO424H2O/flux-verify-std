@@ -12,6 +12,7 @@ use crate::num::NonZero;
 #[derive(Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct Zip<A, B> {
     a: A,
     b: B,
@@ -590,6 +591,7 @@ pub unsafe trait TrustedRandomAccess: TrustedRandomAccessNoCoerce {}
 #[doc(hidden)]
 #[unstable(feature = "trusted_random_access", issue = "none")]
 #[rustc_specialization_trait]
+#[flux_rs::ignore(no)]
 pub unsafe trait TrustedRandomAccessNoCoerce: Sized {
     // Convenience method.
     fn size(&self) -> usize

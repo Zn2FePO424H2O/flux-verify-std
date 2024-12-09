@@ -8,11 +8,13 @@ use crate::{fmt, ptr};
 /// documentation for more information.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[unstable(feature = "iter_map_windows", reason = "recently added", issue = "87155")]
+#[flux_rs::ignore(no)]
 pub struct MapWindows<I: Iterator, F, const N: usize> {
     f: F,
     inner: MapWindowsInner<I, N>,
 }
 
+#[flux_rs::ignore(no)]
 struct MapWindowsInner<I: Iterator, const N: usize> {
     // We fuse the inner iterator because there shouldn't be "holes" in
     // the sliding window. Once the iterator returns a `None`, we make
@@ -37,6 +39,7 @@ struct MapWindowsInner<I: Iterator, const N: usize> {
 // `Buffer<T, N>` is semantically `[MaybeUninit<T>; 2 * N]`. However, due
 // to limitations of const generics, we use this different type. Note that
 // it has the same underlying memory layout.
+#[flux_rs::ignore(no)]
 struct Buffer<T, const N: usize> {
     // Invariant: `self.buffer[self.start..self.start + N]` is initialized,
     // with all other elements being uninitialized. This also

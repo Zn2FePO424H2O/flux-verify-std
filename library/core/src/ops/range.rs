@@ -40,6 +40,7 @@ use crate::hash::Hash;
 #[doc(alias = "..")]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct RangeFull;
 
 #[stable(feature = "rust1", since = "1.0.0")]
@@ -77,6 +78,7 @@ impl fmt::Debug for RangeFull {
 #[doc(alias = "..")]
 #[derive(Clone, Default, PartialEq, Eq, Hash)] // not Copy -- see #27186
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct Range<Idx> {
     /// The lower bound of the range (inclusive).
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -186,6 +188,7 @@ impl<Idx: PartialOrd<Idx>> Range<Idx> {
 #[doc(alias = "..")]
 #[derive(Clone, PartialEq, Eq, Hash)] // not Copy -- see #27186
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct RangeFrom<Idx> {
     /// The lower bound of the range (inclusive).
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -268,6 +271,7 @@ impl<Idx: PartialOrd<Idx>> RangeFrom<Idx> {
 #[doc(alias = "..")]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct RangeTo<Idx> {
     /// The upper bound of the range (exclusive).
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -342,6 +346,7 @@ impl<Idx: PartialOrd<Idx>> RangeTo<Idx> {
 #[doc(alias = "..=")]
 #[derive(Clone, PartialEq, Eq, Hash)] // not Copy -- see #27186
 #[stable(feature = "inclusive_range", since = "1.26.0")]
+#[flux_rs::ignore(no)]
 pub struct RangeInclusive<Idx> {
     // Note that the fields here are not public to allow changing the
     // representation in the future; in particular, while we could plausibly
@@ -589,6 +594,7 @@ impl<Idx: PartialOrd<Idx>> RangeInclusive<Idx> {
 #[doc(alias = "..=")]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 #[stable(feature = "inclusive_range", since = "1.26.0")]
+#[flux_rs::ignore(no)]
 pub struct RangeToInclusive<Idx> {
     /// The upper bound of the range (inclusive)
     #[stable(feature = "inclusive_range", since = "1.26.0")]
@@ -669,6 +675,7 @@ impl<Idx: PartialOrd<Idx>> RangeToInclusive<Idx> {
 /// [`BTreeMap::range`]: ../../std/collections/btree_map/struct.BTreeMap.html#method.range
 #[stable(feature = "collections_bound", since = "1.17.0")]
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
+#[flux_rs::ignore(no)]
 pub enum Bound<T> {
     /// An inclusive bound.
     #[stable(feature = "collections_bound", since = "1.17.0")]
@@ -763,6 +770,7 @@ impl<T: Clone> Bound<&T> {
 /// by range syntax like `..`, `a..`, `..b`, `..=c`, `d..e`, or `f..=g`.
 #[stable(feature = "collections_range", since = "1.28.0")]
 #[rustc_diagnostic_item = "RangeBounds"]
+#[flux_rs::ignore(no)]
 pub trait RangeBounds<T: ?Sized> {
     /// Start index bound.
     ///
@@ -986,6 +994,7 @@ impl<T> RangeBounds<T> for RangeToInclusive<&T> {
 /// Types that implement `OneSidedRange<T>` must return `Bound::Unbounded`
 /// from one of `RangeBounds::start_bound` or `RangeBounds::end_bound`.
 #[unstable(feature = "one_sided_range", issue = "69780")]
+#[flux_rs::ignore(no)]
 pub trait OneSidedRange<T: ?Sized>: RangeBounds<T> {}
 
 #[unstable(feature = "one_sided_range", issue = "69780")]

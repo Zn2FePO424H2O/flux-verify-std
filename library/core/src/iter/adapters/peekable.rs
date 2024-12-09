@@ -14,6 +14,7 @@ use crate::ops::{ControlFlow, Try};
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_diagnostic_item = "IterPeekable"]
+#[flux_rs::ignore(no)]
 pub struct Peekable<I: Iterator> {
     iter: I,
     /// Remember a peeked value, even if it was None.

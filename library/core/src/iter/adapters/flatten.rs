@@ -14,6 +14,7 @@ use crate::{array, fmt, option, result};
 /// for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct FlatMap<I, U: IntoIterator, F> {
     inner: FlattenCompat<Map<I, F>, <U as IntoIterator>::IntoIter>,
 }
@@ -251,6 +252,7 @@ unsafe impl<I: BoundedSize> BoundedSize for Cloned<I> {
 /// [`flatten`]: Iterator::flatten()
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::trusted]
 pub struct Flatten<I: Iterator<Item: IntoIterator>> {
     inner: FlattenCompat<I, <I::Item as IntoIterator>::IntoIter>,
 }
@@ -438,6 +440,7 @@ where
 /// this type.
 #[derive(Clone, Debug)]
 #[unstable(feature = "trusted_len", issue = "37572")]
+#[flux_rs::ignore(no)]
 struct FlattenCompat<I, U> {
     iter: Fuse<I>,
     frontiter: Option<U>,

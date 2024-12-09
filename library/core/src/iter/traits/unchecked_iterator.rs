@@ -4,6 +4,7 @@ use crate::iter::TrustedLen;
 ///
 /// It currently requires `TrustedLen` because it's unclear whether it's
 /// reasonably possible to depend on the `size_hint` of anything else.
+#[flux_rs::ignore(no)]
 pub(crate) trait UncheckedIterator: TrustedLen {
     /// Gets the next item from a non-empty iterator.
     ///

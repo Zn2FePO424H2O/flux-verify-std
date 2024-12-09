@@ -14,6 +14,7 @@ use crate::ops::{ControlFlow, Try};
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "iter_map_while", since = "1.57.0")]
 #[derive(Clone)]
+#[flux_rs::ignore(no)]
 pub struct MapWhile<I, P> {
     iter: I,
     predicate: P,

@@ -7,6 +7,7 @@ use crate::iter::{Fuse, FusedIterator};
 /// for more information.
 #[unstable(feature = "iter_intersperse", reason = "recently added", issue = "79524")]
 #[derive(Debug, Clone)]
+#[flux_rs::ignore(no)]
 pub struct Intersperse<I: Iterator>
 where
     I::Item: Clone,
@@ -88,6 +89,7 @@ where
 /// This `struct` is created by [`Iterator::intersperse_with`]. See its
 /// documentation for more information.
 #[unstable(feature = "iter_intersperse", reason = "recently added", issue = "79524")]
+#[flux_rs::ignore(no)]
 pub struct IntersperseWith<I, G>
 where
     I: Iterator,

@@ -15,6 +15,7 @@ use crate::ops::Try;
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[cfg_attr(not(test), rustc_diagnostic_item = "Enumerate")]
+#[flux_rs::ignore(no)]
 pub struct Enumerate<I> {
     iter: I,
     count: usize,

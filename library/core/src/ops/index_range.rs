@@ -9,6 +9,7 @@ use crate::ub_checks;
 /// (Normal `Range` code needs to handle degenerate ranges like `10..0`,
 ///  which takes extra checks compared to only handling the canonical form.)
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[flux_rs::ignore(no)]
 pub(crate) struct IndexRange {
     start: usize,
     end: usize,

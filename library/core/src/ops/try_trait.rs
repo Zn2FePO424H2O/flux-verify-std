@@ -128,6 +128,7 @@ use crate::ops::ControlFlow;
 )]
 #[doc(alias = "?")]
 #[lang = "Try"]
+#[flux_rs::ignore(no)]
 pub trait Try: FromResidual {
     /// The type of the value produced by `?` when *not* short-circuiting.
     #[unstable(feature = "try_trait_v2", issue = "84277")]
@@ -364,6 +365,7 @@ pub trait Residual<O> {
 
 #[unstable(feature = "pub_crate_should_not_need_unstable_attr", issue = "none")]
 #[allow(type_alias_bounds)]
+#[flux_rs::ignore(no)]
 pub(crate) type ChangeOutputType<T: Try<Residual: Residual<V>>, V> =
     <T::Residual as Residual<V>>::TryType;
 
@@ -425,4 +427,5 @@ impl<T> Residual<T> for NeverShortCircuitResidual {
 /// `do yeet expr` syntax in functions returning your type.
 #[unstable(feature = "try_trait_v2_yeet", issue = "96374")]
 #[derive(Debug)]
+#[flux_rs::ignore(no)]
 pub struct Yeet<T>(pub T);

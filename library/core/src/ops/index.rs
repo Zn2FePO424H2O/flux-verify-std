@@ -55,6 +55,7 @@
 #[doc(alias = "]")]
 #[doc(alias = "[")]
 #[doc(alias = "[]")]
+#[flux_rs::ignore(no)]
 pub trait Index<Idx: ?Sized> {
     /// The returned type after indexing.
     #[stable(feature = "rust1", since = "1.0.0")]

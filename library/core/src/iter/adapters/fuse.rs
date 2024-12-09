@@ -14,6 +14,7 @@ use crate::ops::Try;
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct Fuse<I> {
     // NOTE: for `I: FusedIterator`, we never bother setting `None`, but
     // we still have to be prepared for that state due to variance.

@@ -15,6 +15,7 @@ use crate::{array, fmt};
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[derive(Clone)]
+#[flux_rs::ignore(no)]
 pub struct FilterMap<I, F> {
     iter: I,
     f: F,

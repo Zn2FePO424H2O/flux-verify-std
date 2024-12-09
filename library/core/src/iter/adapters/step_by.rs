@@ -13,6 +13,7 @@ use crate::ops::{Range, Try};
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "iterator_step_by", since = "1.28.0")]
 #[derive(Clone, Debug)]
+#[flux_rs::ignore(no)]
 pub struct StepBy<I> {
     /// This field is guaranteed to be preprocessed by the specialized `SpecRangeSetup::setup`
     /// in the constructor.

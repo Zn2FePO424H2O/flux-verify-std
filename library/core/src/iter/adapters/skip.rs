@@ -18,6 +18,7 @@ use crate::ops::{ControlFlow, Try};
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct Skip<I> {
     iter: I,
     n: usize,

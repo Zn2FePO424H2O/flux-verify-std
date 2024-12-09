@@ -204,6 +204,7 @@
 #[lang = "drop"]
 #[stable(feature = "rust1", since = "1.0.0")]
 // FIXME(effects) #[const_trait]
+#[flux_rs::ignore(no)]
 pub trait Drop {
     /// Executes the destructor for this type.
     ///

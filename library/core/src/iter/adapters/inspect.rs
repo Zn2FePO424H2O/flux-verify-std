@@ -15,6 +15,7 @@ use crate::ops::Try;
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[derive(Clone)]
+#[flux_rs::ignore(no)]
 pub struct Inspect<I, F> {
     iter: I,
     f: F,

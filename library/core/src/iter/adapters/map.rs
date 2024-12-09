@@ -58,6 +58,7 @@ use crate::ops::Try;
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[derive(Clone)]
+#[flux_rs::ignore(no)]
 pub struct Map<I, F> {
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `as_str` methods
     pub(crate) iter: I,

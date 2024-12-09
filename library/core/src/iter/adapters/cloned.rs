@@ -15,6 +15,7 @@ use crate::ops::Try;
 #[stable(feature = "iter_cloned", since = "1.1.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[derive(Clone, Debug)]
+#[flux_rs::ignore(no)]
 pub struct Cloned<I> {
     it: I,
 }

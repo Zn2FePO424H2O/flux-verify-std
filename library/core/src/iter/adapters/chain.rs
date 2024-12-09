@@ -20,6 +20,7 @@ use crate::ops::Try;
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub struct Chain<A, B> {
     // These are "fused" with `Option` so we don't need separate state to track which part is
     // already exhausted, and we may also get niche layout for `None`. We don't use the real `Fuse`

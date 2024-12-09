@@ -8,6 +8,7 @@ use crate::pin::Pin;
 #[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Debug, Hash)]
 #[lang = "coroutine_state"]
 #[unstable(feature = "coroutine_trait", issue = "43122")]
+#[flux_rs::ignore(no)]
 pub enum CoroutineState<Y, R> {
     /// The coroutine suspended with a value.
     ///
@@ -70,6 +71,7 @@ pub enum CoroutineState<Y, R> {
 #[unstable(feature = "coroutine_trait", issue = "43122")]
 #[fundamental]
 #[must_use = "coroutines are lazy and do nothing unless resumed"]
+#[flux_rs::ignore(no)]
 pub trait Coroutine<R = ()> {
     /// The type of value this coroutine yields.
     ///

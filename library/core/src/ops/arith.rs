@@ -73,6 +73,7 @@
     append_const_msg
 )]
 #[doc(alias = "+")]
+#[flux_rs::ignore(no)]
 pub trait Add<Rhs = Self> {
     /// The resulting type after applying the `+` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -182,6 +183,7 @@ add_impl! { usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f16 f32 f64 f128
     append_const_msg
 )]
 #[doc(alias = "-")]
+#[flux_rs::ignore(no)]
 pub trait Sub<Rhs = Self> {
     /// The resulting type after applying the `-` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -312,6 +314,7 @@ sub_impl! { usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f16 f32 f64 f128
     label = "no implementation for `{Self} * {Rhs}`"
 )]
 #[doc(alias = "*")]
+#[flux_rs::ignore(no)]
 pub trait Mul<Rhs = Self> {
     /// The resulting type after applying the `*` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -446,6 +449,7 @@ mul_impl! { usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f16 f32 f64 f128
     label = "no implementation for `{Self} / {Rhs}`"
 )]
 #[doc(alias = "/")]
+#[flux_rs::ignore(no)]
 pub trait Div<Rhs = Self> {
     /// The resulting type after applying the `/` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -548,6 +552,7 @@ div_impl_float! { f16 f32 f64 f128 }
     label = "no implementation for `{Self} % {Rhs}`"
 )]
 #[doc(alias = "%")]
+#[flux_rs::ignore(no)]
 pub trait Rem<Rhs = Self> {
     /// The resulting type after applying the `%` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -662,6 +667,7 @@ rem_impl_float! { f16 f32 f64 f128 }
 #[lang = "neg"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[doc(alias = "-")]
+#[flux_rs::ignore(no)]
 pub trait Neg {
     /// The resulting type after applying the `-` operator.
     #[stable(feature = "rust1", since = "1.0.0")]

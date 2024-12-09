@@ -131,6 +131,7 @@ use super::TrustedLen;
     label = "value of type `{Self}` cannot be built from `std::iter::Iterator<Item={A}>`"
 )]
 #[rustc_diagnostic_item = "FromIterator"]
+#[flux_rs::ignore(no)]
 pub trait FromIterator<A>: Sized {
     /// Creates a value from an iterator.
     ///
@@ -315,6 +316,7 @@ where
 )]
 #[rustc_skip_during_method_dispatch(array, boxed_slice)]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub trait IntoIterator {
     /// The type of the elements being iterated over.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -427,6 +429,7 @@ impl<I: Iterator> IntoIterator for I {
 /// assert_eq!("MyCollection([5, 6, 7, 1, 2, 3])", format!("{c:?}"));
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub trait Extend<A> {
     /// Extends a collection with the contents of an iterator.
     ///

@@ -14,6 +14,7 @@ use crate::num::Wrapping;
     message = "a value of type `{Self}` cannot be made by summing an iterator over elements of type `{A}`",
     label = "value of type `{Self}` cannot be made by summing a `std::iter::Iterator<Item={A}>`"
 )]
+#[flux_rs::ignore(no)]
 pub trait Sum<A = Self>: Sized {
     /// Takes an iterator and generates `Self` from the elements by "summing up"
     /// the items.
@@ -35,6 +36,7 @@ pub trait Sum<A = Self>: Sized {
     message = "a value of type `{Self}` cannot be made by multiplying all elements of type `{A}` from an iterator",
     label = "value of type `{Self}` cannot be made by multiplying all elements from a `std::iter::Iterator<Item={A}>`"
 )]
+#[flux_rs::ignore(no)]
 pub trait Product<A = Self>: Sized {
     /// Takes an iterator and generates `Self` from the elements by multiplying
     /// the items.

@@ -31,6 +31,7 @@
 #[lang = "not"]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[doc(alias = "!")]
+#[flux_rs::ignore(no)]
 pub trait Not {
     /// The resulting type after applying the `!` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -141,6 +142,7 @@ impl Not for ! {
     message = "no implementation for `{Self} & {Rhs}`",
     label = "no implementation for `{Self} & {Rhs}`"
 )]
+#[flux_rs::ignore(no)]
 pub trait BitAnd<Rhs = Self> {
     /// The resulting type after applying the `&` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -241,6 +243,7 @@ bitand_impl! { bool usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
     message = "no implementation for `{Self} | {Rhs}`",
     label = "no implementation for `{Self} | {Rhs}`"
 )]
+#[flux_rs::ignore(no)]
 pub trait BitOr<Rhs = Self> {
     /// The resulting type after applying the `|` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -341,6 +344,7 @@ bitor_impl! { bool usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
     message = "no implementation for `{Self} ^ {Rhs}`",
     label = "no implementation for `{Self} ^ {Rhs}`"
 )]
+#[flux_rs::ignore(no)]
 pub trait BitXor<Rhs = Self> {
     /// The resulting type after applying the `^` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -440,6 +444,7 @@ bitxor_impl! { bool usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
     message = "no implementation for `{Self} << {Rhs}`",
     label = "no implementation for `{Self} << {Rhs}`"
 )]
+#[flux_rs::ignore(no)]
 pub trait Shl<Rhs = Self> {
     /// The resulting type after applying the `<<` operator.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -558,6 +563,7 @@ shl_impl_all! { u8 u16 u32 u64 u128 usize i8 i16 i32 i64 isize i128 }
     message = "no implementation for `{Self} >> {Rhs}`",
     label = "no implementation for `{Self} >> {Rhs}`"
 )]
+#[flux_rs::ignore(no)]
 pub trait Shr<Rhs = Self> {
     /// The resulting type after applying the `>>` operator.
     #[stable(feature = "rust1", since = "1.0.0")]

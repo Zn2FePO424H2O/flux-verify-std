@@ -133,6 +133,7 @@
 #[doc(alias = "&*")]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_diagnostic_item = "Deref"]
+#[flux_rs::ignore(no)]
 pub trait Deref {
     /// The resulting type after dereferencing.
     #[stable(feature = "rust1", since = "1.0.0")]
@@ -261,6 +262,7 @@ impl<T: ?Sized> Deref for &mut T {
 #[lang = "deref_mut"]
 #[doc(alias = "*")]
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub trait DerefMut: Deref {
     /// Mutably dereferences the value.
     #[stable(feature = "rust1", since = "1.0.0")]

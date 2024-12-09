@@ -16,6 +16,7 @@ use crate::ops::{ControlFlow, NeverShortCircuit, Try};
 #[derive(Debug, Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[unstable(feature = "iter_array_chunks", reason = "recently added", issue = "100450")]
+#[flux_rs::ignore(no)]
 pub struct ArrayChunks<I: Iterator, const N: usize> {
     iter: I,
     remainder: Option<array::IntoIter<I::Item, N>>,

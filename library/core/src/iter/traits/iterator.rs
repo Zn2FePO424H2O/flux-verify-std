@@ -36,6 +36,7 @@ fn _assert_is_dyn_compatible(_: &dyn Iterator<Item = ()>) {}
 #[lang = "iterator"]
 #[rustc_diagnostic_item = "Iterator"]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
+#[flux_rs::ignore(no)]
 pub trait Iterator {
     /// The type of the elements being iterated over.
     #[rustc_diagnostic_item = "IteratorItem"]

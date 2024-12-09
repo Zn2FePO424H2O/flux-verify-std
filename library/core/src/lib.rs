@@ -362,6 +362,7 @@ pub mod convert;
 pub mod default;
 pub mod error;
 pub mod marker;
+#[flux_rs::ignore]
 pub mod ops;
 
 /* Core types and methods on primitives */
@@ -377,6 +378,7 @@ pub mod char;
 pub mod ffi;
 #[unstable(feature = "core_io_borrowed_buf", issue = "117693")]
 pub mod io;
+#[flux_rs::ignore]
 pub mod iter;
 pub mod net;
 pub mod option;

@@ -83,6 +83,7 @@
 /// assert_eq!(4, counter.len());
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
+#[flux_rs::ignore(no)]
 pub trait ExactSizeIterator: Iterator {
     /// Returns the exact remaining length of the iterator.
     ///
