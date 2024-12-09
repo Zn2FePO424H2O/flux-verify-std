@@ -11,6 +11,7 @@ mod cycle;
 mod enumerate;
 mod filter;
 mod filter_map;
+#[flux_rs::ignore]
 mod flatten;
 mod fuse;
 mod inspect;
@@ -149,6 +150,7 @@ pub(crate) struct GenericShunt<'a, I, R> {
 /// Process the given iterator as if it yielded the item's `Try::Output`
 /// type instead. Any `Try::Residual`s encountered will stop the inner iterator
 /// and be propagated back to the overall result.
+#[flux_rs::ignore]
 pub(crate) fn try_process<I, T, R, F, U>(iter: I, mut f: F) -> ChangeOutputType<I::Item, U>
 where
     I: Iterator<Item: Try<Output = T, Residual = R>>,

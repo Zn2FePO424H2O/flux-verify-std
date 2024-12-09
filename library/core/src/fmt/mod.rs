@@ -9,6 +9,7 @@ use crate::num::fmt as numfmt;
 use crate::ops::Deref;
 use crate::{iter, mem, result, str};
 
+#[flux_rs::ignore]
 mod builders;
 #[cfg(not(no_fp_fmt_parse))]
 mod float;
@@ -1274,6 +1275,7 @@ impl PostPadding {
     }
 }
 
+#[flux_rs::ignore]
 impl<'a> Formatter<'a> {
     fn wrap_buf<'b, 'c, F>(&'b mut self, wrap: F) -> Formatter<'c>
     where

@@ -2042,6 +2042,7 @@ pub trait Iterator {
     /// [`collect`]: Iterator::collect
     #[inline]
     #[unstable(feature = "iterator_try_collect", issue = "94047")]
+    #[flux_rs::ignore]
     fn try_collect<B>(&mut self) -> ChangeOutputType<Self::Item, B>
     where
         Self: Sized,
@@ -2644,6 +2645,7 @@ pub trait Iterator {
     /// ```
     #[inline]
     #[unstable(feature = "iterator_try_reduce", reason = "new API", issue = "87053")]
+    #[flux_rs::ignore]
     fn try_reduce<R>(
         &mut self,
         f: impl FnMut(Self::Item, Self::Item) -> R,
@@ -2907,6 +2909,7 @@ pub trait Iterator {
     /// ```
     #[inline]
     #[unstable(feature = "try_find", reason = "new API", issue = "63178")]
+    #[flux_rs::ignore]
     fn try_find<R>(
         &mut self,
         f: impl FnMut(&Self::Item) -> R,

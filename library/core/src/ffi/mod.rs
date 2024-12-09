@@ -28,6 +28,7 @@ pub mod c_str;
     issue = "44930",
     reason = "the `c_variadic` feature has not been properly tested on all supported platforms"
 )]
+#[flux_rs::ignore]
 pub use self::va_list::{VaList, VaListImpl};
 
 #[unstable(
@@ -35,6 +36,7 @@ pub use self::va_list::{VaList, VaListImpl};
     issue = "44930",
     reason = "the `c_variadic` feature has not been properly tested on all supported platforms"
 )]
+#[flux_rs::ignore]
 pub mod va_list;
 
 macro_rules! type_alias {

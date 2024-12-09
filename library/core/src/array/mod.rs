@@ -560,6 +560,7 @@ impl<T, const N: usize> [T; N] {
     /// assert_eq!(c, Some(a));
     /// ```
     #[unstable(feature = "array_try_map", issue = "79711")]
+    #[flux_rs::ignore]
     pub fn try_map<R>(self, f: impl FnMut(T) -> R) -> ChangeOutputType<R, [R::Output; N]>
     where
         R: Try<Residual: Residual<[R::Output; N]>>,

@@ -54,6 +54,7 @@ use crate::ptr::NonNull;
 /// [`to_raw_parts`]: *const::to_raw_parts
 #[lang = "pointee_trait"]
 #[rustc_deny_explicit_impl(implement_via_object = false)]
+#[flux_rs::ignore(no)]
 pub trait Pointee {
     /// The type for metadata in pointers and references to `Self`.
     #[lang = "metadata_type"]

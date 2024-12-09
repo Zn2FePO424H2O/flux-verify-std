@@ -412,6 +412,7 @@ pub use crate::intrinsics::copy_nonoverlapping;
 #[doc(inline)]
 pub use crate::intrinsics::write_bytes;
 
+#[flux_rs::ignore]
 mod metadata;
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 pub use metadata::{DynMetadata, Pointee, Thin, from_raw_parts, from_raw_parts_mut, metadata};
@@ -547,6 +548,7 @@ pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
 #[rustc_promotable]
 #[rustc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
 #[rustc_diagnostic_item = "ptr_null"]
+#[flux_rs::ignore]
 pub const fn null<T: ?Sized + Thin>() -> *const T {
     from_raw_parts(without_provenance::<()>(0), ())
 }
@@ -572,6 +574,7 @@ pub const fn null<T: ?Sized + Thin>() -> *const T {
 #[rustc_promotable]
 #[rustc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
 #[rustc_diagnostic_item = "ptr_null_mut"]
+#[flux_rs::ignore]
 pub const fn null_mut<T: ?Sized + Thin>() -> *mut T {
     from_raw_parts_mut(without_provenance_mut::<()>(0), ())
 }

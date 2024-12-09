@@ -149,7 +149,9 @@ mod function;
 mod index;
 mod index_range;
 mod range;
+#[flux_rs::ignore]
 mod try_trait;
+#[flux_rs::ignore]
 mod unsize;
 
 #[stable(feature = "rust1", since = "1.0.0")]

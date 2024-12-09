@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #library version
-#rustup component add rust-src --toolchain nightly-2024-08-20
+#rustup component add rust-src --toolchain nightly-2024-11-03
 
 export __CARGO_TESTS_ONLY_SRC_ROOT=$(pwd)/library
 
@@ -17,7 +17,7 @@ case "$(uname -s)" in
     *) echo "Unsupported OS"; exit 1 ;;
 esac
 
-FLUX_CATCH_BUGS=1 cargo flux -Z build-std --target "$target" > ../log.txt
+RUSTFLAGS="-Zdeduplicate-diagnostics=yes" FLUX_CATCH_BUGS=1 cargo flux -Z build-std --target "$target" > ../log.txt
 
 cd ..
 rm -rf dummy
