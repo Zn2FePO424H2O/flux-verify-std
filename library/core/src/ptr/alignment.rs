@@ -1,5 +1,4 @@
 use crate::num::NonZero;
-#[cfg(debug_assertions)]
 use crate::ub_checks::assert_unsafe_precondition;
 use crate::{cmp, fmt, hash, mem, num};
 
@@ -42,7 +41,7 @@ impl Alignment {
     /// This provides the same numerical value as [`mem::align_of`],
     /// but in an `Alignment` instead of a `usize`.
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const fn of<T>() -> Self {
         // SAFETY: rustc ensures that type alignment is always a power of two.
@@ -54,7 +53,7 @@ impl Alignment {
     ///
     /// Note that `0` is not a power of two, nor a valid alignment.
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const fn new(align: usize) -> Option<Self> {
         if align.is_power_of_two() {
@@ -74,10 +73,9 @@ impl Alignment {
     /// Equivalently, it must be `1 << exp` for some `exp` in `0..usize::BITS`.
     /// It must *not* be zero.
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const unsafe fn new_unchecked(align: usize) -> Self {
-        #[cfg(debug_assertions)]
         assert_unsafe_precondition!(
             check_language_ub,
             "Alignment::new_unchecked requires a power of two",
@@ -91,7 +89,7 @@ impl Alignment {
 
     /// Returns the alignment as a [`usize`].
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const fn as_usize(self) -> usize {
         self.0 as usize
@@ -99,7 +97,7 @@ impl Alignment {
 
     /// Returns the alignment as a <code>[NonZero]<[usize]></code>.
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const fn as_nonzero(self) -> NonZero<usize> {
         // SAFETY: All the discriminants are non-zero.
@@ -120,7 +118,7 @@ impl Alignment {
     /// assert_eq!(Alignment::new(1024).unwrap().log2(), 10);
     /// ```
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const fn log2(self) -> u32 {
         self.as_nonzero().trailing_zeros()
@@ -150,11 +148,16 @@ impl Alignment {
     /// assert_ne!(one.mask(Alignment::of::<Align4>().mask()), one);
     /// ```
     #[unstable(feature = "ptr_alignment_type", issue = "102070")]
-    #[rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070")]
+    #[cfg_attr(bootstrap, rustc_const_unstable(feature = "ptr_alignment_type", issue = "102070"))]
     #[inline]
     pub const fn mask(self) -> usize {
         // SAFETY: The alignment is always nonzero, and therefore decrementing won't overflow.
         !(unsafe { self.as_usize().unchecked_sub(1) })
+    }
+
+    // FIXME(const-hack) Remove me once `Ord::max` is usable in const
+    pub(crate) const fn max(a: Self, b: Self) -> Self {
+        if a.as_usize() > b.as_usize() { a } else { b }
     }
 }
 
@@ -201,7 +204,6 @@ impl From<Alignment> for usize {
     }
 }
 
-#[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
 #[unstable(feature = "ptr_alignment_type", issue = "102070")]
 impl cmp::Ord for Alignment {
     #[inline]
@@ -210,7 +212,6 @@ impl cmp::Ord for Alignment {
     }
 }
 
-#[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
 #[unstable(feature = "ptr_alignment_type", issue = "102070")]
 impl cmp::PartialOrd for Alignment {
     #[inline]

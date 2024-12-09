@@ -1,4 +1,4 @@
-#![deny(unsafe_op_in_unsafe_fn)]
+#![forbid(unsafe_op_in_unsafe_fn)]
 
 use super::fd::WasiFd;
 use crate::ffi::{CStr, OsStr, OsString};
@@ -13,7 +13,7 @@ use crate::sys::common::small_c_string::run_path_with_cstr;
 use crate::sys::time::SystemTime;
 use crate::sys::unsupported;
 pub use crate::sys_common::fs::exists;
-use crate::sys_common::{AsInner, FromInner, IntoInner};
+use crate::sys_common::{AsInner, FromInner, IntoInner, ignore_notfound};
 use crate::{fmt, iter, ptr};
 
 pub struct File {
@@ -265,7 +265,7 @@ impl OpenOptions {
     pub fn new() -> OpenOptions {
         let mut base = OpenOptions::default();
         base.dirflags = wasi::LOOKUPFLAGS_SYMLINK_FOLLOW;
-        return base;
+        base
     }
 
     pub fn read(&mut self, read: bool) {
@@ -382,7 +382,7 @@ impl OpenOptions {
         base |= wasi::RIGHTS_PATH_UNLINK_FILE;
         base |= wasi::RIGHTS_POLL_FD_READWRITE;
 
-        return base;
+        base
     }
 
     fn rights_inheriting(&self) -> wasi::Rights {
@@ -794,14 +794,22 @@ fn remove_dir_all_recursive(parent: &WasiFd, path: &Path) -> io::Result<()> {
             io::const_io_error!(io::ErrorKind::Uncategorized, "invalid utf-8 file name found")
         })?;
 
-        if entry.file_type()?.is_dir() {
-            remove_dir_all_recursive(&entry.inner.dir.fd, path.as_ref())?;
-        } else {
-            entry.inner.dir.fd.unlink_file(path)?;
+        let result: io::Result<()> = try {
+            if entry.file_type()?.is_dir() {
+                remove_dir_all_recursive(&entry.inner.dir.fd, path.as_ref())?;
+            } else {
+                entry.inner.dir.fd.unlink_file(path)?;
+            }
+        };
+        // ignore internal NotFound errors
+        if let Err(err) = &result
+            && err.kind() != io::ErrorKind::NotFound
+        {
+            return result;
         }
     }
 
     // Once all this directory's contents are deleted it should be safe to
     // delete the directory tiself.
-    parent.remove_directory(osstr2str(path.as_ref())?)
+    ignore_notfound(parent.remove_directory(osstr2str(path.as_ref())?))
 }

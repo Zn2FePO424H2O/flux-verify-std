@@ -119,7 +119,7 @@
 //! when given a `.bat` file as the application to run, it will automatically
 //! convert that into running `cmd.exe /c` with the batch file as the next argument.
 //!
-//! For historical reasons Rust currently preserves this behaviour when using
+//! For historical reasons Rust currently preserves this behavior when using
 //! [`Command::new`], and escapes the arguments according to `cmd.exe` rules.
 //! Due to the complexity of `cmd.exe` argument handling, it might not be
 //! possible to safely escape some special characters, and using them will result
@@ -148,7 +148,15 @@
 #![stable(feature = "process", since = "1.0.0")]
 #![deny(unsafe_op_in_unsafe_fn)]
 
-#[cfg(all(test, not(any(target_os = "emscripten", target_env = "sgx", target_os = "xous"))))]
+#[cfg(all(
+    test,
+    not(any(
+        target_os = "emscripten",
+        target_os = "wasi",
+        target_env = "sgx",
+        target_os = "xous"
+    ))
+))]
 mod tests;
 
 use crate::convert::Infallible;
@@ -157,7 +165,7 @@ use crate::io::prelude::*;
 use crate::io::{self, BorrowedCursor, IoSlice, IoSliceMut};
 use crate::num::NonZero;
 use crate::path::Path;
-use crate::sys::pipe::{read2, AnonPipe};
+use crate::sys::pipe::{AnonPipe, read2};
 use crate::sys::process as imp;
 #[stable(feature = "command_access", since = "1.57.0")]
 pub use crate::sys_common::process::CommandEnvs;
@@ -617,8 +625,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -699,8 +705,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -748,8 +752,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -786,8 +788,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -821,8 +821,6 @@ impl Command {
     /// and case-sensitive on all other platforms.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::{Command, Stdio};
@@ -870,8 +868,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -900,8 +896,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -927,8 +921,6 @@ impl Command {
     /// [`canonicalize`] to get an absolute program path instead.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::Command;
@@ -959,8 +951,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::{Command, Stdio};
     ///
@@ -987,8 +977,6 @@ impl Command {
     /// [`output`]: Self::output
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::{Command, Stdio};
@@ -1017,8 +1005,6 @@ impl Command {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::{Command, Stdio};
     ///
@@ -1038,8 +1024,6 @@ impl Command {
     /// By default, stdin, stdout and stderr are inherited from the parent.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::Command;
@@ -1934,10 +1918,14 @@ impl crate::error::Error for ExitStatusError {}
 /// to its parent under normal termination.
 ///
 /// `ExitCode` is intended to be consumed only by the standard library (via
-/// [`Termination::report()`]), and intentionally does not provide accessors like
-/// `PartialEq`, `Eq`, or `Hash`. Instead the standard library provides the
-/// canonical `SUCCESS` and `FAILURE` exit codes as well as `From<u8> for
-/// ExitCode` for constructing other arbitrary exit codes.
+/// [`Termination::report()`]). For forwards compatibility with potentially
+/// unusual targets, this type currently does not provide `Eq`, `Hash`, or
+/// access to the raw value. This type does provide `PartialEq` for
+/// comparison, but note that there may potentially be multiple failure
+/// codes, some of which will _not_ compare equal to `ExitCode::FAILURE`.
+/// The standard library provides the canonical `SUCCESS` and `FAILURE`
+/// exit codes as well as `From<u8> for ExitCode` for constructing other
+/// arbitrary exit codes.
 ///
 /// # Portability
 ///
@@ -1976,7 +1964,7 @@ impl crate::error::Error for ExitStatusError {}
 ///     ExitCode::SUCCESS
 /// }
 /// ```
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 #[stable(feature = "process_exitcode", since = "1.61.0")]
 pub struct ExitCode(imp::ExitCode);
 
@@ -2105,8 +2093,6 @@ impl Child {
     ///
     /// # Examples
     ///
-    /// Basic usage:
-    ///
     /// ```no_run
     /// use std::process::Command;
     ///
@@ -2128,8 +2114,6 @@ impl Child {
     /// Returns the OS-assigned process identifier associated with this child.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::Command;
@@ -2157,8 +2141,6 @@ impl Child {
     /// the parent waits for the child to exit.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::Command;
@@ -2193,8 +2175,6 @@ impl Child {
     /// Note that unlike `wait`, this function will not attempt to drop stdin.
     ///
     /// # Examples
-    ///
-    /// Basic usage:
     ///
     /// ```no_run
     /// use std::process::Command;
@@ -2296,6 +2276,15 @@ impl Child {
 /// }
 /// ```
 ///
+/// In its current implementation, this function will execute exit handlers registered with `atexit`
+/// as well as other platform-specific exit handlers (e.g. `fini` sections of ELF shared objects).
+/// This means that Rust requires that all exit handlers are safe to execute at any time. In
+/// particular, if an exit handler cleans up some state that might be concurrently accessed by other
+/// threads, it is required that the exit handler performs suitable synchronization with those
+/// threads. (The alternative to this requirement would be to not run exit handlers at all, which is
+/// considered undesirable. Note that returning from `main` also calls `exit`, so making `exit` an
+/// unsafe operation is not an option.)
+///
 /// ## Platform-specific behavior
 ///
 /// **Unix**: On Unix-like platforms, it is unlikely that all 32 bits of `exit`
@@ -2329,7 +2318,7 @@ pub fn exit(code: i32) -> ! {
 /// Rust IO buffers (eg, from `BufWriter`) will not be flushed.
 /// Likewise, C stdio buffers will (on most platforms) not be flushed.
 ///
-/// This is in contrast to the default behaviour of [`panic!`] which unwinds
+/// This is in contrast to the default behavior of [`panic!`] which unwinds
 /// the current thread's stack and calls all destructors.
 /// When `panic="abort"` is set, either as an argument to `rustc` or in a
 /// crate's Cargo.toml, [`panic!`] and `abort` are similar. However,
@@ -2389,15 +2378,11 @@ pub fn abort() -> ! {
 ///
 /// # Examples
 ///
-/// Basic usage:
-///
 /// ```no_run
 /// use std::process;
 ///
 /// println!("My pid is {}", process::id());
 /// ```
-///
-///
 #[must_use]
 #[stable(feature = "getpid", since = "1.26.0")]
 pub fn id() -> u32 {

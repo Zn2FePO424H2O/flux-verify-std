@@ -1,6 +1,7 @@
 #![stable(feature = "core_hint", since = "1.27.0")]
 
 //! Hints to compiler that affects how code should be emitted or optimized.
+//!
 //! Hints may be compile time or runtime.
 
 use crate::{intrinsics, ub_checks};
@@ -505,7 +506,7 @@ pub const fn black_box<T>(dummy: T) -> T {
 ///   # }
 ///   ```
 #[unstable(feature = "hint_must_use", issue = "94745")]
-#[rustc_const_unstable(feature = "hint_must_use", issue = "94745")]
+#[cfg_attr(bootstrap, rustc_const_unstable(feature = "hint_must_use", issue = "94745"))]
 #[must_use] // <-- :)
 #[inline(always)]
 pub const fn must_use<T>(value: T) -> T {

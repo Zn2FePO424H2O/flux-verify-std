@@ -7,7 +7,7 @@ use crate::marker::{Freeze, StructuralPartialEq};
 use crate::ops::{BitOr, BitOrAssign, Div, DivAssign, Neg, Rem, RemAssign};
 use crate::panic::{RefUnwindSafe, UnwindSafe};
 use crate::str::FromStr;
-use crate::{fmt, hint, intrinsics, ptr, ub_checks};
+use crate::{fmt, intrinsics, ptr, ub_checks};
 
 /// A marker trait for primitive types which can be zero.
 ///
@@ -355,7 +355,7 @@ where
     }
 
     /// Creates a non-zero without checking whether the value is non-zero.
-    /// This results in undefined behaviour if the value is zero.
+    /// This results in undefined behavior if the value is zero.
     ///
     /// # Safety
     ///
@@ -952,9 +952,9 @@ macro_rules! nonzero_integer {
 
             /// Multiplies two non-zero integers together,
             /// assuming overflow cannot occur.
-            /// Overflow is unchecked, and it is undefined behaviour to overflow
+            /// Overflow is unchecked, and it is undefined behavior to overflow
             /// *even if the result would wrap to a non-zero value*.
-            /// The behaviour is undefined as soon as
+            /// The behavior is undefined as soon as
             #[doc = sign_dependent_expr!{
                 $signedness ?
                 if signed {
@@ -1323,9 +1323,9 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
 
         /// Adds an unsigned integer to a non-zero value,
         /// assuming overflow cannot occur.
-        /// Overflow is unchecked, and it is undefined behaviour to overflow
+        /// Overflow is unchecked, and it is undefined behavior to overflow
         /// *even if the result would wrap to a non-zero value*.
-        /// The behaviour is undefined as soon as
+        /// The behavior is undefined as soon as
         #[doc = concat!("`self + rhs > ", stringify!($Int), "::MAX`.")]
         ///
         /// # Examples
@@ -1475,7 +1475,6 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// ```
         #[unstable(feature = "num_midpoint", issue = "110840")]
         #[rustc_const_unstable(feature = "const_num_midpoint", issue = "110840")]
-        #[rustc_allow_const_fn_unstable(const_num_midpoint)]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1527,7 +1526,6 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         ///
         /// Basic usage:
         /// ```
-        /// #![feature(isqrt)]
         /// # use std::num::NonZero;
         /// #
         /// # fn main() { test().unwrap(); }
@@ -1539,37 +1537,20 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// # Some(())
         /// # }
         /// ```
-        #[unstable(feature = "isqrt", issue = "116226")]
-        #[rustc_const_unstable(feature = "isqrt", issue = "116226")]
+        #[stable(feature = "isqrt", since = "CURRENT_RUSTC_VERSION")]
+        #[rustc_const_stable(feature = "isqrt", since = "CURRENT_RUSTC_VERSION")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
         pub const fn isqrt(self) -> Self {
-            // The algorithm is based on the one presented in
-            // <https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_numeral_system_(base_2)>
-            // which cites as source the following C code:
-            // <https://web.archive.org/web/20120306040058/http://medialab.freaknet.org/martin/src/sqrt/sqrt.c>.
+            let result = self.get().isqrt();
 
-            let mut op = self.get();
-            let mut res = 0;
-            let mut one = 1 << (self.ilog2() & !1);
-
-            while one != 0 {
-                if op >= res + one {
-                    op -= res + one;
-                    res = (res >> 1) + one;
-                } else {
-                    res >>= 1;
-                }
-                one >>= 2;
-            }
-
-            // SAFETY: The result fits in an integer with half as many bits.
-            // Inform the optimizer about it.
-            unsafe { hint::assert_unchecked(res < 1 << (Self::BITS / 2)) };
-
-            // SAFETY: The square root of an integer >= 1 is always >= 1.
-            unsafe { Self::new_unchecked(res) }
+            // SAFETY: Integer square root is a monotonically nondecreasing
+            // function, which means that increasing the input will never cause
+            // the output to decrease. Thus, since the input for nonzero
+            // unsigned integers has a lower bound of 1, the lower bound of the
+            // results will be sqrt(1), which is 1, so a result can't be zero.
+            unsafe { Self::new_unchecked(result) }
         }
     };
 
@@ -1616,7 +1597,7 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
 
         /// Computes the absolute value of self.
         #[doc = concat!("See [`", stringify!($Int), "::abs`]")]
-        /// for documentation on overflow behaviour.
+        /// for documentation on overflow behavior.
         ///
         /// # Example
         ///
@@ -1895,7 +1876,7 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// Negates self, overflowing if this is equal to the minimum value.
         ///
         #[doc = concat!("See [`", stringify!($Int), "::overflowing_neg`]")]
-        /// for documentation on overflow behaviour.
+        /// for documentation on overflow behavior.
         ///
         /// # Example
         ///
@@ -1960,7 +1941,7 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// of the type.
         ///
         #[doc = concat!("See [`", stringify!($Int), "::wrapping_neg`]")]
-        /// for documentation on overflow behaviour.
+        /// for documentation on overflow behavior.
         ///
         /// # Example
         ///
@@ -1986,16 +1967,6 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
             // SAFETY: negation of nonzero cannot yield zero values.
             unsafe { Self::new_unchecked(result) }
         }
-    };
-}
-
-// Use this when the generated code should differ between signed and unsigned types.
-macro_rules! sign_dependent_expr {
-    (signed ? if signed { $signed_case:expr } if unsigned { $unsigned_case:expr } ) => {
-        $signed_case
-    };
-    (unsigned ? if signed { $signed_case:expr } if unsigned { $unsigned_case:expr } ) => {
-        $unsigned_case
     };
 }
 

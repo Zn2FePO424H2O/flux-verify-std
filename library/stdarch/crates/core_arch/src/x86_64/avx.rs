@@ -3,9 +3,9 @@
 //! The references are:
 //!
 //! - [Intel 64 and IA-32 Architectures Software Developer's Manual Volume 2:
-//! Instruction Set Reference, A-Z][intel64_ref]. - [AMD64 Architecture
-//! Programmer's Manual, Volume 3: General-Purpose and System
-//! Instructions][amd64_ref].
+//!   Instruction Set Reference, A-Z][intel64_ref]. - [AMD64 Architecture
+//!   Programmer's Manual, Volume 3: General-Purpose and System
+//!   Instructions][amd64_ref].
 //!
 //! [Wikipedia][wiki] provides a quick overview of the instructions available.
 //!
@@ -13,7 +13,7 @@
 //! [amd64_ref]: http://support.amd.com/TechDocs/24594.pdf
 //! [wiki]: https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
 
-use crate::{core_arch::x86::*, intrinsics::simd::*, mem::transmute};
+use crate::{core_arch::x86::*, mem::transmute};
 
 /// Copies `a` to result, and insert the 64-bit integer `i` into result
 /// at the location specified by `index`.

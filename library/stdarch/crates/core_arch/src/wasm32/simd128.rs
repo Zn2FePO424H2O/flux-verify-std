@@ -12,6 +12,8 @@ use crate::{core_arch::simd, intrinsics::simd::*, marker::Sized, mem, ptr};
 use stdarch_test::assert_instr;
 
 types! {
+    #![stable(feature = "wasm_simd", since = "1.54.0")]
+
     /// WASM-specific 128-bit wide SIMD vector type.
     ///
     /// This type corresponds to the `v128` type in the [WebAssembly SIMD
@@ -33,8 +35,7 @@ types! {
     /// type in WebAssembly. Operations on `v128` can only be performed with the
     /// functions in this module.
     // N.B., internals here are arbitrary.
-    #[stable(feature = "wasm_simd", since = "1.54.0")]
-    pub struct v128(i32, i32, i32, i32);
+    pub struct v128(4 x i32);
 }
 
 macro_rules! conversions {
@@ -50,7 +51,6 @@ macro_rules! conversions {
         $(
             impl $ty {
                 #[inline(always)]
-                #[rustc_const_stable(feature = "wasm_simd_const", since = "1.56.0")]
                 pub(crate) const fn v128(self) -> v128 {
                     unsafe { mem::transmute(self) }
                 }
@@ -5645,13 +5645,13 @@ mod tests {
     test_bop!(f32x4[f32; 4] | f32x4_min[f32x4_min_test]:
               ([0., -1., 7., 8.], [1., -3., -4., 10.]) => [0., -3., -4., 8.]);
     test_bop!(f32x4[f32; 4] | f32x4_min[f32x4_min_test_nan]:
-              ([0., -1., 7., 8.], [1., -3., -4., std::f32::NAN])
-              => [0., -3., -4., std::f32::NAN]);
+              ([0., -1., 7., 8.], [1., -3., -4., f32::NAN])
+              => [0., -3., -4., f32::NAN]);
     test_bop!(f32x4[f32; 4] | f32x4_max[f32x4_max_test]:
               ([0., -1., 7., 8.], [1., -3., -4., 10.]) => [1., -1., 7., 10.]);
     test_bop!(f32x4[f32; 4] | f32x4_max[f32x4_max_test_nan]:
-              ([0., -1., 7., 8.], [1., -3., -4., std::f32::NAN])
-              => [1., -1., 7., std::f32::NAN]);
+              ([0., -1., 7., 8.], [1., -3., -4., f32::NAN])
+              => [1., -1., 7., f32::NAN]);
     test_bop!(f32x4[f32; 4] | f32x4_add[f32x4_add_test]:
               ([0., -1., 7., 8.], [1., -3., -4., 10.]) => [1., -4., 3., 18.]);
     test_bop!(f32x4[f32; 4] | f32x4_sub[f32x4_sub_test]:
@@ -5666,13 +5666,13 @@ mod tests {
     test_bop!(f64x2[f64; 2] | f64x2_min[f64x2_min_test]:
                ([0., -1.], [1., -3.]) => [0., -3.]);
     test_bop!(f64x2[f64; 2] | f64x2_min[f64x2_min_test_nan]:
-               ([7., 8.], [-4., std::f64::NAN])
-               => [ -4., std::f64::NAN]);
+               ([7., 8.], [-4., f64::NAN])
+               => [ -4., f64::NAN]);
     test_bop!(f64x2[f64; 2] | f64x2_max[f64x2_max_test]:
                ([0., -1.], [1., -3.]) => [1., -1.]);
     test_bop!(f64x2[f64; 2] | f64x2_max[f64x2_max_test_nan]:
-               ([7., 8.], [ -4., std::f64::NAN])
-               => [7., std::f64::NAN]);
+               ([7., 8.], [ -4., f64::NAN])
+               => [7., f64::NAN]);
     test_bop!(f64x2[f64; 2] | f64x2_add[f64x2_add_test]:
                ([0., -1.], [1., -3.]) => [1., -4.]);
     test_bop!(f64x2[f64; 2] | f64x2_sub[f64x2_sub_test]:

@@ -309,7 +309,9 @@ impl<T> OnceCell<T> {
     /// ```
     #[inline]
     #[stable(feature = "once_cell", since = "1.70.0")]
-    pub fn into_inner(self) -> Option<T> {
+    #[rustc_const_stable(feature = "const_cell_into_inner", since = "1.83.0")]
+    #[rustc_allow_const_fn_unstable(const_precise_live_drops)]
+    pub const fn into_inner(self) -> Option<T> {
         // Because `into_inner` takes `self` by value, the compiler statically verifies
         // that it is not currently borrowed. So it is safe to move out `Option<T>`.
         self.inner.into_inner()

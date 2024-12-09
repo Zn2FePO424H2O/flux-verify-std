@@ -158,7 +158,7 @@ pub trait Sized {
 /// - Arrays `[T; N]` implement `Unsize<[T]>`.
 /// - A type implements `Unsize<dyn Trait + 'a>` if all of these conditions are met:
 ///   - The type implements `Trait`.
-///   - `Trait` is object safe.
+///   - `Trait` is dyn-compatible[^1].
 ///   - The type is sized.
 ///   - The type outlives `'a`.
 /// - Structs `Foo<..., T1, ..., Tn, ...>` implement `Unsize<Foo<..., U1, ..., Un, ...>>`
@@ -178,6 +178,7 @@ pub trait Sized {
 /// [`Rc`]: ../../std/rc/struct.Rc.html
 /// [RFC982]: https://github.com/rust-lang/rfcs/blob/master/text/0982-dst-coercion.md
 /// [nomicon-coerce]: ../../nomicon/coercions.html
+/// [^1]: Formerly known as *object safe*.
 #[unstable(feature = "unsize", issue = "18598")]
 #[lang = "unsize"]
 #[rustc_deny_explicit_impl(implement_via_object = false)]
@@ -288,8 +289,19 @@ marker_impls! {
 /// }
 /// ```
 ///
-/// There is a small difference between the two: the `derive` strategy will also place a `Copy`
-/// bound on type parameters, which isn't always desired.
+/// There is a small difference between the two. The `derive` strategy will also place a `Copy`
+/// bound on type parameters:
+///
+/// ```
+/// #[derive(Clone)]
+/// struct MyStruct<T>(T);
+///
+/// impl<T: Copy> Copy for MyStruct<T> { }
+/// ```
+///
+/// This isn't always desired. For example, shared references (`&T`) can be copied regardless of
+/// whether `T` is `Copy`. Likewise, a generic struct containing markers such as [`PhantomData`]
+/// could potentially be duplicated with a bit-wise copy.
 ///
 /// ## What's the difference between `Copy` and `Clone`?
 ///
@@ -992,7 +1004,7 @@ pub macro ConstParamTy($item:item) {
     /* compiler built-in */
 }
 
-#[cfg_attr(not(bootstrap), lang = "unsized_const_param_ty")]
+#[lang = "unsized_const_param_ty"]
 #[unstable(feature = "unsized_const_params", issue = "95174")]
 #[diagnostic::on_unimplemented(message = "`{Self}` can't be used as a const parameter type")]
 /// A marker for types which can be used as types of `const` generic parameters.
@@ -1002,10 +1014,9 @@ pub macro ConstParamTy($item:item) {
 pub trait UnsizedConstParamTy: StructuralPartialEq + Eq {}
 
 /// Derive macro generating an impl of the trait `ConstParamTy`.
-#[cfg(not(bootstrap))]
-#[cfg_attr(not(bootstrap), rustc_builtin_macro)]
-#[cfg_attr(not(bootstrap), allow_internal_unstable(unsized_const_params))]
-#[cfg_attr(not(bootstrap), unstable(feature = "unsized_const_params", issue = "95174"))]
+#[rustc_builtin_macro]
+#[allow_internal_unstable(unsized_const_params)]
+#[unstable(feature = "unsized_const_params", issue = "95174")]
 pub macro UnsizedConstParamTy($item:item) {
     /* compiler built-in */
 }
@@ -1020,14 +1031,6 @@ marker_impls! {
         char,
         (),
         {T: ConstParamTy_, const N: usize} [T; N],
-}
-#[cfg(bootstrap)]
-marker_impls! {
-    #[unstable(feature = "adt_const_params", issue = "95174")]
-    ConstParamTy_ for
-        str,
-        {T: ConstParamTy_} [T],
-        {T: ConstParamTy_ + ?Sized} &T,
 }
 
 marker_impls! {
@@ -1060,54 +1063,10 @@ pub trait FnPtr: Copy + Clone {
 }
 
 /// Derive macro generating impls of traits related to smart pointers.
-#[rustc_builtin_macro(SmartPointer, attributes(pointee))]
+#[rustc_builtin_macro(CoercePointee, attributes(pointee))]
 #[allow_internal_unstable(dispatch_from_dyn, coerce_unsized, unsize)]
-#[unstable(feature = "derive_smart_pointer", issue = "123430")]
-pub macro SmartPointer($item:item) {
+#[unstable(feature = "derive_coerce_pointee", issue = "123430")]
+#[cfg(not(bootstrap))]
+pub macro CoercePointee($item:item) {
     /* compiler built-in */
-}
-
-// Support traits and types for the desugaring of const traits and
-// `~const` bounds. Not supposed to be used by anything other than
-// the compiler.
-#[doc(hidden)]
-#[unstable(
-    feature = "effect_types",
-    issue = "none",
-    reason = "internal module for implementing effects"
-)]
-#[allow(missing_debug_implementations)] // these unit structs don't need `Debug` impls.
-pub mod effects {
-    #[lang = "EffectsNoRuntime"]
-    pub struct NoRuntime;
-    #[lang = "EffectsMaybe"]
-    pub struct Maybe;
-    #[lang = "EffectsRuntime"]
-    pub struct Runtime;
-
-    #[lang = "EffectsCompat"]
-    pub trait Compat<#[rustc_runtime] const RUNTIME: bool> {}
-
-    impl Compat<false> for NoRuntime {}
-    impl Compat<true> for Runtime {}
-    impl<#[rustc_runtime] const RUNTIME: bool> Compat<RUNTIME> for Maybe {}
-
-    #[lang = "EffectsTyCompat"]
-    #[marker]
-    pub trait TyCompat<T: ?Sized> {}
-
-    impl<T: ?Sized> TyCompat<T> for T {}
-    impl<T: ?Sized> TyCompat<T> for Maybe {}
-    impl<T: ?Sized> TyCompat<Maybe> for T {}
-
-    #[lang = "EffectsIntersection"]
-    pub trait Intersection {
-        #[lang = "EffectsIntersectionOutput"]
-        type Output: ?Sized;
-    }
-
-    // FIXME(effects): remove this after next trait solver lands
-    impl Intersection for () {
-        type Output = Maybe;
-    }
 }

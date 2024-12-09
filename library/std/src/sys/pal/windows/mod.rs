@@ -1,7 +1,6 @@
 #![allow(missing_docs, nonstandard_style)]
 #![forbid(unsafe_op_in_unsafe_fn)]
 
-pub use self::rand::hashmap_random_keys;
 use crate::ffi::{OsStr, OsString};
 use crate::io::ErrorKind;
 use crate::mem::MaybeUninit;
@@ -13,9 +12,8 @@ use crate::time::Duration;
 #[macro_use]
 pub mod compat;
 
-mod api;
+pub mod api;
 
-pub mod alloc;
 pub mod args;
 pub mod c;
 pub mod env;
@@ -28,7 +26,6 @@ pub mod net;
 pub mod os;
 pub mod pipe;
 pub mod process;
-pub mod rand;
 pub mod stdio;
 pub mod thread;
 pub mod time;
@@ -41,7 +38,7 @@ cfg_if::cfg_if! {
     }
 }
 
-/// Map a Result<T, WinError> to io::Result<T>.
+/// Map a [`Result<T, WinError>`] to [`io::Result<T>`](crate::io::Result<T>).
 trait IoResult<T> {
     fn io_result(self) -> crate::io::Result<T>;
 }
@@ -123,6 +120,7 @@ pub fn decode_error_kind(errno: i32) -> ErrorKind {
         c::ERROR_NOT_SAME_DEVICE => return CrossesDevices,
         c::ERROR_TOO_MANY_LINKS => return TooManyLinks,
         c::ERROR_FILENAME_EXCED_RANGE => return InvalidFilename,
+        c::ERROR_CANT_RESOLVE_FILENAME => return FilesystemLoop,
         _ => {}
     }
 
@@ -140,6 +138,7 @@ pub fn decode_error_kind(errno: i32) -> ErrorKind {
         c::WSAEHOSTUNREACH => HostUnreachable,
         c::WSAENETDOWN => NetworkDown,
         c::WSAENETUNREACH => NetworkUnreachable,
+        c::WSAEDQUOT => FilesystemQuotaExceeded,
 
         _ => Uncategorized,
     }
@@ -347,7 +346,6 @@ pub fn abort_internal() -> ! {
     }
 }
 
-// miri is sensitive to changes here so check that miri is happy if touching this
 #[cfg(miri)]
 pub fn abort_internal() -> ! {
     crate::intrinsics::abort();

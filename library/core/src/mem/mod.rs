@@ -19,7 +19,7 @@ pub use maybe_uninit::MaybeUninit;
 
 mod transmutability;
 #[unstable(feature = "transmutability", issue = "99571")]
-pub use transmutability::{Assume, BikeshedIntrinsicFrom};
+pub use transmutability::{Assume, TransmuteFrom};
 
 #[stable(feature = "rust1", since = "1.0.0")]
 #[doc(inline)]
@@ -612,7 +612,7 @@ pub const fn needs_drop<T: ?Sized>() -> bool {
 ///
 /// There is no guarantee that an all-zero byte-pattern represents a valid value
 /// of some type `T`. For example, the all-zero byte-pattern is not a valid value
-/// for reference types (`&T`, `&mut T`) and functions pointers. Using `zeroed`
+/// for reference types (`&T`, `&mut T`) and function pointers. Using `zeroed`
 /// on such types causes immediate [undefined behavior][ub] because [the Rust
 /// compiler assumes][inv] that there always is a valid value in a variable it
 /// considers initialized.
@@ -857,7 +857,7 @@ pub fn take<T: Default>(dest: &mut T) -> T {
 #[inline]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "if you don't need the old value, you can just assign the new value directly"]
-#[rustc_const_unstable(feature = "const_replace", issue = "83164")]
+#[rustc_const_stable(feature = "const_replace", since = "1.83.0")]
 #[cfg_attr(not(test), rustc_diagnostic_item = "mem_replace")]
 pub const fn replace<T>(dest: &mut T, src: T) -> T {
     // It may be tempting to use `swap` to avoid `unsafe` here. Don't!
@@ -1254,11 +1254,9 @@ impl<T> SizedTypeProperties for T {}
 ///
 /// Nested field accesses may be used, but not array indexes.
 ///
-/// Enum variants may be traversed as if they were fields. Variants themselves do
-/// not have an offset.
-///
-/// However, on stable only a single field name is supported, which blocks the use of
-/// enum support.
+/// If the nightly-only feature `offset_of_enum` is enabled,
+/// variants may be traversed as if they were fields.
+/// Variants themselves do not have an offset.
 ///
 /// Visibility is respected - all types and fields must be visible to the call site:
 ///
@@ -1326,7 +1324,6 @@ impl<T> SizedTypeProperties for T {}
 /// # Examples
 ///
 /// ```
-/// # #![cfg_attr(bootstrap, feature(offset_of_nested))]
 /// #![feature(offset_of_enum)]
 ///
 /// use std::mem;

@@ -26,7 +26,7 @@ windows_targets::link!("kernel32.dll" "system" fn DeviceIoControl(hdevice : HAND
 windows_targets::link!("kernel32.dll" "system" fn DuplicateHandle(hsourceprocesshandle : HANDLE, hsourcehandle : HANDLE, htargetprocesshandle : HANDLE, lptargethandle : *mut HANDLE, dwdesiredaccess : u32, binherithandle : BOOL, dwoptions : DUPLICATE_HANDLE_OPTIONS) -> BOOL);
 windows_targets::link!("kernel32.dll" "system" fn ExitProcess(uexitcode : u32) -> !);
 windows_targets::link!("kernel32.dll" "system" fn FindClose(hfindfile : HANDLE) -> BOOL);
-windows_targets::link!("kernel32.dll" "system" fn FindFirstFileW(lpfilename : PCWSTR, lpfindfiledata : *mut WIN32_FIND_DATAW) -> HANDLE);
+windows_targets::link!("kernel32.dll" "system" fn FindFirstFileExW(lpfilename : PCWSTR, finfolevelid : FINDEX_INFO_LEVELS, lpfindfiledata : *mut core::ffi::c_void, fsearchop : FINDEX_SEARCH_OPS, lpsearchfilter : *const core::ffi::c_void, dwadditionalflags : FIND_FIRST_EX_FLAGS) -> HANDLE);
 windows_targets::link!("kernel32.dll" "system" fn FindNextFileW(hfindfile : HANDLE, lpfindfiledata : *mut WIN32_FIND_DATAW) -> BOOL);
 windows_targets::link!("kernel32.dll" "system" fn FlushFileBuffers(hfile : HANDLE) -> BOOL);
 windows_targets::link!("kernel32.dll" "system" fn FormatMessageW(dwflags : FORMAT_MESSAGE_OPTIONS, lpsource : *const core::ffi::c_void, dwmessageid : u32, dwlanguageid : u32, lpbuffer : PWSTR, nsize : u32, arguments : *const *const i8) -> u32);
@@ -105,6 +105,7 @@ windows_targets::link!("kernel32.dll" "system" fn WideCharToMultiByte(codepage :
 windows_targets::link!("kernel32.dll" "system" fn WriteConsoleW(hconsoleoutput : HANDLE, lpbuffer : PCWSTR, nnumberofcharstowrite : u32, lpnumberofcharswritten : *mut u32, lpreserved : *const core::ffi::c_void) -> BOOL);
 windows_targets::link!("kernel32.dll" "system" fn WriteFileEx(hfile : HANDLE, lpbuffer : *const u8, nnumberofbytestowrite : u32, lpoverlapped : *mut OVERLAPPED, lpcompletionroutine : LPOVERLAPPED_COMPLETION_ROUTINE) -> BOOL);
 windows_targets::link!("ntdll.dll" "system" fn NtCreateFile(filehandle : *mut HANDLE, desiredaccess : FILE_ACCESS_RIGHTS, objectattributes : *const OBJECT_ATTRIBUTES, iostatusblock : *mut IO_STATUS_BLOCK, allocationsize : *const i64, fileattributes : FILE_FLAGS_AND_ATTRIBUTES, shareaccess : FILE_SHARE_MODE, createdisposition : NTCREATEFILE_CREATE_DISPOSITION, createoptions : NTCREATEFILE_CREATE_OPTIONS, eabuffer : *const core::ffi::c_void, ealength : u32) -> NTSTATUS);
+windows_targets::link!("ntdll.dll" "system" fn NtOpenFile(filehandle : *mut HANDLE, desiredaccess : u32, objectattributes : *const OBJECT_ATTRIBUTES, iostatusblock : *mut IO_STATUS_BLOCK, shareaccess : u32, openoptions : u32) -> NTSTATUS);
 windows_targets::link!("ntdll.dll" "system" fn NtReadFile(filehandle : HANDLE, event : HANDLE, apcroutine : PIO_APC_ROUTINE, apccontext : *const core::ffi::c_void, iostatusblock : *mut IO_STATUS_BLOCK, buffer : *mut core::ffi::c_void, length : u32, byteoffset : *const i64, key : *const u32) -> NTSTATUS);
 windows_targets::link!("ntdll.dll" "system" fn NtWriteFile(filehandle : HANDLE, event : HANDLE, apcroutine : PIO_APC_ROUTINE, apccontext : *const core::ffi::c_void, iostatusblock : *mut IO_STATUS_BLOCK, buffer : *const core::ffi::c_void, length : u32, byteoffset : *const i64, key : *const u32) -> NTSTATUS);
 windows_targets::link!("ntdll.dll" "system" fn RtlNtStatusToDosError(status : NTSTATUS) -> u32);
@@ -2500,6 +2501,9 @@ pub const FILE_WRITE_ATTRIBUTES: FILE_ACCESS_RIGHTS = 256u32;
 pub const FILE_WRITE_DATA: FILE_ACCESS_RIGHTS = 2u32;
 pub const FILE_WRITE_EA: FILE_ACCESS_RIGHTS = 16u32;
 pub const FILE_WRITE_THROUGH: NTCREATEFILE_CREATE_OPTIONS = 2u32;
+pub type FINDEX_INFO_LEVELS = i32;
+pub type FINDEX_SEARCH_OPS = i32;
+pub type FIND_FIRST_EX_FLAGS = u32;
 pub const FIONBIO: i32 = -2147195266i32;
 #[repr(C)]
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
@@ -2564,6 +2568,8 @@ pub const FileRenameInfoEx: FILE_INFO_BY_HANDLE_CLASS = 22i32;
 pub const FileStandardInfo: FILE_INFO_BY_HANDLE_CLASS = 1i32;
 pub const FileStorageInfo: FILE_INFO_BY_HANDLE_CLASS = 16i32;
 pub const FileStreamInfo: FILE_INFO_BY_HANDLE_CLASS = 7i32;
+pub const FindExInfoBasic: FINDEX_INFO_LEVELS = 1i32;
+pub const FindExSearchNameMatch: FINDEX_SEARCH_OPS = 0i32;
 pub type GENERIC_ACCESS_RIGHTS = u32;
 pub const GENERIC_ALL: GENERIC_ACCESS_RIGHTS = 268435456u32;
 pub const GENERIC_EXECUTE: GENERIC_ACCESS_RIGHTS = 536870912u32;
@@ -2982,10 +2988,14 @@ pub struct STARTUPINFOW {
 }
 pub type STARTUPINFOW_FLAGS = u32;
 pub const STATUS_DELETE_PENDING: NTSTATUS = 0xC0000056_u32 as _;
+pub const STATUS_DIRECTORY_NOT_EMPTY: NTSTATUS = 0xC0000101_u32 as _;
 pub const STATUS_END_OF_FILE: NTSTATUS = 0xC0000011_u32 as _;
+pub const STATUS_FILE_DELETED: NTSTATUS = 0xC0000123_u32 as _;
+pub const STATUS_INVALID_HANDLE: NTSTATUS = 0xC0000008_u32 as _;
 pub const STATUS_INVALID_PARAMETER: NTSTATUS = 0xC000000D_u32 as _;
 pub const STATUS_NOT_IMPLEMENTED: NTSTATUS = 0xC0000002_u32 as _;
 pub const STATUS_PENDING: NTSTATUS = 0x103_u32 as _;
+pub const STATUS_SHARING_VIOLATION: NTSTATUS = 0xC0000043_u32 as _;
 pub const STATUS_SUCCESS: NTSTATUS = 0x0_u32 as _;
 pub const STD_ERROR_HANDLE: STD_HANDLE = 4294967284u32;
 pub type STD_HANDLE = u32;
@@ -3302,7 +3312,6 @@ pub struct XSAVE_FORMAT {
     pub XmmRegisters: [M128A; 8],
     pub Reserved4: [u8; 224],
 }
-
 #[cfg(target_arch = "arm")]
 #[repr(C)]
 pub struct WSADATA {

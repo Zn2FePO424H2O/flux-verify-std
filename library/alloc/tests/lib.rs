@@ -4,18 +4,13 @@
 #![feature(assert_matches)]
 #![feature(btree_extract_if)]
 #![feature(cow_is_borrowed)]
-#![feature(const_cow_is_borrowed)]
 #![feature(const_heap)]
-#![feature(const_mut_refs)]
-#![feature(const_slice_from_raw_parts_mut)]
-#![feature(const_ptr_write)]
 #![feature(const_try)]
 #![feature(core_intrinsics)]
 #![feature(extract_if)]
 #![feature(exact_size_is_empty)]
 #![feature(linked_list_cursors)]
 #![feature(map_try_insert)]
-#![feature(new_uninit)]
 #![feature(pattern)]
 #![feature(trusted_len)]
 #![feature(try_reserve_kind)]
@@ -29,6 +24,7 @@
 #![feature(iter_next_chunk)]
 #![feature(round_char_boundary)]
 #![feature(slice_partition_dedup)]
+#![feature(string_from_utf8_lossy_owned)]
 #![feature(string_remove_matches)]
 #![feature(const_btree_len)]
 #![feature(const_trait_impl)]
@@ -36,11 +32,13 @@
 #![feature(panic_update_hook)]
 #![feature(pointer_is_aligned_to)]
 #![feature(thin_box)]
-#![feature(strict_provenance)]
+#![cfg_attr(bootstrap, feature(strict_provenance))]
+#![cfg_attr(not(bootstrap), feature(strict_provenance_lints))]
 #![feature(drain_keep_rest)]
 #![feature(local_waker)]
 #![feature(vec_pop_if)]
 #![feature(unique_rc_arc)]
+#![feature(macro_metavar_expr_concat)]
 #![allow(internal_features)]
 #![deny(fuzzy_provenance_casts)]
 #![deny(unsafe_op_in_unsafe_fn)]
@@ -60,6 +58,7 @@ mod heap;
 mod linked_list;
 mod rc;
 mod slice;
+mod sort;
 mod str;
 mod string;
 mod task;
