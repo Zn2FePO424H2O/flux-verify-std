@@ -1087,6 +1087,7 @@ pub unsafe fn _mm_stream_load_si128(mem_addr: *const __m128i) -> __m128i {
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.sse41.insertps"]
     fn insertps(a: __m128, b: __m128, imm8: u8) -> __m128;

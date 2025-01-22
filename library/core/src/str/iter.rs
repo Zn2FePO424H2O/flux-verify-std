@@ -1547,6 +1547,7 @@ impl FusedIterator for EncodeUtf16<'_> {}
 /// The return type of [`str::escape_debug`].
 #[stable(feature = "str_escape", since = "1.34.0")]
 #[derive(Clone, Debug)]
+#[flux_rs::ignore]
 pub struct EscapeDebug<'a> {
     pub(super) inner: Chain<
         Flatten<option::IntoIter<char_mod::EscapeDebug>>,
@@ -1606,5 +1607,5 @@ macro_rules! escape_types_impls {
         impl<'a> FusedIterator for $Name<'a> {}
     )+}
 }
-
+#[flux_rs::ignore]
 escape_types_impls!(EscapeDebug, EscapeDefault, EscapeUnicode);

@@ -50,6 +50,7 @@ pub unsafe fn __rdtscp(aux: *mut u32) -> u64 {
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.rdtsc"]
     fn rdtsc() -> u64;

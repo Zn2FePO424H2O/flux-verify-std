@@ -734,6 +734,7 @@ impl AsRef<CStr> for CStr {
 #[unstable(feature = "cstr_internals", issue = "none")]
 #[cfg_attr(bootstrap, rustc_const_stable(feature = "const_cstr_from_ptr", since = "1.81.0"))]
 #[rustc_allow_const_fn_unstable(const_eval_select)]
+#[flux::ignore]
 const unsafe fn strlen(ptr: *const c_char) -> usize {
     const fn strlen_ct(s: *const c_char) -> usize {
         let mut len = 0;

@@ -1512,6 +1512,7 @@ pub trait Iterator {
     /// [`flat_map()`]: Iterator::flat_map
     #[inline]
     #[stable(feature = "iterator_flatten", since = "1.29.0")]
+    #[flux_rs::ignore]
     fn flatten(self) -> Flatten<Self>
     where
         Self: Sized,

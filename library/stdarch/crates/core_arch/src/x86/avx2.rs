@@ -3644,6 +3644,7 @@ pub unsafe fn _mm256_extract_epi16<const INDEX: i32>(a: __m256i) -> i32 {
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.avx2.phadd.w"]
     fn phaddw(a: i16x16, b: i16x16) -> i16x16;

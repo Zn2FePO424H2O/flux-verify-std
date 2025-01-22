@@ -568,6 +568,7 @@ pub unsafe fn _mm_cmpgt_epi64(a: __m128i, b: __m128i) -> __m128i {
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     // SSE 4.2 string and text comparison ops
     #[link_name = "llvm.x86.sse42.pcmpestrm128"]

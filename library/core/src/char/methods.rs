@@ -437,6 +437,7 @@ impl char {
     /// at the start of a string, and allows escaping single quotes in
     /// characters, and double quotes in strings.
     #[inline]
+    #[flux_rs::ignore]
     pub(crate) fn escape_debug_ext(self, args: EscapeDebugExtArgs) -> EscapeDebug {
         match self {
             '\0' => EscapeDebug::backslash(ascii::Char::Digit0),
@@ -492,6 +493,7 @@ impl char {
                   without modifying the original"]
     #[stable(feature = "char_escape_debug", since = "1.20.0")]
     #[inline]
+    #[flux_rs::ignore]
     pub fn escape_debug(self) -> EscapeDebug {
         self.escape_debug_ext(EscapeDebugExtArgs::ESCAPE_ALL)
     }

@@ -81,6 +81,7 @@ macro_rules! forward_ref_op_assign {
 }
 
 /// Creates a zero-size type similar to a closure type, but named.
+#[flux_rs::ignore]
 macro_rules! impl_fn_for_zst {
     ($(
         $( #[$attr: meta] )*

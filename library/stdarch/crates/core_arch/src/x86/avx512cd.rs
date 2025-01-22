@@ -503,6 +503,7 @@ pub unsafe fn _mm_maskz_lzcnt_epi64(k: __mmask8, a: __m128i) -> __m128i {
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.avx512.conflict.d.512"]
     fn vpconflictd(a: i32x16) -> i32x16;

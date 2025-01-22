@@ -357,6 +357,7 @@ where
 /// and in the other direction,
 /// `<Result<Infallible, E> as Residual<T>>::TryType = Result<T, E>`.
 #[unstable(feature = "try_trait_v2_residual", issue = "91285")]
+#[flux_rs::ignore]
 pub trait Residual<O> {
     /// The "return" type of this meta-function.
     #[unstable(feature = "try_trait_v2_residual", issue = "91285")]
@@ -365,7 +366,7 @@ pub trait Residual<O> {
 
 #[unstable(feature = "pub_crate_should_not_need_unstable_attr", issue = "none")]
 #[allow(type_alias_bounds)]
-#[flux_rs::ignore(no)]
+#[flux_rs::ignore]
 pub(crate) type ChangeOutputType<T: Try<Residual: Residual<V>>, V> =
     <T::Residual as Residual<V>>::TryType;
 

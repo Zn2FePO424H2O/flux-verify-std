@@ -120,6 +120,7 @@ where
 /// ```
 #[inline]
 #[unstable(feature = "array_try_from_fn", issue = "89379")]
+#[flux_rs::ignore]
 pub fn try_from_fn<R, const N: usize, F>(cb: F) -> ChangeOutputType<R, [R::Output; N]>
 where
     F: FnMut(usize) -> R,
@@ -801,6 +802,7 @@ fn from_trusted_iterator<T, const N: usize>(iter: impl UncheckedIterator<Item = 
 }
 
 #[inline]
+#[flux_rs::ignore]
 fn try_from_trusted_iterator<T, R, const N: usize>(
     iter: impl UncheckedIterator<Item = R>,
 ) -> ChangeOutputType<R, [T; N]>

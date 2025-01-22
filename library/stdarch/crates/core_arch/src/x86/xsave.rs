@@ -5,6 +5,7 @@
 use stdarch_test::assert_instr;
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.xsave"]
     fn xsave(p: *mut u8, hi: u32, lo: u32);

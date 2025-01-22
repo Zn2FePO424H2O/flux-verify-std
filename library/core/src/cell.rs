@@ -1483,6 +1483,7 @@ impl<T: ?Sized> Deref for Ref<'_, T> {
 #[unstable(feature = "deref_pure_trait", issue = "87121")]
 unsafe impl<T: ?Sized> DerefPure for Ref<'_, T> {}
 
+#[flux_rs::ignore]
 impl<'b, T: ?Sized> Ref<'b, T> {
     /// Copies a `Ref`.
     ///
@@ -1638,6 +1639,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for Ref<'_, T> {
     }
 }
 
+#[flux_rs::ignore]
 impl<'b, T: ?Sized> RefMut<'b, T> {
     /// Makes a new `RefMut` for a component of the borrowed data, e.g., an enum
     /// variant.

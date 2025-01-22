@@ -66,6 +66,7 @@ pub unsafe fn _pext_u32(a: u32, mask: u32) -> u32 {
     x86_bmi2_pext_32(a, mask)
 }
 
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.bmi.bzhi.32"]
     fn x86_bmi2_bzhi_32(x: u32, y: u32) -> u32;

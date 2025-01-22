@@ -293,9 +293,11 @@ impl fmt::Display for EscapeDefault {
 /// [`escape_debug`]: char::escape_debug
 #[stable(feature = "char_escape_debug", since = "1.20.0")]
 #[derive(Clone, Debug)]
+#[flux_rs::ignore]
 pub struct EscapeDebug(EscapeDebugInner);
 
 #[derive(Clone, Debug)]
+#[flux_rs::ignore]
 // Note: It’s possible to manually encode the EscapeDebugInner inside of
 // EscapeIterInner (e.g. with alive=254..255 indicating that data[0..4] holds
 // a char) which would likely result in a more optimised code.  For now we use
@@ -305,6 +307,7 @@ enum EscapeDebugInner {
     Char(char),
 }
 
+#[flux_rs::ignore]
 impl EscapeDebug {
     #[inline]
     const fn printable(chr: char) -> Self {
@@ -328,6 +331,7 @@ impl EscapeDebug {
 }
 
 #[stable(feature = "char_escape_debug", since = "1.20.0")]
+#[flux_rs::ignore]
 impl Iterator for EscapeDebug {
     type Item = char;
 
@@ -355,6 +359,7 @@ impl Iterator for EscapeDebug {
 }
 
 #[stable(feature = "char_escape_debug", since = "1.20.0")]
+#[flux_rs::ignore]
 impl ExactSizeIterator for EscapeDebug {
     fn len(&self) -> usize {
         match &self.0 {
@@ -365,9 +370,11 @@ impl ExactSizeIterator for EscapeDebug {
 }
 
 #[stable(feature = "fused", since = "1.26.0")]
+#[flux_rs::ignore]
 impl FusedIterator for EscapeDebug {}
 
 #[stable(feature = "char_escape_debug", since = "1.20.0")]
+#[flux_rs::ignore]
 impl fmt::Display for EscapeDebug {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self.0 {

@@ -2,6 +2,7 @@
 use stdarch_test::assert_instr;
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "unadjusted" {
     #[link_name = "llvm.x86.addcarry.32"]
     fn llvm_addcarry_u32(a: u8, b: u32, c: u32) -> (u8, u32);

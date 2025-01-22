@@ -13,6 +13,7 @@
 #[cfg(test)]
 use stdarch_test::assert_instr;
 
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.tbm.bextri.u32"]
     fn bextri_u32(a: u32, control: u32) -> u32;

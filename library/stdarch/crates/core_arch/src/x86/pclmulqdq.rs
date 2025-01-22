@@ -11,6 +11,7 @@ use crate::core_arch::x86::__m128i;
 use stdarch_test::assert_instr;
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.pclmulqdq"]
     fn pclmulqdq(a: __m128i, round_key: __m128i, imm8: u8) -> __m128i;

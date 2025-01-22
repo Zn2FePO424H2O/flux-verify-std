@@ -11511,6 +11511,7 @@ pub unsafe fn _mm_mask_cvtusepi16_storeu_epi8(mem_addr: *mut i8, k: __mmask8, a:
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.avx512.pmul.hr.sw.512"]
     fn vpmulhrsw(a: i16x32, b: i16x32) -> i16x32;

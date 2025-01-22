@@ -4,6 +4,7 @@
 use stdarch_test::assert_instr;
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.fxsave"]
     fn fxsave(p: *mut u8);

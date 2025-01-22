@@ -1909,6 +1909,7 @@ pub unsafe fn _MM_TRANSPOSE4_PS(
 }
 
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.sse.rcp.ss"]
     fn rcpss(a: __m128) -> __m128;

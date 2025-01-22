@@ -2988,6 +2988,7 @@ pub unsafe fn _mm256_cvtss_f32(a: __m256) -> f32 {
 
 // LLVM intrinsics used in the above functions
 #[allow(improper_ctypes)]
+#[flux_rs::ignore]
 extern "C" {
     #[link_name = "llvm.x86.avx.round.pd.256"]
     fn roundpd256(a: __m256d, b: i32) -> __m256d;

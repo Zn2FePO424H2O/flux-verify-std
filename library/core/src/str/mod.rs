@@ -42,6 +42,7 @@ pub use iter::SplitInclusive;
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use iter::{Bytes, CharIndices, Chars, Lines, SplitWhitespace};
 #[stable(feature = "str_escape", since = "1.34.0")]
+#[flux_rs::ignore]
 pub use iter::{EscapeDebug, EscapeDefault, EscapeUnicode};
 #[stable(feature = "str_match_indices", since = "1.5.0")]
 pub use iter::{MatchIndices, RMatchIndices};
@@ -2661,6 +2662,7 @@ impl str {
     #[must_use = "this returns the escaped string as an iterator, \
                   without modifying the original"]
     #[stable(feature = "str_escape", since = "1.34.0")]
+    #[flux_rs::ignore]
     pub fn escape_debug(&self) -> EscapeDebug<'_> {
         let mut chars = self.chars();
         EscapeDebug {
@@ -2821,6 +2823,7 @@ impl Default for &mut str {
     }
 }
 
+#[flux_rs::ignore]
 impl_fn_for_zst! {
     /// A nameable, cloneable fn type
     #[derive(Clone)]
@@ -2831,6 +2834,7 @@ impl_fn_for_zst! {
     };
 
     #[derive(Clone)]
+    #[flux_rs::ignore]
     struct CharEscapeDebugContinue impl Fn = |c: char| -> char::EscapeDebug {
         c.escape_debug_ext(EscapeDebugExtArgs {
             escape_grapheme_extended: false,

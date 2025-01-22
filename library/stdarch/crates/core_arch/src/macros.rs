@@ -49,6 +49,7 @@ macro_rules! static_assert_simm_bits {
 }
 
 #[allow(unused)]
+#[flux_rs::ignore]
 macro_rules! types {
     (
         #![$stability_first:meta]

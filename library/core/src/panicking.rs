@@ -52,6 +52,7 @@ const _: () = assert!(cfg!(panic = "abort"), "panic_immediate_abort requires -C 
 #[rustc_do_not_const_check] // hooked by const-eval
 #[cfg_attr(bootstrap, rustc_const_unstable(feature = "panic_internals", issue = "none"))]
 #[cfg_attr(not(bootstrap), rustc_const_stable_indirect)] // must follow stable const rules since it is exposed to stable
+#[flux::ignore]
 pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
     if cfg!(feature = "panic_immediate_abort") {
         super::intrinsics::abort()
@@ -88,6 +89,7 @@ pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
 #[cfg_attr(bootstrap, rustc_const_unstable(feature = "panic_internals", issue = "none"))]
 #[cfg_attr(not(bootstrap), rustc_const_stable_indirect)] // must follow stable const rules since it is exposed to stable
 #[rustc_allow_const_fn_unstable(const_eval_select)]
+#[flux::ignore]
 pub const fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>, force_no_backtrace: bool) -> ! {
     #[inline] // this should always be inlined into `panic_nounwind_fmt`
     #[track_caller]

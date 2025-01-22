@@ -2,6 +2,7 @@
 //!
 //! In this module, a "vector" is any `repr(simd)` type.
 
+#[flux_rs::ignore]
 extern "rust-intrinsic" {
     /// Inserts an element into a vector, returning the updated vector.
     ///

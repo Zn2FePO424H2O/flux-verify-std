@@ -24,6 +24,7 @@ use core::str::pattern::{DoubleEndedSearcher, Pattern, ReverseSearcher, Searcher
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use core::str::{Bytes, CharIndices, Chars, from_utf8, from_utf8_mut};
 #[stable(feature = "str_escape", since = "1.34.0")]
+#[flux_rs::ignore]
 pub use core::str::{EscapeDebug, EscapeDefault, EscapeUnicode};
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use core::str::{FromStr, Utf8Error};

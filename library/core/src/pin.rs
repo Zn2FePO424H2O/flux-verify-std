@@ -1510,6 +1510,7 @@ impl<Ptr: Deref> Pin<Ptr> {
     }
 }
 
+#[flux_rs::ignore]
 impl<'a, T: ?Sized> Pin<&'a T> {
     /// Constructs a new pin by mapping the interior value.
     ///
@@ -1566,6 +1567,7 @@ impl<'a, T: ?Sized> Pin<&'a T> {
     }
 }
 
+#[flux_rs::ignore]
 impl<'a, T: ?Sized> Pin<&'a mut T> {
     /// Converts this `Pin<&mut T>` into a `Pin<&T>` with the same lifetime.
     #[inline(always)]

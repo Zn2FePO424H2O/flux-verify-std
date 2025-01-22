@@ -252,11 +252,12 @@ unsafe impl<I: BoundedSize> BoundedSize for Cloned<I> {
 /// [`flatten`]: Iterator::flatten()
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
-#[flux_rs::trusted]
+#[flux_rs::ignore]
 pub struct Flatten<I: Iterator<Item: IntoIterator>> {
     inner: FlattenCompat<I, <I::Item as IntoIterator>::IntoIter>,
 }
 
+#[flux_rs::ignore]
 impl<I: Iterator<Item: IntoIterator>> Flatten<I> {
     pub(in super::super) fn new(iter: I) -> Flatten<I> {
         Flatten { inner: FlattenCompat::new(iter) }
@@ -264,6 +265,7 @@ impl<I: Iterator<Item: IntoIterator>> Flatten<I> {
 }
 
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::ignore]
 impl<I, U> fmt::Debug for Flatten<I>
 where
     I: fmt::Debug + Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -275,6 +277,7 @@ where
 }
 
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::ignore]
 impl<I, U> Clone for Flatten<I>
 where
     I: Clone + Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -286,6 +289,7 @@ where
 }
 
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::ignore]
 impl<I, U> Iterator for Flatten<I>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -338,6 +342,7 @@ where
 }
 
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::ignore]
 impl<I, U> DoubleEndedIterator for Flatten<I>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -373,6 +378,7 @@ where
 }
 
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::ignore]
 impl<I, U> FusedIterator for Flatten<I>
 where
     I: FusedIterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -381,6 +387,7 @@ where
 }
 
 #[unstable(feature = "trusted_len", issue = "37572")]
+#[flux_rs::ignore]
 unsafe impl<I> TrustedLen for Flatten<I>
 where
     I: Iterator<Item: IntoIterator>,
@@ -389,6 +396,7 @@ where
 }
 
 #[unstable(issue = "none", feature = "inplace_iteration")]
+#[flux_rs::ignore]
 unsafe impl<I> InPlaceIterable for Flatten<I>
 where
     I: InPlaceIterable + Iterator,
@@ -404,6 +412,7 @@ where
 }
 
 #[unstable(issue = "none", feature = "inplace_iteration")]
+#[flux_rs::ignore]
 unsafe impl<I> SourceIter for Flatten<I>
 where
     I: SourceIter + TrustedFused + Iterator,
@@ -419,6 +428,7 @@ where
 }
 
 #[stable(feature = "default_iters", since = "1.70.0")]
+#[flux_rs::ignore]
 impl<I> Default for Flatten<I>
 where
     I: Default + Iterator<Item: IntoIterator>,

@@ -40,6 +40,7 @@ pub use self::cloned::Cloned;
 #[stable(feature = "iter_copied", since = "1.36.0")]
 pub use self::copied::Copied;
 #[stable(feature = "iterator_flatten", since = "1.29.0")]
+#[flux_rs::ignore]
 pub use self::flatten::Flatten;
 #[unstable(feature = "iter_intersperse", reason = "recently added", issue = "79524")]
 pub use self::intersperse::{Intersperse, IntersperseWith};

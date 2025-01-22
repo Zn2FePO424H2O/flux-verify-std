@@ -85,6 +85,7 @@ pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
     unsafe { crate::ptr::drop_in_place(to_drop) }
 }
 
+#[flux_rs::ignore]
 extern "rust-intrinsic" {
     // N.B., these intrinsics take raw pointers because they mutate aliased
     // memory, which is not valid for either `&` or `&mut`.
@@ -1044,6 +1045,7 @@ pub fn select_unpredictable<T>(b: bool, true_val: T, false_val: T) -> T {
     if b { true_val } else { false_val }
 }
 
+#[flux_rs::ignore]
 extern "rust-intrinsic" {
     /// Executes a breakpoint trap, for inspection by a debugger.
     ///
@@ -2666,6 +2668,7 @@ pub const fn ptr_guaranteed_cmp<T>(ptr: *const T, other: *const T) -> u8 {
     (ptr == other) as u8
 }
 
+#[flux_rs::ignore]
 extern "rust-intrinsic" {
     /// Determines whether the raw bytes of the two values are equal.
     ///
@@ -3260,6 +3263,7 @@ pub const fn ptr_metadata<P: ptr::Pointee<Metadata = M> + ?Sized, M>(_ptr: *cons
 #[inline(always)]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 #[rustc_diagnostic_item = "ptr_copy_nonoverlapping"]
+#[flux_rs::ignore]
 pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) {
     extern "rust-intrinsic" {
         #[cfg_attr(
@@ -3372,6 +3376,7 @@ pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: us
 #[inline(always)]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 #[rustc_diagnostic_item = "ptr_copy"]
+#[flux_rs::ignore]
 pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
     extern "rust-intrinsic" {
         #[cfg_attr(
@@ -3461,6 +3466,7 @@ pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
 #[inline(always)]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 #[rustc_diagnostic_item = "ptr_write_bytes"]
+#[flux_rs::ignore]
 pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize) {
     extern "rust-intrinsic" {
         #[cfg_attr(bootstrap, rustc_const_stable(feature = "const_ptr_write", since = "1.83.0"))]

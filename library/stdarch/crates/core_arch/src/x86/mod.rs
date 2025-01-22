@@ -7,6 +7,7 @@ use crate::mem::transmute;
 #[macro_use]
 mod macros;
 
+#[flux_rs::ignore]
 types! {
     #![stable(feature = "simd_x86", since = "1.27.0")]
 
@@ -274,6 +275,7 @@ types! {
     pub struct __m256d(4 x f64);
 }
 
+#[flux_rs::ignore]
 types! {
     #![stable(feature = "simd_avx512_types", since = "1.72.0")]
 
