@@ -248,7 +248,7 @@
 #![feature(wasm_target_feature)]
 #![feature(x86_amx_intrinsics)]
 // tidy-alphabetical-end
-
+#![feature(proc_macro_hygiene)]
 // allow using `core::` in intra-doc links
 #[allow(unused_extern_crates)]
 extern crate self as core;
@@ -347,8 +347,10 @@ pub mod prelude;
 /* Core modules for ownership management */
 
 pub mod hint;
+#[flux_rs::ignore]
 pub mod intrinsics;
 pub mod mem;
+#[flux_rs::ignore]
 pub mod ptr;
 #[unstable(feature = "ub_checks", issue = "none")]
 pub mod ub_checks;
@@ -374,6 +376,7 @@ pub mod asserting;
 pub mod async_iter;
 pub mod cell;
 pub mod char;
+#[flux_rs::ignore]
 pub mod ffi;
 #[unstable(feature = "core_io_borrowed_buf", issue = "117693")]
 pub mod io;
@@ -381,6 +384,7 @@ pub mod iter;
 pub mod net;
 pub mod option;
 pub mod panic;
+#[flux_rs::ignore]
 pub mod panicking;
 #[unstable(feature = "core_pattern_types", issue = "123646")]
 pub mod pat;
@@ -392,6 +396,7 @@ pub mod range;
 pub mod result;
 pub mod sync;
 
+#[flux_rs::ignore]
 pub mod fmt;
 pub mod hash;
 pub mod slice;

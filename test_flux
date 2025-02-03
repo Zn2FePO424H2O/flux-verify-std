@@ -17,7 +17,7 @@ case "$(uname -s)" in
     *) echo "Unsupported OS"; exit 1 ;;
 esac
 
-FLUX_CATCH_BUGS=1 cargo flux -Z build-std --target "$target" > ../log.txt
+FLUX_CATCH_BUGS=1 cargo flux -Z build-std --target "$target" > ../log.txt 2>&1
 
 cd ..
 rm -rf dummy
