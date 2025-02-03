@@ -21,3 +21,5 @@ FLUX_CATCH_BUGS=1 cargo flux -Z build-std --target "$target" > ../log.txt 2>&1
 
 cd ..
 rm -rf dummy
+
+python3 counter.py
