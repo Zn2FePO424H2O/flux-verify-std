@@ -396,7 +396,7 @@ pub mod range;
 pub mod result;
 pub mod sync;
 
-#[flux_rs::ignore]
+// #[flux_rs::ignore]
 pub mod fmt;
 pub mod hash;
 pub mod slice;
