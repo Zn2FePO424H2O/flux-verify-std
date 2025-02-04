@@ -347,7 +347,7 @@ pub mod prelude;
 /* Core modules for ownership management */
 
 pub mod hint;
-#[flux_rs::ignore]
+// #[flux_rs::ignore]
 pub mod intrinsics;
 pub mod mem;
 #[flux_rs::ignore]
