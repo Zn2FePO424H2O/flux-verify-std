@@ -350,7 +350,7 @@ pub mod hint;
 #[flux_rs::ignore]
 pub mod intrinsics;
 pub mod mem;
-#[flux_rs::ignore]
+// #[flux_rs::ignore]
 pub mod ptr;
 #[unstable(feature = "ub_checks", issue = "none")]
 pub mod ub_checks;
