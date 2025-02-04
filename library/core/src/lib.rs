@@ -384,7 +384,7 @@ pub mod iter;
 pub mod net;
 pub mod option;
 pub mod panic;
-#[flux_rs::ignore]
+// #[flux_rs::ignore]
 pub mod panicking;
 #[unstable(feature = "core_pattern_types", issue = "123646")]
 pub mod pat;
