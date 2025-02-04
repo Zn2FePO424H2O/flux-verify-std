@@ -376,7 +376,7 @@ pub mod asserting;
 pub mod async_iter;
 pub mod cell;
 pub mod char;
-#[flux_rs::ignore]
+// #[flux_rs::ignore]
 pub mod ffi;
 #[unstable(feature = "core_io_borrowed_buf", issue = "117693")]
 pub mod io;
