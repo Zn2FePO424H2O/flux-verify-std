@@ -282,7 +282,7 @@ pub mod arch {
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64", doc))]
 #[doc(cfg(any(target_arch = "x86", target_arch = "x86_64")))]
-#[flux_rs::ignore]
+// #[flux_rs::ignore]
 mod x86;
 #[cfg(any(target_arch = "x86_64", doc))]
 #[doc(cfg(target_arch = "x86_64"))]
