@@ -373,6 +373,7 @@ impl str {
     #[stable(feature = "rust1", since = "1.0.0")]
     #[rustc_const_stable(feature = "rustc_str_as_ptr", since = "1.32.0")]
     #[rustc_never_returns_null_ptr]
+    #[rustc_as_ptr]
     #[must_use]
     #[inline(always)]
     pub const fn as_ptr(&self) -> *const u8 {
@@ -390,6 +391,7 @@ impl str {
     #[stable(feature = "str_as_mut_ptr", since = "1.36.0")]
     #[rustc_const_stable(feature = "const_str_as_mut", since = "1.83.0")]
     #[rustc_never_returns_null_ptr]
+    #[rustc_as_ptr]
     #[must_use]
     #[inline(always)]
     pub const fn as_mut_ptr(&mut self) -> *mut u8 {
@@ -2400,7 +2402,7 @@ impl str {
     ///
     /// # Examples
     ///
-    /// Basic usage
+    /// Basic usage:
     ///
     /// ```
     /// let four: u32 = "4".parse().unwrap();
@@ -2474,9 +2476,10 @@ impl str {
     /// assert!(!"Ferrös".eq_ignore_ascii_case("FERRÖS"));
     /// ```
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
+    #[rustc_const_unstable(feature = "const_eq_ignore_ascii_case", issue = "131719")]
     #[must_use]
     #[inline]
-    pub fn eq_ignore_ascii_case(&self, other: &str) -> bool {
+    pub const fn eq_ignore_ascii_case(&self, other: &str) -> bool {
         self.as_bytes().eq_ignore_ascii_case(other.as_bytes())
     }
 
@@ -2500,7 +2503,7 @@ impl str {
     /// assert_eq!("GRüßE, JüRGEN ❤", s);
     /// ```
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_stable(feature = "const_make_ascii", since = "CURRENT_RUSTC_VERSION")]
+    #[rustc_const_stable(feature = "const_make_ascii", since = "1.84.0")]
     #[inline]
     pub const fn make_ascii_uppercase(&mut self) {
         // SAFETY: changing ASCII letters only does not invalidate UTF-8.
@@ -2528,7 +2531,7 @@ impl str {
     /// assert_eq!("grÜße, jÜrgen ❤", s);
     /// ```
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_stable(feature = "const_make_ascii", since = "CURRENT_RUSTC_VERSION")]
+    #[rustc_const_stable(feature = "const_make_ascii", since = "1.84.0")]
     #[inline]
     pub const fn make_ascii_lowercase(&mut self) {
         // SAFETY: changing ASCII letters only does not invalidate UTF-8.
