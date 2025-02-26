@@ -220,6 +220,8 @@ fn hex_encode_fallback<'a>(src: &[u8], dst: &'a mut [u8]) -> Result<&'a str, usi
 // Run these with `cargo +nightly test --example hex -p stdarch`
 #[cfg(test)]
 mod tests {
+    use std::iter;
+
     use super::*;
 
     fn test(input: &[u8], output: &str) {
@@ -246,12 +248,18 @@ mod tests {
 
     #[test]
     fn big() {
-        test(&[0; 1024], &"0".repeat(2048));
+        test(
+            &[0; 1024],
+            &iter::repeat('0').take(2048).collect::<String>(),
+        );
     }
 
     #[test]
     fn odd() {
-        test(&[0; 313], &"0".repeat(313 * 2));
+        test(
+            &[0; 313],
+            &iter::repeat('0').take(313 * 2).collect::<String>(),
+        );
     }
 
     #[test]

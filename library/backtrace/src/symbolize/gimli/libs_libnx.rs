@@ -1,5 +1,4 @@
-use super::{Library, LibrarySegment};
-use alloc::vec::Vec;
+use super::{Library, LibrarySegment, Vec};
 
 // DevkitA64 doesn't natively support debug info, but the build system will
 // place debug info at the path `romfs:/debug_info.elf`.

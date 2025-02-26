@@ -10,6 +10,9 @@ use core::hint;
 #[cfg(not(test))]
 use core::ptr::{self, NonNull};
 
+#[cfg(test)]
+mod tests;
+
 extern "Rust" {
     // These are the magic symbols to call the global allocator. rustc generates
     // them to call `__rg_alloc` etc. if there is a `#[global_allocator]` attribute
@@ -58,7 +61,7 @@ pub use std::alloc::Global;
 /// of the allocator registered with the `#[global_allocator]` attribute
 /// if there is one, or the `std` crate’s default.
 ///
-/// This function is expected to be deprecated in favor of the `allocate` method
+/// This function is expected to be deprecated in favor of the `alloc` method
 /// of the [`Global`] type when it and the [`Allocator`] trait become stable.
 ///
 /// # Safety
@@ -103,7 +106,7 @@ pub unsafe fn alloc(layout: Layout) -> *mut u8 {
 /// of the allocator registered with the `#[global_allocator]` attribute
 /// if there is one, or the `std` crate’s default.
 ///
-/// This function is expected to be deprecated in favor of the `deallocate` method
+/// This function is expected to be deprecated in favor of the `dealloc` method
 /// of the [`Global`] type when it and the [`Allocator`] trait become stable.
 ///
 /// # Safety
@@ -122,7 +125,7 @@ pub unsafe fn dealloc(ptr: *mut u8, layout: Layout) {
 /// of the allocator registered with the `#[global_allocator]` attribute
 /// if there is one, or the `std` crate’s default.
 ///
-/// This function is expected to be deprecated in favor of the `grow` and `shrink` methods
+/// This function is expected to be deprecated in favor of the `realloc` method
 /// of the [`Global`] type when it and the [`Allocator`] trait become stable.
 ///
 /// # Safety
@@ -142,7 +145,7 @@ pub unsafe fn realloc(ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 
 /// of the allocator registered with the `#[global_allocator]` attribute
 /// if there is one, or the `std` crate’s default.
 ///
-/// This function is expected to be deprecated in favor of the `allocate_zeroed` method
+/// This function is expected to be deprecated in favor of the `alloc_zeroed` method
 /// of the [`Global`] type when it and the [`Allocator`] trait become stable.
 ///
 /// # Safety
@@ -152,14 +155,11 @@ pub unsafe fn realloc(ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 
 /// # Examples
 ///
 /// ```
-/// use std::alloc::{alloc_zeroed, dealloc, handle_alloc_error, Layout};
+/// use std::alloc::{alloc_zeroed, dealloc, Layout};
 ///
 /// unsafe {
 ///     let layout = Layout::new::<u16>();
 ///     let ptr = alloc_zeroed(layout);
-///     if ptr.is_null() {
-///         handle_alloc_error(layout);
-///     }
 ///
 ///     assert_eq!(*(ptr as *mut u16), 0);
 ///
@@ -339,7 +339,7 @@ unsafe impl Allocator for Global {
     }
 }
 
-/// The allocator for `Box`.
+/// The allocator for unique pointers.
 #[cfg(all(not(no_global_oom_handling), not(test)))]
 #[lang = "exchange_malloc"]
 #[inline]

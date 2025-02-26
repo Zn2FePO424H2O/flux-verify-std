@@ -15,7 +15,7 @@ impl<'a> IoSlice<'a> {
     }
 
     #[inline]
-    pub const fn as_slice(&self) -> &'a [u8] {
+    pub fn as_slice(&self) -> &[u8] {
         self.0
     }
 }
@@ -37,11 +37,6 @@ impl<'a> IoSliceMut<'a> {
 
     #[inline]
     pub fn as_slice(&self) -> &[u8] {
-        self.0
-    }
-
-    #[inline]
-    pub const fn into_slice(self) -> &'a mut [u8] {
         self.0
     }
 

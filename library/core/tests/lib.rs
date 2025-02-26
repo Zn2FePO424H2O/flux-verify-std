@@ -1,4 +1,6 @@
 // tidy-alphabetical-start
+#![cfg_attr(bootstrap, feature(strict_provenance))]
+#![cfg_attr(not(bootstrap), feature(strict_provenance_lints))]
 #![cfg_attr(target_has_atomic = "128", feature(integer_atomics))]
 #![cfg_attr(test, feature(cfg_match))]
 #![feature(alloc_layout_extra)]
@@ -13,12 +15,21 @@
 #![feature(bigint_helper_methods)]
 #![feature(cell_update)]
 #![feature(clone_to_uninit)]
+#![feature(const_align_of_val_raw)]
+#![feature(const_align_offset)]
+#![feature(const_bigint_helper_methods)]
 #![feature(const_black_box)]
 #![feature(const_eval_select)]
-#![feature(const_swap_nonoverlapping)]
+#![feature(const_hash)]
+#![feature(const_heap)]
+#![feature(const_nonnull_new)]
+#![feature(const_num_midpoint)]
+#![feature(const_option_ext)]
+#![feature(const_pin_2)]
+#![feature(const_pointer_is_aligned)]
+#![feature(const_three_way_compare)]
 #![feature(const_trait_impl)]
 #![feature(core_intrinsics)]
-#![feature(core_intrinsics_fallbacks)]
 #![feature(core_io_borrowed_buf)]
 #![feature(core_private_bignum)]
 #![feature(core_private_diy_float)]
@@ -31,7 +42,6 @@
 #![feature(float_minimum_maximum)]
 #![feature(flt2dec)]
 #![feature(fmt_internals)]
-#![feature(formatting_options)]
 #![feature(freeze)]
 #![feature(future_join)]
 #![feature(generic_assert_internals)]
@@ -62,7 +72,8 @@
 #![feature(maybe_uninit_write_slice)]
 #![feature(min_specialization)]
 #![feature(never_type)]
-#![feature(num_midpoint_signed)]
+#![feature(noop_waker)]
+#![feature(num_midpoint)]
 #![feature(numfmt)]
 #![feature(pattern)]
 #![feature(pointer_is_aligned_to)]
@@ -79,7 +90,6 @@
 #![feature(step_trait)]
 #![feature(str_internals)]
 #![feature(strict_provenance_atomic_ptr)]
-#![feature(strict_provenance_lints)]
 #![feature(test)]
 #![feature(trait_upcasting)]
 #![feature(trusted_len)]
@@ -98,13 +108,10 @@
 
 /// Version of `assert_matches` that ignores fancy runtime printing in const context and uses structural equality.
 macro_rules! assert_eq_const_safe {
-    ($left:expr, $right:expr) => {
-        assert_eq_const_safe!($left, $right, concat!(stringify!($left), " == ", stringify!($right)));
-    };
     ($left:expr, $right:expr$(, $($arg:tt)+)?) => {
         {
             fn runtime() {
-                assert_eq!($left, $right, $($($arg)*),*);
+                assert_eq!($left, $right, $($arg)*);
             }
             const fn compiletime() {
                 assert!(matches!($left, const { $right }));
@@ -153,10 +160,7 @@ mod intrinsics;
 mod io;
 mod iter;
 mod lazy;
-#[cfg(not(bootstrap))]
 mod macros;
-#[cfg(bootstrap)]
-mod macros_bootstrap;
 mod manually_drop;
 mod mem;
 mod net;

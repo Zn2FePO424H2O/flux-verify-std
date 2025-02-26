@@ -563,11 +563,11 @@ impl () {}
 /// Note that here the call to [`drop`] is for clarity - it indicates
 /// that we are done with the given value and it should be destroyed.
 ///
-/// ## 3. Create it using `&raw`
+/// ## 3. Create it using `ptr::addr_of!`
 ///
-/// Instead of coercing a reference to a raw pointer, you can use the raw borrow
-/// operators `&raw const` (for `*const T`) and `&raw mut` (for `*mut T`).
-/// These operators allow you to create raw pointers to fields to which you cannot
+/// Instead of coercing a reference to a raw pointer, you can use the macros
+/// [`ptr::addr_of!`] (for `*const T`) and [`ptr::addr_of_mut!`] (for `*mut T`).
+/// These macros allow you to create raw pointers to fields to which you cannot
 /// create a reference (without causing undefined behavior), such as an
 /// unaligned field. This might be necessary if packed structs or uninitialized
 /// memory is involved.
@@ -580,7 +580,7 @@ impl () {}
 ///     unaligned: u32,
 /// }
 /// let s = S::default();
-/// let p = &raw const s.unaligned; // not allowed with coercion
+/// let p = std::ptr::addr_of!(s.unaligned); // not allowed with coercion
 /// ```
 ///
 /// ## 4. Get it from C.
@@ -1746,10 +1746,11 @@ mod prim_ref {}
 /// alignment, they might be passed in different registers and hence not be ABI-compatible.
 ///
 /// ABI compatibility as a concern only arises in code that alters the type of function pointers,
-/// and code that imports functions via `extern` blocks. Altering the type of function pointers is
-/// wildly unsafe (as in, a lot more unsafe than even [`transmute_copy`][mem::transmute_copy]), and
-/// should only occur in the most exceptional circumstances. Most Rust code just imports functions
-/// via `use`. So, most likely you do not have to worry about ABI compatibility.
+/// code that imports functions via `extern` blocks, and in code that combines `#[target_feature]`
+/// with `extern fn`. Altering the type of function pointers is wildly unsafe (as in, a lot more
+/// unsafe than even [`transmute_copy`][mem::transmute_copy]), and should only occur in the most
+/// exceptional circumstances. Most Rust code just imports functions via `use`. `#[target_feature]`
+/// is also used rarely. So, most likely you do not have to worry about ABI compatibility.
 ///
 /// But assuming such circumstances, what are the rules? For this section, we are only considering
 /// the ABI of direct Rust-to-Rust calls (with both definition and callsite visible to the
@@ -1761,8 +1762,9 @@ mod prim_ref {}
 /// types from `core::ffi` or `libc`**.
 ///
 /// For two signatures to be considered *ABI-compatible*, they must use a compatible ABI string,
-/// must take the same number of arguments, and the individual argument types and the return types
-/// must be ABI-compatible. The ABI string is declared via `extern "ABI" fn(...) -> ...`; note that
+/// must take the same number of arguments, the individual argument types and the return types must
+/// be ABI-compatible, and the target feature requirements must be met (see the subsection below for
+/// the last point). The ABI string is declared via `extern "ABI" fn(...) -> ...`; note that
 /// `fn name(...) -> ...` implicitly uses the `"Rust"` ABI string and `extern fn name(...) -> ...`
 /// implicitly uses the `"C"` ABI string.
 ///
@@ -1831,6 +1833,24 @@ mod prim_ref {}
 /// `Option<NonZero<i32>>`, and the value used for the argument is `None`, then this call is Undefined
 /// Behavior since transmuting `None::<NonZero<i32>>` to `NonZero<i32>` violates the non-zero
 /// requirement.
+///
+/// #### Requirements concerning target features
+///
+/// Under some conditions, the signature used by the caller and the callee can be ABI-incompatible
+/// even if the exact same ABI string and types are being used. As an example, the
+/// `std::arch::x86_64::__m256` type has a different `extern "C"` ABI when the `avx` feature is
+/// enabled vs when it is not enabled.
+///
+/// Therefore, to ensure ABI compatibility when code using different target features is combined
+/// (such as via `#[target_feature]`), we further require that one of the following conditions is
+/// met:
+///
+/// - The function uses the `"Rust"` ABI string (which is the default without `extern`).
+/// - Caller and callee are using the exact same set of target features. For the callee we consider
+///   the features enabled (via `#[target_feature]` and `-C target-feature`/`-C target-cpu`) at the
+///   declaration site; for the caller we consider the features enabled at the call site.
+/// - Neither any argument nor the return value involves a SIMD type (`#[repr(simd)]`) that is not
+///   behind a pointer indirection (i.e., `*mut __m256` is fine, but `(i32, __m256)` is not).
 ///
 /// ### Trait implementations
 ///

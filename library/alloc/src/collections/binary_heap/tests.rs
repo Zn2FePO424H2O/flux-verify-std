@@ -1,9 +1,7 @@
-use alloc::boxed::Box;
-use alloc::collections::binary_heap::*;
-use std::iter::TrustedLen;
-use std::mem;
 use std::panic::{AssertUnwindSafe, catch_unwind};
 
+use super::*;
+use crate::boxed::Box;
 use crate::testing::crash_test::{CrashTestDummy, Panic};
 
 #[test]
@@ -502,7 +500,9 @@ fn test_retain_catch_unwind() {
 // even if the order might not be correct.
 //
 // Destructors must be called exactly once per element.
+// FIXME: re-enable emscripten once it can unwind again
 #[test]
+#[cfg(not(target_os = "emscripten"))]
 #[cfg_attr(not(panic = "unwind"), ignore = "test requires unwinding support")]
 fn panic_safe() {
     use std::cmp;
@@ -531,7 +531,7 @@ fn panic_safe() {
             self.0.partial_cmp(&other.0)
         }
     }
-    let mut rng = crate::test_rng();
+    let mut rng = crate::test_helpers::test_rng();
     const DATASZ: usize = 32;
     // Miri is too slow
     let ntest = if cfg!(miri) { 1 } else { 10 };

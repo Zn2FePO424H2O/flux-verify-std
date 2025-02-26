@@ -262,9 +262,7 @@ impl<T> OnceCell<T> {
     ///
     /// let value = cell.get_mut_or_try_init(|| "1234".parse());
     /// assert_eq!(value, Ok(&mut 1234));
-    ///
-    /// let Ok(value) = value else { return; };
-    /// *value += 2;
+    /// *value.unwrap() += 2;
     /// assert_eq!(cell.get(), Some(&1236))
     /// ```
     #[unstable(feature = "once_cell_get_mut", issue = "121641")]
@@ -306,8 +304,8 @@ impl<T> OnceCell<T> {
     /// assert_eq!(cell.into_inner(), None);
     ///
     /// let cell = OnceCell::new();
-    /// let _ = cell.set("hello".to_owned());
-    /// assert_eq!(cell.into_inner(), Some("hello".to_owned()));
+    /// cell.set("hello".to_string()).unwrap();
+    /// assert_eq!(cell.into_inner(), Some("hello".to_string()));
     /// ```
     #[inline]
     #[stable(feature = "once_cell", since = "1.70.0")]
@@ -334,8 +332,8 @@ impl<T> OnceCell<T> {
     /// assert_eq!(cell.take(), None);
     ///
     /// let mut cell = OnceCell::new();
-    /// let _ = cell.set("hello".to_owned());
-    /// assert_eq!(cell.take(), Some("hello".to_owned()));
+    /// cell.set("hello".to_string()).unwrap();
+    /// assert_eq!(cell.take(), Some("hello".to_string()));
     /// assert_eq!(cell.get(), None);
     /// ```
     #[inline]

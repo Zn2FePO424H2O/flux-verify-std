@@ -27,7 +27,6 @@ pub mod pipe;
 pub mod process;
 pub mod stack_overflow;
 pub mod stdio;
-pub mod sync;
 pub mod thread;
 pub mod thread_parking;
 pub mod time;
@@ -254,7 +253,7 @@ pub fn decode_error_kind(errno: i32) -> ErrorKind {
         libc::ECONNREFUSED => ConnectionRefused,
         libc::ECONNRESET => ConnectionReset,
         libc::EDEADLK => Deadlock,
-        libc::EDQUOT => QuotaExceeded,
+        libc::EDQUOT => FilesystemQuotaExceeded,
         libc::EEXIST => AlreadyExists,
         libc::EFBIG => FileTooLarge,
         libc::EHOSTUNREACH => HostUnreachable,

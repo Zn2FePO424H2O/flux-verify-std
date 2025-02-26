@@ -2,10 +2,7 @@
 #![cfg(reliable_f128)]
 
 use crate::f128::consts;
-use crate::num::FpCategory as Fp;
-#[cfg(reliable_f128_math)]
-use crate::ops::Rem;
-use crate::ops::{Add, Div, Mul, Sub};
+use crate::num::{FpCategory as Fp, *};
 
 // Note these tolerances make sense around zero, but not for more extreme exponents.
 
@@ -56,22 +53,7 @@ macro_rules! assert_f128_biteq {
 
 #[test]
 fn test_num_f128() {
-    // FIXME(f16_f128): replace with a `test_num` call once the required `fmodl`/`fmodf128`
-    // function is available on all platforms.
-    let ten = 10f128;
-    let two = 2f128;
-    assert_eq!(ten.add(two), ten + two);
-    assert_eq!(ten.sub(two), ten - two);
-    assert_eq!(ten.mul(two), ten * two);
-    assert_eq!(ten.div(two), ten / two);
-}
-
-#[test]
-#[cfg(reliable_f128_math)]
-fn test_num_f128_rem() {
-    let ten = 10f128;
-    let two = 2f128;
-    assert_eq!(ten.rem(two), ten % two);
+    test_num(10f128, 2f128);
 }
 
 #[test]

@@ -7,12 +7,14 @@
 //!
 //! [intel64_ref]: http://www.intel.de/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf
 
-use crate::core_arch::simd::*;
 use crate::core_arch::x86::__m128i;
 use crate::core_arch::x86::__m256i;
 use crate::core_arch::x86::__m512i;
 use crate::core_arch::x86::__mmask16;
 use crate::core_arch::x86::__mmask8;
+use crate::core_arch::x86::_mm256_setzero_si256;
+use crate::core_arch::x86::_mm512_setzero_si512;
+use crate::core_arch::x86::_mm_setzero_si128;
 use crate::core_arch::x86::m128iExt;
 use crate::core_arch::x86::m256iExt;
 use crate::core_arch::x86::m512iExt;
@@ -44,11 +46,8 @@ pub unsafe fn _mm512_popcnt_epi32(a: __m512i) -> __m512i {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vpopcntd))]
 pub unsafe fn _mm512_maskz_popcnt_epi32(k: __mmask16, a: __m512i) -> __m512i {
-    transmute(simd_select_bitmask(
-        k,
-        simd_ctpop(a.as_i32x16()),
-        i32x16::ZERO,
-    ))
+    let zero = _mm512_setzero_si512().as_i32x16();
+    transmute(simd_select_bitmask(k, simd_ctpop(a.as_i32x16()), zero))
 }
 
 /// For each packed 32-bit integer maps the value to the number of logical 1 bits.
@@ -91,11 +90,8 @@ pub unsafe fn _mm256_popcnt_epi32(a: __m256i) -> __m256i {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vpopcntd))]
 pub unsafe fn _mm256_maskz_popcnt_epi32(k: __mmask8, a: __m256i) -> __m256i {
-    transmute(simd_select_bitmask(
-        k,
-        simd_ctpop(a.as_i32x8()),
-        i32x8::ZERO,
-    ))
+    let zero = _mm256_setzero_si256().as_i32x8();
+    transmute(simd_select_bitmask(k, simd_ctpop(a.as_i32x8()), zero))
 }
 
 /// For each packed 32-bit integer maps the value to the number of logical 1 bits.
@@ -138,11 +134,8 @@ pub unsafe fn _mm_popcnt_epi32(a: __m128i) -> __m128i {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vpopcntd))]
 pub unsafe fn _mm_maskz_popcnt_epi32(k: __mmask8, a: __m128i) -> __m128i {
-    transmute(simd_select_bitmask(
-        k,
-        simd_ctpop(a.as_i32x4()),
-        i32x4::ZERO,
-    ))
+    let zero = _mm_setzero_si128().as_i32x4();
+    transmute(simd_select_bitmask(k, simd_ctpop(a.as_i32x4()), zero))
 }
 
 /// For each packed 32-bit integer maps the value to the number of logical 1 bits.
@@ -185,11 +178,8 @@ pub unsafe fn _mm512_popcnt_epi64(a: __m512i) -> __m512i {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vpopcntq))]
 pub unsafe fn _mm512_maskz_popcnt_epi64(k: __mmask8, a: __m512i) -> __m512i {
-    transmute(simd_select_bitmask(
-        k,
-        simd_ctpop(a.as_i64x8()),
-        i64x8::ZERO,
-    ))
+    let zero = _mm512_setzero_si512().as_i64x8();
+    transmute(simd_select_bitmask(k, simd_ctpop(a.as_i64x8()), zero))
 }
 
 /// For each packed 64-bit integer maps the value to the number of logical 1 bits.
@@ -232,11 +222,8 @@ pub unsafe fn _mm256_popcnt_epi64(a: __m256i) -> __m256i {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vpopcntq))]
 pub unsafe fn _mm256_maskz_popcnt_epi64(k: __mmask8, a: __m256i) -> __m256i {
-    transmute(simd_select_bitmask(
-        k,
-        simd_ctpop(a.as_i64x4()),
-        i64x4::ZERO,
-    ))
+    let zero = _mm256_setzero_si256().as_i64x4();
+    transmute(simd_select_bitmask(k, simd_ctpop(a.as_i64x4()), zero))
 }
 
 /// For each packed 64-bit integer maps the value to the number of logical 1 bits.
@@ -279,11 +266,8 @@ pub unsafe fn _mm_popcnt_epi64(a: __m128i) -> __m128i {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vpopcntq))]
 pub unsafe fn _mm_maskz_popcnt_epi64(k: __mmask8, a: __m128i) -> __m128i {
-    transmute(simd_select_bitmask(
-        k,
-        simd_ctpop(a.as_i64x2()),
-        i64x2::ZERO,
-    ))
+    let zero = _mm_setzero_si128().as_i64x2();
+    transmute(simd_select_bitmask(k, simd_ctpop(a.as_i64x2()), zero))
 }
 
 /// For each packed 64-bit integer maps the value to the number of logical 1 bits.

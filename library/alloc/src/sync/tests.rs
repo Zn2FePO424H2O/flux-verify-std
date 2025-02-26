@@ -1,15 +1,13 @@
-use alloc::sync::*;
-use std::alloc::{AllocError, Allocator, Layout};
-use std::any::Any;
 use std::clone::Clone;
 use std::mem::MaybeUninit;
 use std::option::Option::None;
-use std::ptr::NonNull;
 use std::sync::Mutex;
-use std::sync::atomic::Ordering::*;
-use std::sync::atomic::{self, AtomicUsize};
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering::SeqCst;
 use std::sync::mpsc::channel;
 use std::thread;
+
+use super::*;
 
 struct Canary(*mut AtomicUsize);
 
@@ -128,7 +126,6 @@ fn try_unwrap() {
 }
 
 #[test]
-#[cfg_attr(any(target_os = "emscripten", target_os = "wasi"), ignore)] // no threads
 fn into_inner() {
     for _ in 0..100
     // ^ Increase chances of hitting potential race conditions
@@ -415,9 +412,9 @@ fn test_unsized() {
 #[test]
 fn test_maybe_thin_unsized() {
     // If/when custom thin DSTs exist, this test should be updated to use one
-    use std::ffi::CStr;
+    use std::ffi::{CStr, CString};
 
-    let x: Arc<CStr> = Arc::from(c"swordfish");
+    let x: Arc<CStr> = Arc::from(CString::new("swordfish").unwrap().into_boxed_c_str());
     assert_eq!(format!("{x:?}"), "\"swordfish\"");
     let y: Weak<CStr> = Arc::downgrade(&x);
     drop(x);

@@ -22,21 +22,23 @@ unsafe_impl_trusted_step![AsciiChar char i8 i16 i32 i64 i128 isize u8 u16 u32 u6
 /// The *predecessor* operation moves towards values that compare lesser.
 #[unstable(feature = "step_trait", issue = "42168")]
 pub trait Step: Clone + PartialOrd + Sized {
-    /// Returns the bounds on the number of *successor* steps required to get from `start` to `end`
-    /// like [`Iterator::size_hint()`][Iterator::size_hint()].
+    /// Returns the number of *successor* steps required to get from `start` to `end`.
     ///
-    /// Returns `(usize::MAX, None)` if the number of steps would overflow `usize`, or is infinite.
+    /// Returns `None` if the number of steps would overflow `usize`
+    /// (or is infinite, or if `end` would never be reached).
     ///
     /// # Invariants
     ///
     /// For any `a`, `b`, and `n`:
     ///
-    /// * `steps_between(&a, &b) == (n, Some(n))` if and only if `Step::forward_checked(&a, n) == Some(b)`
-    /// * `steps_between(&a, &b) == (n, Some(n))` if and only if `Step::backward_checked(&b, n) == Some(a)`
-    /// * `steps_between(&a, &b) == (n, Some(n))` only if `a <= b`
-    ///   * Corollary: `steps_between(&a, &b) == (0, Some(0))` if and only if `a == b`
-    /// * `steps_between(&a, &b) == (0, None)` if `a > b`
-    fn steps_between(start: &Self, end: &Self) -> (usize, Option<usize>);
+    /// * `steps_between(&a, &b) == Some(n)` if and only if `Step::forward_checked(&a, n) == Some(b)`
+    /// * `steps_between(&a, &b) == Some(n)` if and only if `Step::backward_checked(&b, n) == Some(a)`
+    /// * `steps_between(&a, &b) == Some(n)` only if `a <= b`
+    ///   * Corollary: `steps_between(&a, &b) == Some(0)` if and only if `a == b`
+    ///   * Note that `a <= b` does _not_ imply `steps_between(&a, &b) != None`;
+    ///     this is the case when it would require more than `usize::MAX` steps to get to `b`
+    /// * `steps_between(&a, &b) == None` if `a > b`
+    fn steps_between(start: &Self, end: &Self) -> Option<usize>;
 
     /// Returns the value that would be obtained by taking the *successor*
     /// of `self` `count` times.
@@ -167,7 +169,7 @@ pub trait Step: Clone + PartialOrd + Sized {
     /// For any `a`:
     ///
     /// * if there exists `b` such that `b < a`, it is safe to call `Step::backward_unchecked(a, 1)`
-    /// * if there exists `b`, `n` such that `steps_between(&b, &a) == (n, Some(n))`,
+    /// * if there exists `b`, `n` such that `steps_between(&b, &a) == Some(n)`,
     ///   it is safe to call `Step::backward_unchecked(a, m)` for any `m <= n`.
     ///   * Corollary: `Step::backward_unchecked(a, 0)` is always safe.
     ///
@@ -259,13 +261,12 @@ macro_rules! step_integer_impls {
                 step_unsigned_methods!();
 
                 #[inline]
-                fn steps_between(start: &Self, end: &Self) -> (usize, Option<usize>) {
+                fn steps_between(start: &Self, end: &Self) -> Option<usize> {
                     if *start <= *end {
                         // This relies on $u_narrower <= usize
-                        let steps = (*end - *start) as usize;
-                        (steps, Some(steps))
+                        Some((*end - *start) as usize)
                     } else {
-                        (0, None)
+                        None
                     }
                 }
 
@@ -293,17 +294,16 @@ macro_rules! step_integer_impls {
                 step_signed_methods!($u_narrower);
 
                 #[inline]
-                fn steps_between(start: &Self, end: &Self) -> (usize, Option<usize>) {
+                fn steps_between(start: &Self, end: &Self) -> Option<usize> {
                     if *start <= *end {
                         // This relies on $i_narrower <= usize
                         //
                         // Casting to isize extends the width but preserves the sign.
                         // Use wrapping_sub in isize space and cast to usize to compute
                         // the difference that might not fit inside the range of isize.
-                        let steps = (*end as isize).wrapping_sub(*start as isize) as usize;
-                        (steps, Some(steps))
+                        Some((*end as isize).wrapping_sub(*start as isize) as usize)
                     } else {
-                        (0, None)
+                        None
                     }
                 }
 
@@ -359,15 +359,11 @@ macro_rules! step_integer_impls {
                 step_unsigned_methods!();
 
                 #[inline]
-                fn steps_between(start: &Self, end: &Self) -> (usize, Option<usize>) {
+                fn steps_between(start: &Self, end: &Self) -> Option<usize> {
                     if *start <= *end {
-                        if let Ok(steps) = usize::try_from(*end - *start) {
-                            (steps, Some(steps))
-                        } else {
-                            (usize::MAX, None)
-                        }
+                        usize::try_from(*end - *start).ok()
                     } else {
-                        (0, None)
+                        None
                     }
                 }
 
@@ -389,22 +385,16 @@ macro_rules! step_integer_impls {
                 step_signed_methods!($u_wider);
 
                 #[inline]
-                fn steps_between(start: &Self, end: &Self) -> (usize, Option<usize>) {
+                fn steps_between(start: &Self, end: &Self) -> Option<usize> {
                     if *start <= *end {
                         match end.checked_sub(*start) {
-                            Some(result) => {
-                                if let Ok(steps) = usize::try_from(result) {
-                                    (steps, Some(steps))
-                                } else {
-                                    (usize::MAX, None)
-                                }
-                            }
+                            Some(result) => usize::try_from(result).ok(),
                             // If the difference is too big for e.g. i128,
                             // it's also gonna be too big for usize with fewer bits.
-                            None => (usize::MAX, None),
+                            None => None,
                         }
                     } else {
-                        (0, None)
+                        None
                     }
                 }
 
@@ -443,26 +433,18 @@ step_integer_impls! {
 #[unstable(feature = "step_trait", reason = "recently redesigned", issue = "42168")]
 impl Step for char {
     #[inline]
-    fn steps_between(&start: &char, &end: &char) -> (usize, Option<usize>) {
+    fn steps_between(&start: &char, &end: &char) -> Option<usize> {
         let start = start as u32;
         let end = end as u32;
         if start <= end {
             let count = end - start;
             if start < 0xD800 && 0xE000 <= end {
-                if let Ok(steps) = usize::try_from(count - 0x800) {
-                    (steps, Some(steps))
-                } else {
-                    (usize::MAX, None)
-                }
+                usize::try_from(count - 0x800).ok()
             } else {
-                if let Ok(steps) = usize::try_from(count) {
-                    (steps, Some(steps))
-                } else {
-                    (usize::MAX, None)
-                }
+                usize::try_from(count).ok()
             }
         } else {
-            (0, None)
+            None
         }
     }
 
@@ -530,7 +512,7 @@ impl Step for char {
 #[unstable(feature = "step_trait", reason = "recently redesigned", issue = "42168")]
 impl Step for AsciiChar {
     #[inline]
-    fn steps_between(&start: &AsciiChar, &end: &AsciiChar) -> (usize, Option<usize>) {
+    fn steps_between(&start: &AsciiChar, &end: &AsciiChar) -> Option<usize> {
         Step::steps_between(&start.to_u8(), &end.to_u8())
     }
 
@@ -572,7 +554,7 @@ impl Step for AsciiChar {
 #[unstable(feature = "step_trait", reason = "recently redesigned", issue = "42168")]
 impl Step for Ipv4Addr {
     #[inline]
-    fn steps_between(&start: &Ipv4Addr, &end: &Ipv4Addr) -> (usize, Option<usize>) {
+    fn steps_between(&start: &Ipv4Addr, &end: &Ipv4Addr) -> Option<usize> {
         u32::steps_between(&start.to_bits(), &end.to_bits())
     }
 
@@ -604,7 +586,7 @@ impl Step for Ipv4Addr {
 #[unstable(feature = "step_trait", reason = "recently redesigned", issue = "42168")]
 impl Step for Ipv6Addr {
     #[inline]
-    fn steps_between(&start: &Ipv6Addr, &end: &Ipv6Addr) -> (usize, Option<usize>) {
+    fn steps_between(&start: &Ipv6Addr, &end: &Ipv6Addr) -> Option<usize> {
         u128::steps_between(&start.to_bits(), &end.to_bits())
     }
 
@@ -708,8 +690,11 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
 
     #[inline]
     default fn spec_advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-        let steps = Step::steps_between(&self.start, &self.end);
-        let available = steps.1.unwrap_or(steps.0);
+        let available = if self.start <= self.end {
+            Step::steps_between(&self.start, &self.end).unwrap_or(usize::MAX)
+        } else {
+            0
+        };
 
         let taken = available.min(n);
 
@@ -746,8 +731,11 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
 
     #[inline]
     default fn spec_advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-        let steps = Step::steps_between(&self.start, &self.end);
-        let available = steps.1.unwrap_or(steps.0);
+        let available = if self.start <= self.end {
+            Step::steps_between(&self.start, &self.end).unwrap_or(usize::MAX)
+        } else {
+            0
+        };
 
         let taken = available.min(n);
 
@@ -787,8 +775,11 @@ impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
 
     #[inline]
     fn spec_advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-        let steps = Step::steps_between(&self.start, &self.end);
-        let available = steps.1.unwrap_or(steps.0);
+        let available = if self.start <= self.end {
+            Step::steps_between(&self.start, &self.end).unwrap_or(usize::MAX)
+        } else {
+            0
+        };
 
         let taken = available.min(n);
 
@@ -828,8 +819,11 @@ impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
 
     #[inline]
     fn spec_advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
-        let steps = Step::steps_between(&self.start, &self.end);
-        let available = steps.1.unwrap_or(steps.0);
+        let available = if self.start <= self.end {
+            Step::steps_between(&self.start, &self.end).unwrap_or(usize::MAX)
+        } else {
+            0
+        };
 
         let taken = available.min(n);
 
@@ -852,7 +846,8 @@ impl<A: Step> Iterator for ops::Range<A> {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         if self.start < self.end {
-            Step::steps_between(&self.start, &self.end)
+            let hint = Step::steps_between(&self.start, &self.end);
+            (hint.unwrap_or(usize::MAX), hint)
         } else {
             (0, Some(0))
         }
@@ -861,7 +856,7 @@ impl<A: Step> Iterator for ops::Range<A> {
     #[inline]
     fn count(self) -> usize {
         if self.start < self.end {
-            Step::steps_between(&self.start, &self.end).1.expect("count overflowed usize")
+            Step::steps_between(&self.start, &self.end).expect("count overflowed usize")
         } else {
             0
         }
@@ -985,11 +980,11 @@ impl<A: Step> DoubleEndedIterator for ops::Range<A> {
 // Safety:
 // The following invariants for `Step::steps_between` exist:
 //
-// > * `steps_between(&a, &b) == (n, Some(n))` only if `a <= b`
-// >   * Note that `a <= b` does _not_ imply `steps_between(&a, &b) != (n, None)`;
+// > * `steps_between(&a, &b) == Some(n)` only if `a <= b`
+// >   * Note that `a <= b` does _not_ imply `steps_between(&a, &b) != None`;
 // >     this is the case when it would require more than `usize::MAX` steps to
 // >     get to `b`
-// > * `steps_between(&a, &b) == (0, None)` if `a > b`
+// > * `steps_between(&a, &b) == None` if `a > b`
 //
 // The first invariant is what is generally required for `TrustedLen` to be
 // sound. The note addendum satisfies an additional `TrustedLen` invariant.
@@ -1258,8 +1253,10 @@ impl<A: Step> Iterator for ops::RangeInclusive<A> {
             return (0, Some(0));
         }
 
-        let hint = Step::steps_between(&self.start, &self.end);
-        (hint.0.saturating_add(1), hint.1.and_then(|steps| steps.checked_add(1)))
+        match Step::steps_between(&self.start, &self.end) {
+            Some(hint) => (hint.saturating_add(1), hint.checked_add(1)),
+            None => (usize::MAX, None),
+        }
     }
 
     #[inline]
@@ -1269,7 +1266,6 @@ impl<A: Step> Iterator for ops::RangeInclusive<A> {
         }
 
         Step::steps_between(&self.start, &self.end)
-            .1
             .and_then(|steps| steps.checked_add(1))
             .expect("count overflowed usize")
     }

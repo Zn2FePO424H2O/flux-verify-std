@@ -27,6 +27,3 @@ it'll look like
 
 when Cargo invokes the compiler, satisfying the implicit `extern crate core`
 directive injected by the compiler.
-
-The sources for the crates.io version can be found in
-[`src/rustc-std-workspace`](../../src/rustc-std-workspace).

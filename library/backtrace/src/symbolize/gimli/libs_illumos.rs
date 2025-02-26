@@ -1,9 +1,7 @@
-use super::mystd::ffi::OsStr;
+use super::mystd::borrow::ToOwned;
+use super::mystd::ffi::{CStr, OsStr};
 use super::mystd::os::unix::prelude::*;
-use super::{Library, LibrarySegment};
-use alloc::borrow::ToOwned;
-use alloc::vec::Vec;
-use core::ffi::CStr;
+use super::{Library, LibrarySegment, Vec};
 use core::mem;
 use object::NativeEndian;
 

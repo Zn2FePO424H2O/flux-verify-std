@@ -1,1 +1,1 @@
-int_module!(i8, u8);
+int_module!(i8);

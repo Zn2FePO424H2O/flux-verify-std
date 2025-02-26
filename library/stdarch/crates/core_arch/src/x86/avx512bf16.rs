@@ -66,7 +66,8 @@ pub unsafe fn _mm_mask_cvtne2ps_pbh(src: __m128bh, k: __mmask8, a: __m128, b: __
 #[cfg_attr(test, assert_instr("vcvtne2ps2bf16"))]
 pub unsafe fn _mm_maskz_cvtne2ps_pbh(k: __mmask8, a: __m128, b: __m128) -> __m128bh {
     let cvt = _mm_cvtne2ps_pbh(a, b).as_u16x8();
-    transmute(simd_select_bitmask(k, cvt, u16x8::ZERO))
+    let zero = _mm_setzero_si128().as_u16x8();
+    transmute(simd_select_bitmask(k, cvt, zero))
 }
 
 /// Convert packed single-precision (32-bit) floating-point elements in two 256-bit vectors
@@ -109,7 +110,8 @@ pub unsafe fn _mm256_mask_cvtne2ps_pbh(
 #[cfg_attr(test, assert_instr("vcvtne2ps2bf16"))]
 pub unsafe fn _mm256_maskz_cvtne2ps_pbh(k: __mmask16, a: __m256, b: __m256) -> __m256bh {
     let cvt = _mm256_cvtne2ps_pbh(a, b).as_u16x16();
-    transmute(simd_select_bitmask(k, cvt, u16x16::ZERO))
+    let zero = _mm256_setzero_si256().as_u16x16();
+    transmute(simd_select_bitmask(k, cvt, zero))
 }
 
 /// Convert packed single-precision (32-bit) floating-point elements in two 512-bit vectors
@@ -154,7 +156,8 @@ pub unsafe fn _mm512_mask_cvtne2ps_pbh(
 #[cfg_attr(test, assert_instr("vcvtne2ps2bf16"))]
 pub unsafe fn _mm512_maskz_cvtne2ps_pbh(k: __mmask32, a: __m512, b: __m512) -> __m512bh {
     let cvt = _mm512_cvtne2ps_pbh(a, b).as_u16x32();
-    transmute(simd_select_bitmask(k, cvt, u16x32::ZERO))
+    let zero = _mm512_setzero_si512().as_u16x32();
+    transmute(simd_select_bitmask(k, cvt, zero))
 }
 
 /// Convert packed single-precision (32-bit) floating-point elements in a to packed BF16 (16-bit)
@@ -191,7 +194,8 @@ pub unsafe fn _mm256_mask_cvtneps_pbh(src: __m128bh, k: __mmask8, a: __m256) -> 
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 pub unsafe fn _mm256_maskz_cvtneps_pbh(k: __mmask8, a: __m256) -> __m128bh {
     let cvt = _mm256_cvtneps_pbh(a).as_u16x8();
-    transmute(simd_select_bitmask(k, cvt, u16x8::ZERO))
+    let zero = _mm_setzero_si128().as_u16x8();
+    transmute(simd_select_bitmask(k, cvt, zero))
 }
 
 /// Convert packed single-precision (32-bit) floating-point elements in a to packed BF16 (16-bit)
@@ -228,7 +232,8 @@ pub unsafe fn _mm512_mask_cvtneps_pbh(src: __m256bh, k: __mmask16, a: __m512) ->
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 pub unsafe fn _mm512_maskz_cvtneps_pbh(k: __mmask16, a: __m512) -> __m256bh {
     let cvt = _mm512_cvtneps_pbh(a).as_u16x16();
-    transmute(simd_select_bitmask(k, cvt, u16x16::ZERO))
+    let zero = _mm256_setzero_si256().as_u16x16();
+    transmute(simd_select_bitmask(k, cvt, zero))
 }
 
 /// Compute dot-product of BF16 (16-bit) floating-point pairs in a and b,
@@ -309,7 +314,8 @@ pub unsafe fn _mm256_mask_dpbf16_ps(src: __m256, k: __mmask8, a: __m256bh, b: __
 #[cfg_attr(test, assert_instr("vdpbf16ps"))]
 pub unsafe fn _mm256_maskz_dpbf16_ps(k: __mmask8, src: __m256, a: __m256bh, b: __m256bh) -> __m256 {
     let rst = _mm256_dpbf16_ps(src, a, b).as_f32x8();
-    transmute(simd_select_bitmask(k, rst, f32x8::ZERO))
+    let zero = _mm256_setzero_ps().as_f32x8();
+    transmute(simd_select_bitmask(k, rst, zero))
 }
 
 /// Compute dot-product of BF16 (16-bit) floating-point pairs in a and b,
@@ -356,7 +362,8 @@ pub unsafe fn _mm512_maskz_dpbf16_ps(
     b: __m512bh,
 ) -> __m512 {
     let rst = _mm512_dpbf16_ps(src, a, b).as_f32x16();
-    transmute(simd_select_bitmask(k, rst, f32x16::ZERO))
+    let zero = _mm512_setzero_ps().as_f32x16();
+    transmute(simd_select_bitmask(k, rst, zero))
 }
 
 /// Converts packed BF16 (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -393,7 +400,8 @@ pub unsafe fn _mm512_mask_cvtpbh_ps(src: __m512, k: __mmask16, a: __m256bh) -> _
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_cvtpbh_ps(k: __mmask16, a: __m256bh) -> __m512 {
     let cvt = _mm512_cvtpbh_ps(a);
-    transmute(simd_select_bitmask(k, cvt.as_f32x16(), f32x16::ZERO))
+    let zero = _mm512_setzero_ps();
+    transmute(simd_select_bitmask(k, cvt.as_f32x16(), zero.as_f32x16()))
 }
 
 /// Converts packed BF16 (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -430,7 +438,8 @@ pub unsafe fn _mm256_mask_cvtpbh_ps(src: __m256, k: __mmask8, a: __m128bh) -> __
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_cvtpbh_ps(k: __mmask8, a: __m128bh) -> __m256 {
     let cvt = _mm256_cvtpbh_ps(a);
-    transmute(simd_select_bitmask(k, cvt.as_f32x8(), f32x8::ZERO))
+    let zero = _mm256_setzero_ps();
+    transmute(simd_select_bitmask(k, cvt.as_f32x8(), zero.as_f32x8()))
 }
 
 /// Converts packed BF16 (16-bit) floating-point elements in a to single-precision (32-bit) floating-point
@@ -467,7 +476,8 @@ pub unsafe fn _mm_mask_cvtpbh_ps(src: __m128, k: __mmask8, a: __m128bh) -> __m12
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_cvtpbh_ps(k: __mmask8, a: __m128bh) -> __m128 {
     let cvt = _mm_cvtpbh_ps(a);
-    transmute(simd_select_bitmask(k, cvt.as_f32x4(), f32x4::ZERO))
+    let zero = _mm_setzero_ps();
+    transmute(simd_select_bitmask(k, cvt.as_f32x4(), zero.as_f32x4()))
 }
 
 /// Converts a single BF16 (16-bit) floating-point element in a to a single-precision (32-bit) floating-point
@@ -486,7 +496,7 @@ pub unsafe fn _mm_cvtsbh_ss(a: bf16) -> f32 {
 ///
 /// [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtneps_pbh)
 #[inline]
-#[target_feature(enable = "avx512bf16,avx512vl")]
+#[target_feature(enable = "avx512bf16,avx512vl,sse")]
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_cvtneps_pbh(a: __m128) -> __m128bh {
@@ -506,7 +516,7 @@ pub unsafe fn _mm_cvtneps_pbh(a: __m128) -> __m128bh {
 ///
 /// [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtneps_pbh)
 #[inline]
-#[target_feature(enable = "avx512bf16,avx512vl")]
+#[target_feature(enable = "avx512bf16,avx512vl,sse,avx512f")]
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_mask_cvtneps_pbh(src: __m128bh, k: __mmask8, a: __m128) -> __m128bh {
@@ -527,7 +537,7 @@ pub unsafe fn _mm_mask_cvtneps_pbh(src: __m128bh, k: __mmask8, a: __m128) -> __m
 ///
 /// [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_cvtneps_pbh)
 #[inline]
-#[target_feature(enable = "avx512bf16,avx512vl")]
+#[target_feature(enable = "avx512bf16,avx512vl,sse,avx512f")]
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_cvtneps_pbh(k: __mmask8, a: __m128) -> __m128bh {

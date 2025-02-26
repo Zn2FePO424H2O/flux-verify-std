@@ -1,36 +1,15 @@
 use rand::Rng;
 
-use crate::fmt::Debug;
-use crate::ops::FnMut;
-use crate::panic::{self, AssertUnwindSafe};
 use crate::sync::atomic::{AtomicUsize, Ordering};
 use crate::sync::mpsc::channel;
 use crate::sync::{
     Arc, MappedRwLockReadGuard, MappedRwLockWriteGuard, RwLock, RwLockReadGuard, RwLockWriteGuard,
     TryLockError,
 };
-use crate::{hint, mem, thread};
+use crate::thread;
 
 #[derive(Eq, PartialEq, Debug)]
 struct NonCopy(i32);
-
-#[derive(Eq, PartialEq, Debug)]
-struct NonCopyNeedsDrop(i32);
-
-impl Drop for NonCopyNeedsDrop {
-    fn drop(&mut self) {
-        hint::black_box(());
-    }
-}
-
-#[test]
-fn test_needs_drop() {
-    assert!(!mem::needs_drop::<NonCopy>());
-    assert!(mem::needs_drop::<NonCopyNeedsDrop>());
-}
-
-#[derive(Clone, Eq, PartialEq, Debug)]
-struct Cloneable(i32);
 
 #[test]
 fn smoke() {
@@ -276,21 +255,6 @@ fn test_rwlock_try_write() {
     drop(mapped_read_guard);
 }
 
-fn new_poisoned_rwlock<T>(value: T) -> RwLock<T> {
-    let lock = RwLock::new(value);
-
-    let catch_unwind_result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let _guard = lock.write().unwrap();
-
-        panic!("test panic to poison RwLock");
-    }));
-
-    assert!(catch_unwind_result.is_err());
-    assert!(lock.is_poisoned());
-
-    lock
-}
-
 #[test]
 fn test_into_inner() {
     let m = RwLock::new(NonCopy(10));
@@ -317,28 +281,18 @@ fn test_into_inner_drop() {
 
 #[test]
 fn test_into_inner_poison() {
-    let m = new_poisoned_rwlock(NonCopy(10));
+    let m = Arc::new(RwLock::new(NonCopy(10)));
+    let m2 = m.clone();
+    let _ = thread::spawn(move || {
+        let _lock = m2.write().unwrap();
+        panic!("test panic in inner thread to poison RwLock");
+    })
+    .join();
 
-    match m.into_inner() {
+    assert!(m.is_poisoned());
+    match Arc::try_unwrap(m).unwrap().into_inner() {
         Err(e) => assert_eq!(e.into_inner(), NonCopy(10)),
         Ok(x) => panic!("into_inner of poisoned RwLock is Ok: {x:?}"),
-    }
-}
-
-#[test]
-fn test_get_cloned() {
-    let m = RwLock::new(Cloneable(10));
-
-    assert_eq!(m.get_cloned().unwrap(), Cloneable(10));
-}
-
-#[test]
-fn test_get_cloned_poison() {
-    let m = new_poisoned_rwlock(Cloneable(10));
-
-    match m.get_cloned() {
-        Err(e) => assert_eq!(e.into_inner(), ()),
-        Ok(x) => panic!("get of poisoned RwLock is Ok: {x:?}"),
     }
 }
 
@@ -351,88 +305,19 @@ fn test_get_mut() {
 
 #[test]
 fn test_get_mut_poison() {
-    let mut m = new_poisoned_rwlock(NonCopy(10));
+    let m = Arc::new(RwLock::new(NonCopy(10)));
+    let m2 = m.clone();
+    let _ = thread::spawn(move || {
+        let _lock = m2.write().unwrap();
+        panic!("test panic in inner thread to poison RwLock");
+    })
+    .join();
 
-    match m.get_mut() {
+    assert!(m.is_poisoned());
+    match Arc::try_unwrap(m).unwrap().get_mut() {
         Err(e) => assert_eq!(*e.into_inner(), NonCopy(10)),
         Ok(x) => panic!("get_mut of poisoned RwLock is Ok: {x:?}"),
     }
-}
-
-#[test]
-fn test_set() {
-    fn inner<T>(mut init: impl FnMut() -> T, mut value: impl FnMut() -> T)
-    where
-        T: Debug + Eq,
-    {
-        let m = RwLock::new(init());
-
-        assert_eq!(*m.read().unwrap(), init());
-        m.set(value()).unwrap();
-        assert_eq!(*m.read().unwrap(), value());
-    }
-
-    inner(|| NonCopy(10), || NonCopy(20));
-    inner(|| NonCopyNeedsDrop(10), || NonCopyNeedsDrop(20));
-}
-
-#[test]
-fn test_set_poison() {
-    fn inner<T>(mut init: impl FnMut() -> T, mut value: impl FnMut() -> T)
-    where
-        T: Debug + Eq,
-    {
-        let m = new_poisoned_rwlock(init());
-
-        match m.set(value()) {
-            Err(e) => {
-                assert_eq!(e.into_inner(), value());
-                assert_eq!(m.into_inner().unwrap_err().into_inner(), init());
-            }
-            Ok(x) => panic!("set of poisoned RwLock is Ok: {x:?}"),
-        }
-    }
-
-    inner(|| NonCopy(10), || NonCopy(20));
-    inner(|| NonCopyNeedsDrop(10), || NonCopyNeedsDrop(20));
-}
-
-#[test]
-fn test_replace() {
-    fn inner<T>(mut init: impl FnMut() -> T, mut value: impl FnMut() -> T)
-    where
-        T: Debug + Eq,
-    {
-        let m = RwLock::new(init());
-
-        assert_eq!(*m.read().unwrap(), init());
-        assert_eq!(m.replace(value()).unwrap(), init());
-        assert_eq!(*m.read().unwrap(), value());
-    }
-
-    inner(|| NonCopy(10), || NonCopy(20));
-    inner(|| NonCopyNeedsDrop(10), || NonCopyNeedsDrop(20));
-}
-
-#[test]
-fn test_replace_poison() {
-    fn inner<T>(mut init: impl FnMut() -> T, mut value: impl FnMut() -> T)
-    where
-        T: Debug + Eq,
-    {
-        let m = new_poisoned_rwlock(init());
-
-        match m.replace(value()) {
-            Err(e) => {
-                assert_eq!(e.into_inner(), value());
-                assert_eq!(m.into_inner().unwrap_err().into_inner(), init());
-            }
-            Ok(x) => panic!("replace of poisoned RwLock is Ok: {x:?}"),
-        }
-    }
-
-    inner(|| NonCopy(10), || NonCopy(20));
-    inner(|| NonCopyNeedsDrop(10), || NonCopyNeedsDrop(20));
 }
 
 #[test]
@@ -485,7 +370,7 @@ fn test_mapping_mapped_guard() {
 fn panic_while_mapping_read_unlocked_no_poison() {
     let lock = RwLock::new(());
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.read().unwrap();
         let _guard = RwLockReadGuard::map::<(), _>(guard, |_| panic!());
     });
@@ -500,7 +385,7 @@ fn panic_while_mapping_read_unlocked_no_poison() {
         }
     }
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.read().unwrap();
         let _guard = RwLockReadGuard::try_map::<(), _>(guard, |_| panic!());
     });
@@ -515,7 +400,7 @@ fn panic_while_mapping_read_unlocked_no_poison() {
         }
     }
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.read().unwrap();
         let guard = RwLockReadGuard::map::<(), _>(guard, |val| val);
         let _guard = MappedRwLockReadGuard::map::<(), _>(guard, |_| panic!());
@@ -531,7 +416,7 @@ fn panic_while_mapping_read_unlocked_no_poison() {
         }
     }
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.read().unwrap();
         let guard = RwLockReadGuard::map::<(), _>(guard, |val| val);
         let _guard = MappedRwLockReadGuard::try_map::<(), _>(guard, |_| panic!());
@@ -554,7 +439,7 @@ fn panic_while_mapping_read_unlocked_no_poison() {
 fn panic_while_mapping_write_unlocked_poison() {
     let lock = RwLock::new(());
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.write().unwrap();
         let _guard = RwLockWriteGuard::map::<(), _>(guard, |_| panic!());
     });
@@ -567,7 +452,7 @@ fn panic_while_mapping_write_unlocked_poison() {
         Err(TryLockError::Poisoned(_)) => {}
     }
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.write().unwrap();
         let _guard = RwLockWriteGuard::try_map::<(), _>(guard, |_| panic!());
     });
@@ -582,7 +467,7 @@ fn panic_while_mapping_write_unlocked_poison() {
         Err(TryLockError::Poisoned(_)) => {}
     }
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.write().unwrap();
         let guard = RwLockWriteGuard::map::<(), _>(guard, |val| val);
         let _guard = MappedRwLockWriteGuard::map::<(), _>(guard, |_| panic!());
@@ -598,7 +483,7 @@ fn panic_while_mapping_write_unlocked_poison() {
         Err(TryLockError::Poisoned(_)) => {}
     }
 
-    let _ = panic::catch_unwind(|| {
+    let _ = crate::panic::catch_unwind(|| {
         let guard = lock.write().unwrap();
         let guard = RwLockWriteGuard::map::<(), _>(guard, |val| val);
         let _guard = MappedRwLockWriteGuard::try_map::<(), _>(guard, |_| panic!());
@@ -615,115 +500,4 @@ fn panic_while_mapping_write_unlocked_poison() {
     }
 
     drop(lock);
-}
-
-#[test]
-fn test_downgrade_basic() {
-    let r = RwLock::new(());
-
-    let write_guard = r.write().unwrap();
-    let _read_guard = RwLockWriteGuard::downgrade(write_guard);
-}
-
-#[test]
-// FIXME: On macOS we use a provenance-incorrect implementation and Miri catches that issue.
-// See <https://github.com/rust-lang/rust/issues/121950> for details.
-#[cfg_attr(all(miri, target_os = "macos"), ignore)]
-fn test_downgrade_observe() {
-    // Taken from the test `test_rwlock_downgrade` from:
-    // https://github.com/Amanieu/parking_lot/blob/master/src/rwlock.rs
-
-    const W: usize = 20;
-    const N: usize = if cfg!(miri) { 40 } else { 100 };
-
-    // This test spawns `W` writer threads, where each will increment a counter `N` times, ensuring
-    // that the value they wrote has not changed after downgrading.
-
-    let rw = Arc::new(RwLock::new(0));
-
-    // Spawn the writers that will do `W * N` operations and checks.
-    let handles: Vec<_> = (0..W)
-        .map(|_| {
-            let rw = rw.clone();
-            thread::spawn(move || {
-                for _ in 0..N {
-                    // Increment the counter.
-                    let mut write_guard = rw.write().unwrap();
-                    *write_guard += 1;
-                    let cur_val = *write_guard;
-
-                    // Downgrade the lock to read mode, where the value protected cannot be modified.
-                    let read_guard = RwLockWriteGuard::downgrade(write_guard);
-                    assert_eq!(cur_val, *read_guard);
-                }
-            })
-        })
-        .collect();
-
-    for handle in handles {
-        handle.join().unwrap();
-    }
-
-    assert_eq!(*rw.read().unwrap(), W * N);
-}
-
-#[test]
-// FIXME: On macOS we use a provenance-incorrect implementation and Miri catches that issue.
-// See <https://github.com/rust-lang/rust/issues/121950> for details.
-#[cfg_attr(all(miri, target_os = "macos"), ignore)]
-fn test_downgrade_atomic() {
-    const NEW_VALUE: i32 = -1;
-
-    // This test checks that `downgrade` is atomic, meaning as soon as a write lock has been
-    // downgraded, the lock must be in read mode and no other threads can take the write lock to
-    // modify the protected value.
-
-    // `W` is the number of evil writer threads.
-    const W: usize = 20;
-    let rwlock = Arc::new(RwLock::new(0));
-
-    // Spawns many evil writer threads that will try and write to the locked value before the
-    // initial writer (who has the exclusive lock) can read after it downgrades.
-    // If the `RwLock` behaves correctly, then the initial writer should read the value it wrote
-    // itself as no other thread should be able to mutate the protected value.
-
-    // Put the lock in write mode, causing all future threads trying to access this go to sleep.
-    let mut main_write_guard = rwlock.write().unwrap();
-
-    // Spawn all of the evil writer threads. They will each increment the protected value by 1.
-    let handles: Vec<_> = (0..W)
-        .map(|_| {
-            let rwlock = rwlock.clone();
-            thread::spawn(move || {
-                // Will go to sleep since the main thread initially has the write lock.
-                let mut evil_guard = rwlock.write().unwrap();
-                *evil_guard += 1;
-            })
-        })
-        .collect();
-
-    // Wait for a good amount of time so that evil threads go to sleep.
-    // Note: this is not strictly necessary...
-    let eternity = crate::time::Duration::from_millis(42);
-    thread::sleep(eternity);
-
-    // Once everyone is asleep, set the value to `NEW_VALUE`.
-    *main_write_guard = NEW_VALUE;
-
-    // Atomically downgrade the write guard into a read guard.
-    let main_read_guard = RwLockWriteGuard::downgrade(main_write_guard);
-
-    // If the above is not atomic, then it would be possible for an evil thread to get in front of
-    // this read and change the value to be non-negative.
-    assert_eq!(*main_read_guard, NEW_VALUE, "`downgrade` was not atomic");
-
-    // Drop the main read guard and allow the evil writer threads to start incrementing.
-    drop(main_read_guard);
-
-    for handle in handles {
-        handle.join().unwrap();
-    }
-
-    let final_check = rwlock.read().unwrap();
-    assert_eq!(*final_check, W as i32 + NEW_VALUE);
 }

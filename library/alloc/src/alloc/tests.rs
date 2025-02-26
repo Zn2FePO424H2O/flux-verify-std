@@ -1,8 +1,9 @@
-use alloc::alloc::*;
-use alloc::boxed::Box;
+use super::*;
 
 extern crate test;
 use test::Bencher;
+
+use crate::boxed::Box;
 
 #[test]
 fn allocate_zeroed() {

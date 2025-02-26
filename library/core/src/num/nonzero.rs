@@ -43,6 +43,19 @@ macro_rules! impl_zeroable_primitive {
                 issue = "none"
             )]
             pub trait Sealed {}
+
+            $(
+                #[derive(Debug, Clone, Copy, PartialEq)]
+                #[repr(transparent)]
+                #[rustc_layout_scalar_valid_range_start(1)]
+                #[rustc_nonnull_optimization_guaranteed]
+                #[unstable(
+                    feature = "nonzero_internals",
+                    reason = "implementation detail which may disappear or be replaced at any time",
+                    issue = "none"
+                )]
+                pub struct $NonZeroInner($primitive);
+            )+
         }
 
         $(
@@ -59,7 +72,7 @@ macro_rules! impl_zeroable_primitive {
                 issue = "none"
             )]
             unsafe impl ZeroablePrimitive for $primitive {
-                type NonZeroInner = super::niche_types::$NonZeroInner;
+                type NonZeroInner = private::$NonZeroInner;
             }
         )+
     };
@@ -90,26 +103,6 @@ impl_zeroable_primitive!(
 ///
 /// assert_eq!(size_of::<Option<NonZero<u32>>>(), size_of::<u32>());
 /// ```
-///
-/// # Layout
-///
-/// `NonZero<T>` is guaranteed to have the same layout and bit validity as `T`
-/// with the exception that the all-zero bit pattern is invalid.
-/// `Option<NonZero<T>>` is guaranteed to be compatible with `T`, including in
-/// FFI.
-///
-/// Thanks to the [null pointer optimization], `NonZero<T>` and
-/// `Option<NonZero<T>>` are guaranteed to have the same size and alignment:
-///
-/// ```
-/// # use std::mem::{size_of, align_of};
-/// use std::num::NonZero;
-///
-/// assert_eq!(size_of::<NonZero<u32>>(), size_of::<Option<NonZero<u32>>>());
-/// assert_eq!(align_of::<NonZero<u32>>(), align_of::<Option<NonZero<u32>>>());
-/// ```
-///
-/// [null pointer optimization]: crate::option#representation
 #[stable(feature = "generic_nonzero", since = "1.79.0")]
 #[repr(transparent)]
 #[rustc_nonnull_optimization_guaranteed]
@@ -117,40 +110,26 @@ impl_zeroable_primitive!(
 pub struct NonZero<T: ZeroablePrimitive>(T::NonZeroInner);
 
 macro_rules! impl_nonzero_fmt {
-    ($(#[$Attribute:meta] $Trait:ident)*) => {
-        $(
-            #[$Attribute]
-            impl<T> fmt::$Trait for NonZero<T>
-            where
-                T: ZeroablePrimitive + fmt::$Trait,
-            {
-                #[inline]
-                fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                    self.get().fmt(f)
-                }
+    ($Trait:ident) => {
+        #[stable(feature = "nonzero", since = "1.28.0")]
+        impl<T> fmt::$Trait for NonZero<T>
+        where
+            T: ZeroablePrimitive + fmt::$Trait,
+        {
+            #[inline]
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                self.get().fmt(f)
             }
-        )*
+        }
     };
 }
 
-impl_nonzero_fmt! {
-    #[stable(feature = "nonzero", since = "1.28.0")]
-    Debug
-    #[stable(feature = "nonzero", since = "1.28.0")]
-    Display
-    #[stable(feature = "nonzero", since = "1.28.0")]
-    Binary
-    #[stable(feature = "nonzero", since = "1.28.0")]
-    Octal
-    #[stable(feature = "nonzero", since = "1.28.0")]
-    LowerHex
-    #[stable(feature = "nonzero", since = "1.28.0")]
-    UpperHex
-    #[stable(feature = "nonzero_fmt_exp", since = "1.84.0")]
-    LowerExp
-    #[stable(feature = "nonzero_fmt_exp", since = "1.84.0")]
-    UpperExp
-}
+impl_nonzero_fmt!(Debug);
+impl_nonzero_fmt!(Display);
+impl_nonzero_fmt!(Binary);
+impl_nonzero_fmt!(Octal);
+impl_nonzero_fmt!(LowerHex);
+impl_nonzero_fmt!(UpperHex);
 
 macro_rules! impl_nonzero_auto_trait {
     (unsafe $Trait:ident) => {
@@ -179,7 +158,7 @@ where
 {
     #[inline]
     fn clone(&self) -> Self {
-        *self
+        Self(self.0)
     }
 }
 
@@ -447,21 +426,15 @@ where
     #[rustc_const_stable(feature = "const_nonzero_get", since = "1.34.0")]
     #[inline]
     pub const fn get(self) -> T {
+        // FIXME: This can be changed to simply `self.0` once LLVM supports `!range` metadata
+        // for function arguments: https://github.com/llvm/llvm-project/issues/76628
+        //
         // Rustc can set range metadata only if it loads `self` from
         // memory somewhere. If the value of `self` was from by-value argument
         // of some not-inlined function, LLVM don't have range metadata
         // to understand that the value cannot be zero.
         //
-        // Using the transmute `assume`s the range at runtime.
-        //
-        // Even once LLVM supports `!range` metadata for function arguments
-        // (see <https://github.com/llvm/llvm-project/issues/76628>), this can't
-        // be `.0` because MCP#807 bans field-projecting into `scalar_valid_range`
-        // types, and it arguably wouldn't want to be anyway because if this is
-        // MIR-inlined, there's no opportunity to put that argument metadata anywhere.
-        //
-        // The good answer here will eventually be pattern types, which will hopefully
-        // allow it to go back to `.0`, maybe with a cast of some sort.
+        // For now, using the transmute `assume`s the range at runtime.
         //
         // SAFETY: `ZeroablePrimitive` guarantees that the size and bit validity
         // of `.0` is such that this transmute is sound.
@@ -485,15 +458,7 @@ macro_rules! nonzero_integer {
         reversed = $reversed:literal,
         leading_zeros_test = $leading_zeros_test:expr,
     ) => {
-        #[doc = sign_dependent_expr!{
-            $signedness ?
-            if signed {
-                concat!("An [`", stringify!($Int), "`] that is known not to equal zero.")
-            }
-            if unsigned {
-                concat!("A [`", stringify!($Int), "`] that is known not to equal zero.")
-            }
-        }]
+        /// An integer that is known not to equal zero.
         ///
         /// This enables some memory layout optimization.
         #[doc = concat!("For example, `Option<", stringify!($Ty), ">` is the same size as `", stringify!($Int), "`:")]
@@ -627,6 +592,7 @@ macro_rules! nonzero_integer {
             /// ```
             ///
             #[unstable(feature = "non_zero_count_ones", issue = "120287")]
+            #[rustc_const_unstable(feature = "non_zero_count_ones", issue = "120287")]
             #[doc(alias = "popcount")]
             #[doc(alias = "popcnt")]
             #[must_use = "this returns the result of the operation, \
@@ -1185,12 +1151,8 @@ macro_rules! nonzero_integer_signedness_dependent_impls {
         impl Div<NonZero<$Int>> for $Int {
             type Output = $Int;
 
-            /// Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
-            /// there's never a runtime check for division-by-zero.
-            ///
             /// This operation rounds towards zero, truncating any fractional
             /// part of the exact result, and cannot panic.
-            #[doc(alias = "unchecked_div")]
             #[inline]
             fn div(self, other: NonZero<$Int>) -> $Int {
                 // SAFETY: Division by zero is checked because `other` is non-zero,
@@ -1201,9 +1163,6 @@ macro_rules! nonzero_integer_signedness_dependent_impls {
 
         #[stable(feature = "nonzero_div_assign", since = "1.79.0")]
         impl DivAssign<NonZero<$Int>> for $Int {
-            /// Same as `self /= other.get()`, but because `other` is a `NonZero<_>`,
-            /// there's never a runtime check for division-by-zero.
-            ///
             /// This operation rounds towards zero, truncating any fractional
             /// part of the exact result, and cannot panic.
             #[inline]
@@ -1231,35 +1190,6 @@ macro_rules! nonzero_integer_signedness_dependent_impls {
             #[inline]
             fn rem_assign(&mut self, other: NonZero<$Int>) {
                 *self = *self % other;
-            }
-        }
-
-        impl NonZero<$Int> {
-            /// Calculates the quotient of `self` and `rhs`, rounding the result towards positive infinity.
-            ///
-            /// The result is guaranteed to be non-zero.
-            ///
-            /// # Examples
-            ///
-            /// ```
-            /// # #![feature(unsigned_nonzero_div_ceil)]
-            /// # use std::num::NonZero;
-            #[doc = concat!("let one = NonZero::new(1", stringify!($Int), ").unwrap();")]
-            #[doc = concat!("let max = NonZero::new(", stringify!($Int), "::MAX).unwrap();")]
-            /// assert_eq!(one.div_ceil(max), one);
-            ///
-            #[doc = concat!("let two = NonZero::new(2", stringify!($Int), ").unwrap();")]
-            #[doc = concat!("let three = NonZero::new(3", stringify!($Int), ").unwrap();")]
-            /// assert_eq!(three.div_ceil(two), two);
-            /// ```
-            #[unstable(feature = "unsigned_nonzero_div_ceil", issue = "132968")]
-            #[must_use = "this returns the result of the operation, \
-                          without modifying the original"]
-            #[inline]
-            pub const fn div_ceil(self, rhs: Self) -> Self {
-                let v = self.get().div_ceil(rhs.get());
-                // SAFETY: ceiled division of two positive integers can never be zero.
-                unsafe { Self::new_unchecked(v) }
             }
         }
     };
@@ -1528,6 +1458,8 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// # Examples
         ///
         /// ```
+        /// #![feature(num_midpoint)]
+        ///
         /// # use std::num::NonZero;
         /// #
         /// # fn main() { test().unwrap(); }
@@ -1541,8 +1473,8 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// # Some(())
         /// # }
         /// ```
-        #[stable(feature = "num_midpoint", since = "1.85.0")]
-        #[rustc_const_stable(feature = "num_midpoint", since = "1.85.0")]
+        #[unstable(feature = "num_midpoint", issue = "110840")]
+        #[rustc_const_unstable(feature = "const_num_midpoint", issue = "110840")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1605,8 +1537,8 @@ macro_rules! nonzero_integer_signedness_dependent_methods {
         /// # Some(())
         /// # }
         /// ```
-        #[stable(feature = "isqrt", since = "1.84.0")]
-        #[rustc_const_stable(feature = "isqrt", since = "1.84.0")]
+        #[stable(feature = "isqrt", since = "CURRENT_RUSTC_VERSION")]
+        #[rustc_const_stable(feature = "isqrt", since = "CURRENT_RUSTC_VERSION")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]

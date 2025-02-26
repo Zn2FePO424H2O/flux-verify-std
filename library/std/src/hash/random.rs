@@ -105,8 +105,9 @@ impl DefaultHasher {
     #[stable(feature = "hashmap_default_hasher", since = "1.13.0")]
     #[inline]
     #[allow(deprecated)]
+    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
     #[must_use]
-    pub fn new() -> DefaultHasher {
+    pub const fn new() -> DefaultHasher {
         DefaultHasher(SipHasher13::new_with_keys(0, 0))
     }
 }

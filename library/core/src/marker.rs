@@ -141,8 +141,7 @@ unsafe impl<T: Sync + ?Sized> Send for &T {}
 )]
 #[fundamental] // for Default, for example, which requires that `[T]: !Default` be evaluatable
 #[rustc_specialization_trait]
-#[rustc_deny_explicit_impl]
-#[rustc_do_not_implement_via_object]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
 #[rustc_coinductive]
 pub trait Sized {
     // Empty.
@@ -182,27 +181,31 @@ pub trait Sized {
 /// [^1]: Formerly known as *object safe*.
 #[unstable(feature = "unsize", issue = "18598")]
 #[lang = "unsize"]
-#[rustc_deny_explicit_impl]
-#[rustc_do_not_implement_via_object]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
 pub trait Unsize<T: ?Sized> {
     // Empty.
 }
 
 /// Required trait for constants used in pattern matches.
 ///
-/// Constants are only allowed as patterns if (a) their type implements
-/// `PartialEq`, and (b) interpreting the value of the constant as a pattern
-/// is equialent to calling `PartialEq`. This ensures that constants used as
-/// patterns cannot expose implementation details in an unexpected way or
-/// cause semver hazards.
+/// Any type that derives `PartialEq` automatically implements this trait,
+/// *regardless* of whether its type-parameters implement `PartialEq`.
 ///
-/// This trait ensures point (b).
-/// Any type that derives `PartialEq` automatically implements this trait.
+/// If a `const` item contains some type that does not implement this trait,
+/// then that type either (1.) does not implement `PartialEq` (which means the
+/// constant will not provide that comparison method, which code generation
+/// assumes is available), or (2.) it implements *its own* version of
+/// `PartialEq` (which we assume does not conform to a structural-equality
+/// comparison).
 ///
-/// Implementing this trait (which is unstable) is a way for type authors to explicitly allow
-/// comparing const values of this type; that operation will recursively compare all fields
-/// (including private fields), even if that behavior differs from `PartialEq`. This can make it
-/// semver-breaking to add further private fields to a type.
+/// In either of the two scenarios above, we reject usage of such a constant in
+/// a pattern match.
+///
+/// See also the [structural match RFC][RFC1445], and [issue 63438] which
+/// motivated migrating from an attribute-based design to this trait.
+///
+/// [RFC1445]: https://github.com/rust-lang/rfcs/blob/master/text/1445-restrict-constants-in-patterns.md
+/// [issue 63438]: https://github.com/rust-lang/rust/issues/63438
 #[unstable(feature = "structural_match", issue = "31434")]
 #[diagnostic::on_unimplemented(message = "the type `{Self}` does not `#[derive(PartialEq)]`")]
 #[lang = "structural_peq"]
@@ -812,8 +815,7 @@ impl<T: ?Sized> StructuralPartialEq for PhantomData<T> {}
     reason = "this trait is unlikely to ever be stabilized, use `mem::discriminant` instead"
 )]
 #[lang = "discriminant_kind"]
-#[rustc_deny_explicit_impl]
-#[rustc_do_not_implement_via_object]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
 pub trait DiscriminantKind {
     /// The type of the discriminant, which must satisfy the trait
     /// bounds required by `mem::Discriminant`.
@@ -951,13 +953,10 @@ marker_impls! {
 ///
 /// This should be used for `~const` bounds,
 /// as non-const bounds will always hold for every type.
-#[unstable(feature = "const_destruct", issue = "133214")]
-#[rustc_const_unstable(feature = "const_destruct", issue = "133214")]
+#[unstable(feature = "const_trait_impl", issue = "67792")]
 #[lang = "destruct"]
 #[rustc_on_unimplemented(message = "can't drop `{Self}`", append_const_msg)]
-#[rustc_deny_explicit_impl]
-#[rustc_do_not_implement_via_object]
-#[const_trait]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
 pub trait Destruct {}
 
 /// A marker for tuple types.
@@ -967,40 +966,20 @@ pub trait Destruct {}
 #[unstable(feature = "tuple_trait", issue = "none")]
 #[lang = "tuple_trait"]
 #[diagnostic::on_unimplemented(message = "`{Self}` is not a tuple")]
-#[rustc_deny_explicit_impl]
-#[rustc_do_not_implement_via_object]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
 pub trait Tuple {}
 
 /// A marker for pointer-like types.
 ///
-/// This trait can only be implemented for types that are certain to have
-/// the same size and alignment as a [`usize`] or [`*const ()`](pointer).
-/// To ensure this, there are special requirements on implementations
-/// of `PointerLike` (other than the already-provided implementations
-/// for built-in types):
-///
-/// * The type must have `#[repr(transparent)]`.
-/// * The type’s sole non-zero-sized field must itself implement `PointerLike`.
+/// All types that have the same size and alignment as a `usize` or
+/// `*const ()` automatically implement this trait.
 #[unstable(feature = "pointer_like_trait", issue = "none")]
 #[lang = "pointer_like"]
 #[diagnostic::on_unimplemented(
     message = "`{Self}` needs to have the same ABI as a pointer",
     label = "`{Self}` needs to be a pointer-like type"
 )]
-#[rustc_do_not_implement_via_object]
 pub trait PointerLike {}
-
-marker_impls! {
-    #[unstable(feature = "pointer_like_trait", issue = "none")]
-    PointerLike for
-        isize,
-        usize,
-        {T} &T,
-        {T} &mut T,
-        {T} *const T,
-        {T} *mut T,
-        {T: PointerLike} crate::pin::Pin<T>,
-}
 
 /// A marker for types which can be used as types of `const` generic parameters.
 ///
@@ -1076,8 +1055,7 @@ marker_impls! {
     reason = "internal trait for implementing various traits for all function pointers"
 )]
 #[lang = "fn_ptr_trait"]
-#[rustc_deny_explicit_impl]
-#[rustc_do_not_implement_via_object]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
 pub trait FnPtr: Copy + Clone {
     /// Returns the address of the function pointer.
     #[lang = "fn_ptr_addr"]
@@ -1088,6 +1066,7 @@ pub trait FnPtr: Copy + Clone {
 #[rustc_builtin_macro(CoercePointee, attributes(pointee))]
 #[allow_internal_unstable(dispatch_from_dyn, coerce_unsized, unsize)]
 #[unstable(feature = "derive_coerce_pointee", issue = "123430")]
+#[cfg(not(bootstrap))]
 pub macro CoercePointee($item:item) {
     /* compiler built-in */
 }

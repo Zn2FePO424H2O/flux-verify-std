@@ -12,3 +12,11 @@ mod search;
 pub mod set;
 mod set_val;
 mod split;
+
+trait Recover<Q: ?Sized> {
+    type Key;
+
+    fn get(&self, key: &Q) -> Option<&Self::Key>;
+    fn take(&mut self, key: &Q) -> Option<Self::Key>;
+    fn replace(&mut self, key: Self::Key) -> Option<Self::Key>;
+}

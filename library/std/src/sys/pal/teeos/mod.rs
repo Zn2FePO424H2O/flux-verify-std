@@ -27,14 +27,6 @@ pub mod thread;
 #[path = "../unix/time.rs"]
 pub mod time;
 
-#[path = "../unix/sync"]
-pub mod sync {
-    mod condvar;
-    mod mutex;
-    pub use condvar::Condvar;
-    pub use mutex::Mutex;
-}
-
 use crate::io::ErrorKind;
 
 pub fn abort_internal() -> ! {
@@ -71,7 +63,7 @@ pub fn decode_error_kind(errno: i32) -> ErrorKind {
         libc::ECONNREFUSED => ConnectionRefused,
         libc::ECONNRESET => ConnectionReset,
         libc::EDEADLK => Deadlock,
-        libc::EDQUOT => QuotaExceeded,
+        libc::EDQUOT => FilesystemQuotaExceeded,
         libc::EEXIST => AlreadyExists,
         libc::EFBIG => FileTooLarge,
         libc::EHOSTUNREACH => HostUnreachable,

@@ -12,7 +12,6 @@ set -ex
 
 export RUSTFLAGS="${RUSTFLAGS} -D warnings -Z merge-functions=disabled "
 export HOST_RUSTFLAGS="${RUSTFLAGS}"
-export PROFILE="${PROFILE:="--profile=release"}"
 
 export STDARCH_DISABLE_DEDUP_GUARD=1
 
@@ -64,7 +63,6 @@ echo "FEATURES=${FEATURES}"
 echo "OBJDUMP=${OBJDUMP}"
 echo "STDARCH_DISABLE_ASSERT_INSTR=${STDARCH_DISABLE_ASSERT_INSTR}"
 echo "STDARCH_TEST_EVERYTHING=${STDARCH_TEST_EVERYTHING}"
-echo "PROFILE=${PROFILE}"
 
 cargo_test() {
     cmd="cargo"
@@ -75,12 +73,20 @@ cargo_test() {
     cmd="$cmd ${subcmd} --target=$TARGET $1"
     cmd="$cmd -- $2"
 
+    # wasm targets can't catch panics so if a test failures make sure the test
+    # harness isn't trying to capture output, otherwise we won't get any useful
+    # output.
     case ${TARGET} in
-        # wasm targets can't catch panics so if a test failures make sure the test
-        # harness isn't trying to capture output, otherwise we won't get any useful
-        # output.
         wasm32*)
             cmd="$cmd --nocapture"
+            ;;
+        # qemu has an erratic behavior on those tests
+        powerpc64*)
+            cmd="$cmd --skip test_vec_lde_u16 --skip test_vec_lde_u32 --skip test_vec_expte"
+            ;;
+        # Miscompilation: https://github.com/rust-lang/rust/issues/112460
+        arm*)
+            cmd="$cmd --skip vld2q_dup_f32"
             ;;
     esac
 
@@ -95,17 +101,19 @@ STD_DETECT="--manifest-path=crates/std_detect/Cargo.toml"
 STDARCH_EXAMPLES="--manifest-path=examples/Cargo.toml"
 INTRINSIC_TEST="--manifest-path=crates/intrinsic-test/Cargo.toml"
 
-cargo_test "${CORE_ARCH} ${PROFILE}"
+cargo_test "${CORE_ARCH} --release"
 
 if [ "$NOSTD" != "1" ]; then
-    cargo_test "${STD_DETECT} ${PROFILE}"
+    cargo_test "${STD_DETECT}"
+    cargo_test "${STD_DETECT} --release"
 
     cargo_test "${STD_DETECT} --no-default-features"
     cargo_test "${STD_DETECT} --no-default-features --features=std_detect_file_io"
     cargo_test "${STD_DETECT} --no-default-features --features=std_detect_dlsym_getauxval"
     cargo_test "${STD_DETECT} --no-default-features --features=std_detect_dlsym_getauxval,std_detect_file_io"
 
-    cargo_test "${STDARCH_EXAMPLES} ${PROFILE}"
+    cargo_test "${STDARCH_EXAMPLES}"
+    cargo_test "${STDARCH_EXAMPLES} --release"
 fi
 
 # Test targets compiled with extra features.
@@ -113,26 +121,26 @@ case ${TARGET} in
     x86*)
         export STDARCH_DISABLE_ASSERT_INSTR=1
         export RUSTFLAGS="${RUSTFLAGS} -C target-feature=+avx"
-        cargo_test "${PROFILE}"
+        cargo_test "--release"
         ;;
     # FIXME: don't build anymore
     #mips-*gnu* | mipsel-*gnu*)
     #    export RUSTFLAGS="${RUSTFLAGS} -C target-feature=+msa,+fp64,+mips32r5"
-    #    cargo_test "${PROFILE}"
+    #    cargo_test "--release"
 	  #    ;;
     mips64*)
         export RUSTFLAGS="${RUSTFLAGS} -C target-feature=+msa"
-        cargo_test "${PROFILE}"
+        cargo_test "--release"
 	      ;;
     powerpc64*)
         # We don't build the ppc 32-bit targets with these - these targets
         # are mostly unsupported for now.
         OLD_RUSTFLAGS="${RUSTFLAGS}"
         export RUSTFLAGS="${OLD_RUSTFLAGS} -C target-feature=+altivec"
-        cargo_test "${PROFILE}"
+        cargo_test "--release"
 
         export RUSTFLAGS="${OLD_RUSTFLAGS} -C target-feature=+vsx"
-        cargo_test "${PROFILE}"
+        cargo_test "--release"
         ;;
     *)
         ;;
@@ -144,14 +152,14 @@ if [ "${TARGET}" = "aarch64-unknown-linux-gnu" ]; then
         CPPFLAGS="-fuse-ld=lld -I/usr/aarch64-linux-gnu/include/ -I/usr/aarch64-linux-gnu/include/c++/9/aarch64-linux-gnu/" \
             RUSTFLAGS="$HOST_RUSTFLAGS" \
             RUST_LOG=warn \
-            cargo run ${INTRINSIC_TEST} "${PROFILE}" --bin intrinsic-test -- intrinsics_data/arm_intrinsics.json --runner "${CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUNNER}" --cppcompiler "clang++-15" --skip crates/intrinsic-test/missing_aarch64.txt
+            cargo run ${INTRINSIC_TEST} --release --bin intrinsic-test -- intrinsics_data/arm_intrinsics.json --runner "${CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUNNER}" --cppcompiler "clang++-15" --skip crates/intrinsic-test/missing_aarch64.txt
     )
 elif [ "${TARGET}" = "armv7-unknown-linux-gnueabihf" ]; then
     (
         CPPFLAGS="-fuse-ld=lld -I/usr/arm-linux-gnueabihf/include/ -I/usr/arm-linux-gnueabihf/include/c++/9/arm-linux-gnueabihf/" \
             RUSTFLAGS="$HOST_RUSTFLAGS" \
             RUST_LOG=warn \
-            cargo run ${INTRINSIC_TEST} "${PROFILE}" --bin intrinsic-test -- intrinsics_data/arm_intrinsics.json --runner "${CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_RUNNER}" --cppcompiler "clang++-15" --skip crates/intrinsic-test/missing_arm.txt --a32
+            cargo run ${INTRINSIC_TEST} --release --bin intrinsic-test -- intrinsics_data/arm_intrinsics.json --runner "${CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_RUNNER}" --cppcompiler "clang++-15" --skip crates/intrinsic-test/missing_arm.txt --a32
     )
 fi
 
@@ -159,7 +167,7 @@ if [ "$NORUN" != "1" ] && [ "$NOSTD" != 1 ]; then
     # Test examples
     (
         cd examples
-        cargo test --target "$TARGET" "${PROFILE}"
-        echo test | cargo run --target "$TARGET" "${PROFILE}" hex
+        cargo test --target "$TARGET"
+        echo test | cargo run --target "$TARGET" --release hex
     )
 fi
