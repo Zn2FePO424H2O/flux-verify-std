@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #library version
-#rustup component add rust-src --toolchain nightly-2024-08-20
+#rustup component add rust-src --toolchain nightly-2025-01-27
 
 export __CARGO_TESTS_ONLY_SRC_ROOT=$(pwd)/library
 
