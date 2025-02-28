@@ -13,7 +13,7 @@ trap cleanup EXIT
 cargo new dummy
 cd dummy
 echo '[toolchain]
-channel = "nightly-2024-11-03"
+channel = "nightly-2025-01-27"
 components = ["rust-src", "rustc-dev", "llvm-tools", "rustfmt"]' > ./rust-toolchain
 
 case "$(uname -s)" in

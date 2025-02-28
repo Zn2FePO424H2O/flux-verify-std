@@ -43,20 +43,15 @@ check-cfg = [
     'cfg(bootstrap)',
     'cfg(no_fp_fmt_parse)',
     'cfg(stdarch_intel_sde)',
-    # #[cfg(bootstrap)] rtems
-    'cfg(target_os, values("rtems"))',
+    'cfg(target_arch, values("xtensa"))',
     # core use #[path] imports to portable-simd `core_simd` crate
     # and to stdarch `core_arch` crate which messes-up with Cargo list
     # of declared features, we therefor expect any feature cfg
     'cfg(feature, values(any()))',
-    'cfg(flux)'
 ]
-
-[profile.dev]
-incremental = true
 
 [package.metadata.flux]
 enabled = true
 
 [dependencies]
-flux-rs = { git = "https://github.com/flux-rs/flux" }
+flux-attrs = { git = "https://github.com/flux-rs/flux.git" }
