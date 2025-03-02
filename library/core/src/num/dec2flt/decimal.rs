@@ -345,6 +345,7 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
     ];
 
     shift &= 63;
+    flux_assume(shift < 64);
     let x_a = TABLE[shift];
     let x_b = TABLE[shift + 1];
     let num_new_digits = (x_a >> 11) as _;
