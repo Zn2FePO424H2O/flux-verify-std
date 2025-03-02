@@ -201,6 +201,10 @@ impl Decimal {
     }
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Parse a big integer representation of the float as a decimal.
 pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
     let mut d = Decimal::default();
@@ -226,6 +230,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
             if !is_8digits(v) {
                 break;
             }
+            flux_assume(v >= 0x3030_3030_3030_3030);
             d.digits[d.num_digits..].write_u64(v - 0x3030_3030_3030_3030);
             d.num_digits += 8;
             s = &s[8..];
