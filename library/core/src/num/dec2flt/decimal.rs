@@ -249,6 +249,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
             }
         }
         d.decimal_point += n_trailing_zeros as i32;
+        flux_assume(d.num_digits >= n_trailing_zeros);
         d.num_digits -= n_trailing_zeros;
         d.decimal_point += d.num_digits as i32;
         if d.num_digits > Decimal::MAX_DIGITS {
