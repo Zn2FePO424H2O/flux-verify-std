@@ -352,6 +352,7 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
     let pow5_a = (0x7FF & x_a) as usize;
     let pow5_b = (0x7FF & x_b) as usize;
     let pow5 = &TABLE_POW5[pow5_a..];
+    flux_assume(pow5_b >= pow5_a);
     for (i, &p5) in pow5.iter().enumerate().take(pow5_b - pow5_a) {
         if i >= d.num_digits {
             return num_new_digits - 1;
