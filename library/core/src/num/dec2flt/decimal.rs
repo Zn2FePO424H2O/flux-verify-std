@@ -355,6 +355,7 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
     flux_assume(pow5_b >= pow5_a);
     for (i, &p5) in pow5.iter().enumerate().take(pow5_b - pow5_a) {
         if i >= d.num_digits {
+            flux_assume(num_new_digits >= 1);
             return num_new_digits - 1;
         } else if d.digits[i] == p5 {
             continue;
