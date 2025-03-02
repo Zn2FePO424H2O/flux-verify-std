@@ -279,6 +279,8 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
         }
     }
     for i in d.num_digits..Decimal::MAX_DIGITS_WITHOUT_OVERFLOW {
+        flux_assume(i >= d.num_digits);
+        flux_assume(i < Decimal::MAX_DIGITS_WITHOUT_OVERFLOW);
         d.digits[i] = 0;
     }
     d
