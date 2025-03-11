@@ -1880,7 +1880,8 @@ pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
 
         // SAFETY: `m` is required to be a power-of-two, hence non-zero.
         let m_minus_one = unsafe { unchecked_sub(m, 1) };
-        let mut inverse = INV_TABLE_MOD_16[(x & (INV_TABLE_MOD - 1)) >> 1] as usize;
+        let x_inv_table_mod_shift = (x & (INV_TABLE_MOD - 1)) >> 1;
+        let mut inverse = INV_TABLE_MOD_16[x_inv_table_mod_shift] as usize;
         let mut mod_gate = INV_TABLE_MOD;
         // We iterate "up" using the following formula:
         //

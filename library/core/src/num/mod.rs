@@ -1336,6 +1336,10 @@ macro_rules! from_str_radix_int_impl {
 }
 from_str_radix_int_impl! { isize i8 i16 i32 i64 i128 usize u8 u16 u32 u64 u128 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
 /// Determines if a string of text of that length of that radix could be guaranteed to be
 /// stored in the given type T.
 /// Note that if the radix is known to the compiler, it is just the check of digits.len that
@@ -1344,7 +1348,9 @@ from_str_radix_int_impl! { isize i8 i16 i32 i64 i128 usize u8 u16 u32 u64 u128 }
 #[inline(always)]
 #[unstable(issue = "none", feature = "std_internals")]
 pub const fn can_not_overflow<T>(radix: u32, is_signed_ty: bool, digits: &[u8]) -> bool {
-    radix <= 16 && digits.len() <= mem::size_of::<T>() * 2 - is_signed_ty as usize
+    let size = mem::size_of::<T>();
+    flux_assume(size > 0);
+    radix <= 16 && digits.len() <= size * 2 - is_signed_ty as usize
 }
 
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]

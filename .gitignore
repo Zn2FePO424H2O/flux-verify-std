@@ -3,3 +3,5 @@ dummy/
 library/target/
 
 log.txt
+
+log[E0999].txt
