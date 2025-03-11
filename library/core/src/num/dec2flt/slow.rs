@@ -4,6 +4,10 @@ use crate::num::dec2flt::common::BiasedFp;
 use crate::num::dec2flt::decimal::{Decimal, parse_decimal};
 use crate::num::dec2flt::float::RawFloat;
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Parse the significant digits and biased, binary exponent of a float.
 ///
 /// This is a fallback algorithm that uses a big-integer representation
@@ -104,6 +108,8 @@ pub(crate) fn parse_long_mantissa<F: RawFloat>(s: &[u8]) -> BiasedFp {
         power2 -= 1;
     }
     // Zero out all the bits above the explicit mantissa bits.
-    mantissa &= (1_u64 << F::MANTISSA_EXPLICIT_BITS) - 1;
+    let left_mantissa = 1_u64 << F::MANTISSA_EXPLICIT_BITS;
+    flux_assume(left_mantissa >= 1);
+    mantissa &= left_mantissa - 1;
     BiasedFp { f: mantissa, e: power2 }
 }

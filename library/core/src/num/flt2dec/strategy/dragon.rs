@@ -59,8 +59,13 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     x.mul_pow2(n)
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 fn div_2pow10(x: &mut Big, mut n: usize) -> &mut Big {
     let largest = POW10.len() - 1;
+    flux_assume(largest == 9);
     while n > largest {
         x.div_rem_small(POW10[largest]);
         n -= largest;

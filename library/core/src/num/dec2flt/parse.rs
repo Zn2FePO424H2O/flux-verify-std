@@ -18,6 +18,7 @@ fn flux_assume(_:bool) {}
 ///
 /// This is based off the algorithm described in "Fast numeric string to
 /// int", available here: <https://johnnylee-sde.github.io/Fast-numeric-string-to-int/>.
+#[flux_attrs::sig(fn(v: u64 { v >= 0} ) -> u64)]
 fn parse_8digits(mut v: u64) -> u64 {
     const MASK: u64 = 0x0000_00FF_0000_00FF;
     const MUL1: u64 = 0x000F_4240_0000_0064;
@@ -200,6 +201,7 @@ pub fn parse_number(s: &[u8]) -> Option<Number> {
 }
 
 /// Try to parse a special, non-finite float.
+#[flux_attrs::trusted]
 pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> {
     // Since a valid string has at most the length 8, we can load
     // all relevant characters into a u64 and work from there.

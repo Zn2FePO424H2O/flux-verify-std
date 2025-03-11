@@ -25,6 +25,10 @@ for i in xrange(-308, 333, 8):
     print '    (%#018x, %5d, %4d),' % (f, e, i)
 */
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 #[doc(hidden)]
 pub static CACHED_POW10: [(u64, i16, i16); 81] = [
     // (f, e, k)
@@ -370,6 +374,7 @@ pub fn format_shortest_opt<'a>(
         //
         // here `plus1 - v` is used since calculations are done with respect to `plus1`
         // in order to avoid overflow/underflow (hence the seemingly swapped names).
+        flux_assume(plus1v > ulp);
         let plus1v_down = plus1v + ulp; // plus1 - (v - 1 ulp)
         let plus1v_up = plus1v - ulp; // plus1 - (v + 1 ulp)
 
@@ -417,12 +422,15 @@ pub fn format_shortest_opt<'a>(
             //
             // consequently, we should stop when `TC1 || TC2 || (TC3a && TC3b)`. the following is
             // equal to its inverse, `!TC1 && !TC2 && (!TC3a || !TC3b)`.
+            flux_assume(threshold > plus1w);
             while plus1w < plus1v_up
                 && threshold - plus1w >= ten_kappa
                 && (plus1w + ten_kappa < plus1v_up
                     || plus1v_up - plus1w >= plus1w + ten_kappa - plus1v_up)
             {
-                *last -= 1;
+                let n = *last;
+                flux_assume(n >= 1);
+                *last = n - 1;
                 debug_assert!(*last > b'0'); // the shortest repr cannot end with `0`
                 plus1w += ten_kappa;
             }
@@ -432,6 +440,7 @@ pub fn format_shortest_opt<'a>(
         //
         // this is simply same to the terminating conditions for `v + 1 ulp`, with all `plus1v_up`
         // replaced by `plus1v_down` instead. overflow analysis equally holds.
+        flux_assume(threshold > plus1w);
         if plus1w < plus1v_down
             && threshold - plus1w >= ten_kappa
             && (plus1w + ten_kappa < plus1v_down

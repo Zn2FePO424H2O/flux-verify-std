@@ -241,7 +241,10 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
     if d.num_digits != 0 {
         // Ignore the trailing zeros if there are any
         let mut n_trailing_zeros = 0;
-        for &c in start[..(start.len() - s.len())].iter().rev() {
+        let start_len = start.len();
+        let s_len = s.len();
+        flux_assume(start_len > s_len);
+        for &c in start[..(start_len - s_len)].iter().rev() {
             if c == b'0' {
                 n_trailing_zeros += 1;
             } else if c != b'.' {

@@ -6,7 +6,7 @@
 export __CARGO_TESTS_ONLY_SRC_ROOT=$(pwd)/library
 
 cleanup() {
-    rm -rf dummy
+    rm -rf /Users/Exelica/Downloads/project/flux-verify-std/dummy
 }
 trap cleanup EXIT
 
