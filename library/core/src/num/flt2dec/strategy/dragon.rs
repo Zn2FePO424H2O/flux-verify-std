@@ -26,16 +26,30 @@ static POW5TO256: [Digit; 19] = [
     0xf46eeddc, 0x5fdcefce, 0x553f7,
 ];
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
+#[flux_attrs::sig(fn (_) -> usize[N])]
+fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
+    N
+}
+
 #[doc(hidden)]
+#[flux_attrs::trusted]
 pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     debug_assert!(n < 512);
     // Save ourself the left shift for the smallest cases.
     if n < 8 {
+        flux_assume(flux_len(POW10) == 10);
+        flux_assume(n & 7 <= 7);
         return x.mul_small(POW10[n & 7]);
     }
     // Multiply by the powers of 5 and shift the 2s in at the end.
     // This keeps the intermediate products smaller and faster.
     if n & 7 != 0 {
+        flux_assume(flux_len(POW10) == 10);
+        flux_assume(n & 7 <= 7);
         x.mul_small(POW10[n & 7] >> (n & 7));
     }
     if n & 8 != 0 {
@@ -59,13 +73,10 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     x.mul_pow2(n)
 }
 
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
-
 fn div_2pow10(x: &mut Big, mut n: usize) -> &mut Big {
-    let largest = POW10.len() - 1;
-    flux_assume(largest == 9);
+    let pow10_len = POW10.len();
+    flux_assume(pow10_len == 10);
+    let largest = pow10_len - 1;
     while n > largest {
         x.div_rem_small(POW10[largest]);
         n -= largest;
@@ -104,6 +115,7 @@ fn div_rem_upto_16<'a>(
 }
 
 /// The shortest mode implementation for Dragon.
+#[flux_attrs::trusted]
 pub fn format_shortest<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -264,6 +276,7 @@ pub fn format_shortest<'a>(
 }
 
 /// The exact and fixed mode implementation for Dragon.
+#[flux_attrs::trusted]
 pub fn format_exact<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],

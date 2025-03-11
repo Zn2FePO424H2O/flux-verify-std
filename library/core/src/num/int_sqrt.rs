@@ -37,6 +37,7 @@ const U8_ISQRT_WITH_REMAINDER: [(u8, u8); 256] = {
 #[must_use = "this returns the result of the operation, \
               without modifying the original"]
 #[inline]
+#[flux_attrs::trusted]
 pub(super) const fn u8(n: u8) -> u8 {
     U8_ISQRT_WITH_REMAINDER[n as usize].0
 }
@@ -135,13 +136,14 @@ macro_rules! unsigned_fn {
 /// # Safety
 ///
 /// `$n` must be nonzero.
+#[flux_attrs::trusted]
 macro_rules! first_stage {
     ($original_bits:literal, $n:ident) => {{
         debug_assert!($n != 0, "`$n` is  zero in `first_stage!`.");
 
         const N_SHIFT: u32 = $original_bits - 8;
         let n = $n >> N_SHIFT;
-
+        flux_assume(n<=255);
         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
 
         // Inform the optimizer that `s` is nonzero. This will allow it to
@@ -186,6 +188,7 @@ macro_rules! middle_stage {
         let lo = n & LOWER_HALF_1_BITS;
         let numerator = (($r as $ty) << QUARTER_BITS) | (lo >> QUARTER_BITS);
         let denominator = ($s as $ty) << 1;
+        flux_assume(denominator > 0);
         let q = numerator / denominator;
         let u = numerator % denominator;
 
@@ -193,6 +196,7 @@ macro_rules! middle_stage {
         let (mut r, overflow) =
             ((u << QUARTER_BITS) | (lo & LOWEST_QUARTER_1_BITS)).overflowing_sub(q * q);
         if overflow {
+            flux_assume(s > 0);
             r = r.wrapping_add(2 * s - 1);
             s -= 1;
         }
@@ -221,6 +225,10 @@ macro_rules! middle_stage {
     }};
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
 /// Generates the last stage of the computation before denormalization.
 ///
 /// # Safety
@@ -237,11 +245,12 @@ macro_rules! last_stage {
         let lo = $n & LOWER_HALF_1_BITS;
         let numerator = (($r as $ty) << QUARTER_BITS) | (lo >> QUARTER_BITS);
         let denominator = ($s as $ty) << 1;
-
+        flux_assume(denominator > 0);
         let q = numerator / denominator;
         let mut s = ($s << QUARTER_BITS) as $ty + q;
         let (s_squared, overflow) = s.overflowing_mul(s);
         if overflow || s_squared > $n {
+            flux_assume(s > 0);
             s -= 1;
         }
         s

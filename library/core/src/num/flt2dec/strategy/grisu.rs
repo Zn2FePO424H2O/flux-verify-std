@@ -25,10 +25,6 @@ for i in xrange(-308, 333, 8):
     print '    (%#018x, %5d, %4d),' % (f, e, i)
 */
 
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
-
 #[doc(hidden)]
 pub static CACHED_POW10: [(u64, i16, i16); 81] = [
     // (f, e, k)
@@ -120,12 +116,25 @@ pub const CACHED_POW10_FIRST_E: i16 = -1087;
 #[doc(hidden)]
 pub const CACHED_POW10_LAST_E: i16 = 1039;
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
+#[flux_attrs::sig(fn (_) -> usize[N])]
+fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
+    N
+}
+
 #[doc(hidden)]
+#[flux_attrs::trusted]
 pub fn cached_power(alpha: i16, gamma: i16) -> (i16, Fp) {
     let offset = CACHED_POW10_FIRST_E as i32;
     let range = (CACHED_POW10.len() as i32) - 1;
     let domain = (CACHED_POW10_LAST_E - CACHED_POW10_FIRST_E) as i32;
     let idx = ((gamma as i32) - offset) * range / domain;
+    flux_assume(idx >= 0);
+    flux_assume(idx <= 80);
+    flux_assume(flux_len(CACHED_POW10) == 81);
     let (f, e, k) = CACHED_POW10[idx as usize];
     debug_assert!(alpha <= e && e <= gamma);
     (k, Fp { f, e })
@@ -166,6 +175,7 @@ pub fn max_pow10_no_more_than(x: u32) -> (u8, u32) {
 /// The shortest mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
+#[flux_attrs::trusted]
 pub fn format_shortest_opt<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -477,6 +487,7 @@ pub fn format_shortest<'a>(
 /// The exact and fixed mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
+#[flux_attrs::trusted]
 pub fn format_exact_opt<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -654,6 +665,7 @@ pub fn format_exact_opt<'a>(
     // - `ulp = 2^-e * k`
     //
     // SAFETY: the first `len` bytes of `buf` must be initialized.
+    #[flux_attrs::trusted]
     unsafe fn possibly_round(
         buf: &mut [MaybeUninit<u8>],
         mut len: usize,
