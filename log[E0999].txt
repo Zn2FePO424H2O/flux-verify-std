@@ -1,53 +1,51 @@
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:147:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
     |
-147 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
+146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
     |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ...
-307 |     let (s, r) = first_stage!(128, n);
-    |                  -------------------- in this macro invocation
+267 |     let (s, r) = first_stage!(16, n);
+    |                  ------------------- in this macro invocation
     |
     = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ptr/mod.rs:1884:27
-     |
-1884 |         let mut inverse = INV_TABLE_MOD_16[x_inv_table_mod_shift] as usize;
-     |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
-  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/drain.rs:25:23
-   |
-25 |     let drain = Drain(array.iter_mut());
-   |                       ^^^^^
-   |
-   = note: unsupported unsize cast from `&'?10 mut ∃b0. [∃b1. { T[b1] | * }; N][b0]` to `&'?4 mut [T]`
-
-error[E0999]: refinement type error
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:132:11
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
     |
-132 |     match try_from_fn_erased(&mut array, cb) {
-    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
-
-error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:813:31
+146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+279 |     let (s, r) = first_stage!(32, n);
+    |                  ------------------- in this macro invocation
     |
-813 |     try_from_trusted_iterator(iter.map(NeverShortCircuit)).0
-    |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
     |
-    = note: generics_of called on `Local(DefId(0:3928 ~ core[8058]::ops::try_trait::NeverShortCircuit::{constructor#0}))` with kind `Ctor(Struct, Fn)`
-
-error[E0999]: refinement type error
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:935:13
+146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+292 |     let (s, r) = first_stage!(64, n);
+    |                  ------------------- in this macro invocation
     |
-935 |     let r = iter_next_chunk_erased(&mut array, iter);
-    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
-    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/cell.rs:2383:36
-     |
-2383 |     let _: UnsafeCell<&dyn Send> = a;
-     |                                    ^
-     |
-     = note: unsupported unsize cast from `UnsafeCell<λb0. &'?20 ∃b1. i32[b1][b0]>` to `cell::UnsafeCell<&'?6 dyn marker::Send + '?7>`
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
+    |
+146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+306 |     let (s, r) = first_stage!(128, n);
+    |                  -------------------- in this macro invocation
+    |
+    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+
+thread 'rustc' panicked at compiler/rustc_trait_selection/src/traits/select/mod.rs:305:24:
+`TraitPredicate(<{closure@/Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/copied.rs:30:5: 30:21} as ops::function::FnOnce<(Acc, &T)>>, polarity:Positive)` has escaping bound vars, so it cannot be wrapped in a dummy binder.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+note: uncaught panic [def_id: DefId(0:6128 ~ core[8058]::iter::adapters::copied::copy_fold), span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/copied.rs:29:1: 29:91 (#0)]
+
+error: could not compile `core` (lib) due to 4 previous errors

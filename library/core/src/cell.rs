@@ -2374,6 +2374,7 @@ impl<T: DispatchFromDyn<U>, U> DispatchFromDyn<SyncUnsafeCell<U>> for SyncUnsafe
 impl<T: PointerLike> PointerLike for SyncUnsafeCell<T> {}
 
 #[allow(unused)]
+#[flux_attrs::trusted]
 fn assert_coerce_unsized(
     a: UnsafeCell<&i32>,
     b: SyncUnsafeCell<&i32>,

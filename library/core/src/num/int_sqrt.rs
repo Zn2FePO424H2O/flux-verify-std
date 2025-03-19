@@ -131,19 +131,23 @@ macro_rules! unsigned_fn {
     };
 }
 
+#[flux_attrs::sig(fn (_) -> usize[N])]
+fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
+    N
+}
+
 /// Generates the first stage of the computation after normalization.
 ///
 /// # Safety
 ///
 /// `$n` must be nonzero.
-#[flux_attrs::trusted]
 macro_rules! first_stage {
     ($original_bits:literal, $n:ident) => {{
         debug_assert!($n != 0, "`$n` is  zero in `first_stage!`.");
 
         const N_SHIFT: u32 = $original_bits - 8;
         let n = $n >> N_SHIFT;
-        flux_assume(n<=255);
+        //flux_assume(flux_len(U8_ISQRT_WITH_REMAINDER)==256);
         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
 
         // Inform the optimizer that `s` is nonzero. This will allow it to

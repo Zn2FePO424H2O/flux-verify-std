@@ -25,6 +25,7 @@ impl<I> Cloned<I> {
     }
 }
 
+#[flux_attrs::trusted]
 fn clone_try_fold<T: Clone, Acc, R>(mut f: impl FnMut(Acc, T) -> R) -> impl FnMut(Acc, &T) -> R {
     move |acc, elt| f(acc, elt.clone())
 }

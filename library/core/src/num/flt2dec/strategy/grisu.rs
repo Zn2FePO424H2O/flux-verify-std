@@ -368,6 +368,7 @@ pub fn format_shortest_opt<'a>(
     // - `plus1v = (plus1 - v) * k` (and also, `threshold > plus1v` from prior invariants)
     // - `ten_kappa = 10^kappa * k`
     // - `ulp = 2^-e * k`
+    #[flux_attrs::sig(fn (_,_,remainder: u64,threshold: u64{threshold>=remainder},plus1v: u64,_,ulp: u64{plus1v >= ulp})  -> Option<(&[u8], i16)>)]
     fn round_and_weed(
         buf: &mut [u8],
         exp: i16,
@@ -384,7 +385,6 @@ pub fn format_shortest_opt<'a>(
         //
         // here `plus1 - v` is used since calculations are done with respect to `plus1`
         // in order to avoid overflow/underflow (hence the seemingly swapped names).
-        flux_assume(plus1v > ulp);
         let plus1v_down = plus1v + ulp; // plus1 - (v - 1 ulp)
         let plus1v_up = plus1v - ulp; // plus1 - (v + 1 ulp)
 
@@ -432,7 +432,6 @@ pub fn format_shortest_opt<'a>(
             //
             // consequently, we should stop when `TC1 || TC2 || (TC3a && TC3b)`. the following is
             // equal to its inverse, `!TC1 && !TC2 && (!TC3a || !TC3b)`.
-            flux_assume(threshold > plus1w);
             while plus1w < plus1v_up
                 && threshold - plus1w >= ten_kappa
                 && (plus1w + ten_kappa < plus1v_up
@@ -450,7 +449,6 @@ pub fn format_shortest_opt<'a>(
         //
         // this is simply same to the terminating conditions for `v + 1 ulp`, with all `plus1v_up`
         // replaced by `plus1v_down` instead. overflow analysis equally holds.
-        flux_assume(threshold > plus1w);
         if plus1w < plus1v_down
             && threshold - plus1w >= ten_kappa
             && (plus1w + ten_kappa < plus1v_down

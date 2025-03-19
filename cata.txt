@@ -1,0 +1,46 @@
+num/int_sqrt.rs
+2 error due to bit shift
+2 error due to $s:ident is already not 0, but flux still need it > 0
+1 error due to failure to obtain constant vector length
+
+num/mod.rs
+can_not_overflow is designed for non-zero size only
+
+num/dec2flt/decimal.rs
+1 error due to misunderstanding the range of ascii compared to hexadecimal values
+4 error due to not assumeing proper sub vector is <= the origional vector
+1 error flux not understanding for i in a..b is in a..b
+1 error due to bit mask
+3 error due to magic numbers
+
+num/dec2flt/lemire.rs
+1 error due to loss of refirnment on numbers during type conversion
+
+num/dec2flt/parse.rs
+1 error due to misunderstanding the range of ascii compared to hexadecimal values
+
+num/dec2flt/slow.rs
+1 error due to bit shift
+
+num/dec2dec/strategy/dragon.rs
+1 error due to failure to obtain constant vector length
+2 error due to bit shift
+
+num/dec2dec/strategy/grisu.rs
+1 error due to loss of refirnment on numbers during type conversion
+1 error due to failure to obtain constant vector length
+1 error due to misunderstanding the range of ascii compared to hexadecimal values
+
+src/ptr/mod.rs
+1 error due to bit mask
+1 error due to bit shift
+
+Bit shift errors: 6
+Failure to obtain constant vector length: 3
+Misunderstanding of ASCII range vs hexadecimal: 3
+Loss of refinement on numbers: 2
+Sub-vector <= original vector: 4
+Flux misunderstanding: 1
+Magic numbers: 3
+Can not overflow design for non-zero size: 1
+Bit mask errors: 3

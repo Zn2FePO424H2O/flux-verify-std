@@ -30,27 +30,22 @@ static POW5TO256: [Digit; 19] = [
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
 
-#[flux_attrs::sig(fn (_) -> usize[N])]
-fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
-    N
-}
 
 #[doc(hidden)]
-#[flux_attrs::trusted]
 pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     debug_assert!(n < 512);
     // Save ourself the left shift for the smallest cases.
     if n < 8 {
-        flux_assume(flux_len(POW10) == 10);
-        flux_assume(n & 7 <= 7);
-        return x.mul_small(POW10[n & 7]);
+        let n_and = n & 7;
+        flux_assume(n_and <= 7);
+        return x.mul_small(POW10[n_and]);
     }
     // Multiply by the powers of 5 and shift the 2s in at the end.
     // This keeps the intermediate products smaller and faster.
     if n & 7 != 0 {
-        flux_assume(flux_len(POW10) == 10);
-        flux_assume(n & 7 <= 7);
-        x.mul_small(POW10[n & 7] >> (n & 7));
+        let n_and = n & 7;
+        flux_assume(n_and <= 7);
+        x.mul_small(POW10[n_and] >> (n_and));
     }
     if n & 8 != 0 {
         x.mul_small(POW10[8] >> 8);

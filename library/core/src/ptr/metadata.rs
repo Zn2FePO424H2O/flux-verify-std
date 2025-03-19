@@ -107,6 +107,7 @@ pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
 /// [`slice::from_raw_parts`]: crate::slice::from_raw_parts
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
+#[flux_attrs::trusted]
 pub const fn from_raw_parts<T: ?Sized>(
     data_pointer: *const impl Thin,
     metadata: <T as Pointee>::Metadata,
@@ -120,6 +121,7 @@ pub const fn from_raw_parts<T: ?Sized>(
 /// See the documentation of [`from_raw_parts`] for more details.
 #[unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
+#[flux_attrs::trusted]
 pub const fn from_raw_parts_mut<T: ?Sized>(
     data_pointer: *mut impl Thin,
     metadata: <T as Pointee>::Metadata,

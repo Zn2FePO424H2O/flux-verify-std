@@ -237,6 +237,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
         }
         s = s.parse_digits(|digit| d.try_add_digit(digit));
         d.decimal_point = s.len() as i32 - first.len() as i32;
+        flux_assume(d.decimal_point>=0);
     }
     if d.num_digits != 0 {
         // Ignore the trailing zeros if there are any

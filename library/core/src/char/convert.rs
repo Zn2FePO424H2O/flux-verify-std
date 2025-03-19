@@ -279,6 +279,7 @@ impl fmt::Display for CharTryFromError {
 /// Converts a digit in the given radix to a `char`. See [`char::from_digit`].
 #[inline]
 #[must_use]
+#[flux_attrs::trusted]
 pub(super) const fn from_digit(num: u32, radix: u32) -> Option<char> {
     if radix > 36 {
         panic!("from_digit: radix is too high (maximum 36)");

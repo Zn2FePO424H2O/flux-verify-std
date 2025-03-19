@@ -1793,6 +1793,7 @@ const fn len_utf16(code: u32) -> usize {
 #[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
 #[doc(hidden)]
 #[inline]
+#[flux_attrs::trusted]
 pub const fn encode_utf8_raw(code: u32, dst: &mut [u8]) -> &mut [u8] {
     let len = len_utf8(code);
     match (len, &mut *dst) {
@@ -1841,6 +1842,7 @@ pub const fn encode_utf8_raw(code: u32, dst: &mut [u8]) -> &mut [u8] {
 #[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
 #[doc(hidden)]
 #[inline]
+#[flux_attrs::trusted]
 pub const fn encode_utf16_raw(mut code: u32, dst: &mut [u16]) -> &mut [u16] {
     let len = len_utf16(code);
     match (len, &mut *dst) {
