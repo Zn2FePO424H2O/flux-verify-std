@@ -14,7 +14,7 @@ num/dec2flt/decimal.rs
 3 error due to magic numbers
 
 num/dec2flt/lemire.rs
-1 error due to loss of refirnment on numbers during type conversion
+1 error due to loss of refinement on numbers during type conversion
 
 num/dec2flt/parse.rs
 1 error due to misunderstanding the range of ascii compared to hexadecimal values
@@ -27,7 +27,7 @@ num/dec2dec/strategy/dragon.rs
 2 error due to bit shift
 
 num/dec2dec/strategy/grisu.rs
-1 error due to loss of refirnment on numbers during type conversion
+1 error due to loss of refinement on numbers during type conversion
 1 error due to failure to obtain constant vector length
 1 error due to misunderstanding the range of ascii compared to hexadecimal values
 
@@ -35,12 +35,13 @@ src/ptr/mod.rs
 1 error due to bit mask
 1 error due to bit shift
 
+Total
 Bit shift errors: 6
 Failure to obtain constant vector length: 3
 Misunderstanding of ASCII range vs hexadecimal: 3
 Loss of refinement on numbers: 2
 Sub-vector <= original vector: 4
-Flux misunderstanding: 1
+Misunderstanding a..b: 1
 Magic numbers: 3
 Can not overflow design for non-zero size: 1
 Bit mask errors: 3
