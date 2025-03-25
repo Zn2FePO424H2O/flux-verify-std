@@ -16,6 +16,7 @@ use crate::{intrinsics, ptr};
 /// `limit` is the number of allowed imbalanced partitions before switching to `heapsort`. If zero,
 /// this function will immediately switch to heapsort.
 #[cfg(not(feature = "optimize_for_size"))]
+#[flux_attrs::trusted]
 pub(crate) fn quicksort<'a, T, F>(
     mut v: &'a mut [T],
     mut ancestor_pivot: Option<&'a T>,
@@ -89,6 +90,7 @@ pub(crate) fn quicksort<'a, T, F>(
 /// unspecified. All original elements will remain in `v` and any possible modifications via
 /// interior mutability will be observable. Same is true if `is_less` panics or `v.len()`
 /// exceeds `scratch.len()`.
+#[flux_attrs::trusted]
 pub(crate) fn partition<T, F>(v: &mut [T], pivot: usize, is_less: &mut F) -> usize
 where
     F: FnMut(&T, &T) -> bool,
@@ -153,6 +155,7 @@ const fn inst_partition<T, F: FnMut(&T, &T) -> bool>() -> fn(&mut [T], &T, &mut 
 }
 
 /// See [`partition`].
+#[flux_attrs::trusted]
 fn partition_hoare_branchy_cyclic<T, F>(v: &mut [T], pivot: &T, is_less: &mut F) -> usize
 where
     F: FnMut(&T, &T) -> bool,
@@ -244,6 +247,7 @@ struct PartitionState<T> {
 }
 
 #[cfg(not(feature = "optimize_for_size"))]
+#[flux_attrs::trusted]
 fn partition_lomuto_branchless_cyclic<T, F>(v: &mut [T], pivot: &T, is_less: &mut F) -> usize
 where
     F: FnMut(&T, &T) -> bool,

@@ -153,6 +153,7 @@ where
     F: FnMut(I::Item) -> Option<B>,
 {
     #[inline]
+    #[flux_attrs::trusted]
     fn next_back(&mut self) -> Option<B> {
         #[inline]
         fn find<T, B>(

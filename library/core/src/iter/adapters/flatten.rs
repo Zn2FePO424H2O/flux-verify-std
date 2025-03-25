@@ -437,6 +437,7 @@ where
         Fold: FnMut(Acc, U) -> Acc,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
         ) -> impl FnMut(Acc, T) -> Acc + '_ {
@@ -468,6 +469,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn flatten<'a, T: IntoIterator, Acc, R: Try<Output = Acc>>(
             frontiter: &'a mut Option<T::IntoIter>,
             fold: &'a mut impl FnMut(Acc, &mut T::IntoIter) -> R,
@@ -506,6 +508,7 @@ where
         Fold: FnMut(Acc, U) -> Acc,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
         ) -> impl FnMut(Acc, T) -> Acc + '_ {
@@ -537,6 +540,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn flatten<'a, T: IntoIterator, Acc, R: Try>(
             backiter: &'a mut Option<T::IntoIter>,
             fold: &'a mut impl FnMut(Acc, &mut T::IntoIter) -> R,
@@ -612,6 +616,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn flatten<U: Iterator, Acc, R: Try<Output = Acc>>(
             mut fold: impl FnMut(Acc, U::Item) -> R,
         ) -> impl FnMut(Acc, &mut U) -> R {
@@ -658,6 +663,7 @@ where
     default fn count(self) -> usize {
         #[inline]
         #[rustc_inherit_overflow_checks]
+        #[flux_attrs::trusted]
         fn count<U: Iterator>(acc: usize, iter: U) -> usize {
             acc + iter.count()
         }
@@ -703,6 +709,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn flatten<U: DoubleEndedIterator, Acc, R: Try<Output = Acc>>(
             mut fold: impl FnMut(Acc, U::Item) -> R,
         ) -> impl FnMut(Acc, &mut U) -> R {
@@ -874,13 +881,21 @@ fn try_flatten_one<I: IntoIterator<IntoIter: OneShot>, Acc, R: Try<Output = Acc>
     }
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 #[inline]
 fn advance_by_one<I>(n: NonZero<usize>, inner: I) -> Option<NonZero<usize>>
 where
     I: IntoIterator<IntoIter: OneShot>,
 {
     match inner.into_iter().next() {
-        Some(_) => NonZero::new(n.get() - 1),
+        Some(_) => {
+            let n_get = n.get();
+            flux_assume(n_get > 0);
+            NonZero::new(n_get - 1)
+        },
         None => Some(n),
     }
 }

@@ -17,6 +17,7 @@ use crate::{fmt, marker};
 /// ```
 #[stable(feature = "iter_empty", since = "1.2.0")]
 #[rustc_const_stable(feature = "const_iter_empty", since = "1.32.0")]
+#[flux_attrs::trusted]
 pub const fn empty<T>() -> Empty<T> {
     Empty(marker::PhantomData)
 }

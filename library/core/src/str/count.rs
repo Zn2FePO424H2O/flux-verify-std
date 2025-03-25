@@ -24,6 +24,7 @@ const USIZE_SIZE: usize = core::mem::size_of::<usize>();
 const UNROLL_INNER: usize = 4;
 
 #[inline]
+#[flux_attrs::trusted]
 pub(super) fn count_chars(s: &str) -> usize {
     if cfg!(feature = "optimize_for_size") || s.len() < USIZE_SIZE * UNROLL_INNER {
         // Avoid entering the optimized implementation for strings where the

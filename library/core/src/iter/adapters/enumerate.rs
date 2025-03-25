@@ -77,6 +77,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn enumerate<'a, T, Acc, R>(
             count: &'a mut usize,
             mut fold: impl FnMut(Acc, (usize, T)) -> R + 'a,
@@ -98,6 +99,7 @@ where
         Fold: FnMut(Acc, Self::Item) -> Acc,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn enumerate<T, Acc>(
             mut count: usize,
             mut fold: impl FnMut(Acc, (usize, T)) -> Acc,

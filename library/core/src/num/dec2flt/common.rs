@@ -55,6 +55,7 @@ impl ByteSlice for [u8] {
 
 /// Determine if 8 bytes are all decimal digits.
 /// This does not care about the order in which the bytes were loaded.
+/// fn (v:u64) -> bool[v >= ....]
 pub(crate) fn is_8digits(v: u64) -> bool {
     let a = v.wrapping_add(0x4646_4646_4646_4646);
     let b = v.wrapping_sub(0x3030_3030_3030_3030);

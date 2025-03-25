@@ -1,51 +1,153 @@
-error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
+error[E0999]: unsupported statement
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/traits/iterator.rs:3010:21
+     |
+3010 |                     *acc += 1;
+     |                     ^^^^^^^^^
+     |
+     = note: unsupported binary op `AddWithOverflow`
+
+error[E0999]: assertion might fail: possible division by zero
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:729:9
     |
-146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
-    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-267 |     let (s, r) = first_stage!(16, n);
-    |                  ------------------- in this macro invocation
+729 |         ((n >> 19) as u64 / (DIV >> 19)) as u128
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:734:15
     |
-    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
+734 |     let rem = (n - quot * DIV as u128) as u64;
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:41:12
+   |
+41 |         if text[i] == x {
+   |            ^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:147:31
     |
-146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
-    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-279 |     let (s, r) = first_stage!(32, n);
-    |                  ------------------- in this macro invocation
+147 |             let u = *(ptr.add(offset - 2 * chunk_bytes) as *const Chunk);
+    |                               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:148:31
     |
-    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
+148 |             let v = *(ptr.add(offset - chunk_bytes) as *const Chunk);
+    |                               ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:157:9
+    |
+157 |         offset -= 2 * chunk_bytes;
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:129:24
+    |
+129 |         (prefix.len(), len - suffix.len())
+    |                        ^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/drift.rs:66:17
+   |
+66 |                 scan_idx - prev_run.len(),
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/drift.rs:161:5
+    |
+161 |     ((1 << 62) + n as u64 - 1) / n as u64
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible division by zero
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/drift.rs:161:5
+    |
+161 |     ((1 << 62) + n as u64 - 1) / n as u64
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible division by zero
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/mod.rs:100:26
+    |
+100 |     let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem::size_of::<T>();
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:188:17
+    |
+188 |         if k == v.len() - 1 {
+    |                 ^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:237:32
+    |
+237 |         ninther(v, is_less, a, i - frac, b, a + 1, i, b + 1, a + 2, i + frac, b + 2);
+    |                                ^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:231:14
+    |
+231 |     let lo = v.len() / 2 - pivot;
+    |              ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:233:15
+    |
+233 |     let gap = (v.len() - 9 * frac) / 4;
+    |               ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:234:17
+    |
+234 |     let mut a = lo - 4 * frac - gap;
+    |                 ^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:234:17
+    |
+234 |     let mut a = lo - 4 * frac - gap;
+    |                 ^^^^^^^^^^^^^^^^^^^
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:302:17
     |
-146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
-    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-292 |     let (s, r) = first_stage!(64, n);
-    |                  ------------------- in this macro invocation
-    |
-    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
+302 |     if is_less(&v[c], &v[a]) {
+    |                 ^^^^
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/int_sqrt.rs:146:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:302:24
     |
-146 |         let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
-    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-306 |     let (s, r) = first_stage!(128, n);
-    |                  -------------------- in this macro invocation
+302 |     if is_less(&v[c], &v[a]) {
+    |                        ^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:305:24
     |
-    = note: this error originates in the macro `first_stage` (in Nightly builds, run with -Z macro-backtrace for more info)
+305 |     if is_less(&v[c], &v[b]) {
+    |                        ^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/ascii.rs:499:21
+    |
+499 |         is_ascii &= bytes[i].is_ascii();
+    |                     ^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/ascii.rs:486:22
+    |
+486 |             count += bytes[i].is_ascii() as u8;
+    |                      ^^^^^^^^
+
+error[E0999]: assertion might fail: possible division by zero
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/rotate.rs:163:41
+    |
+163 |             && cmp::min(left, right) <= mem::size_of::<BufType>() / mem::size_of::<T>()
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-thread 'rustc' panicked at compiler/rustc_trait_selection/src/traits/select/mod.rs:305:24:
-`TraitPredicate(<{closure@/Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/copied.rs:30:5: 30:21} as ops::function::FnOnce<(Acc, &T)>>, polarity:Positive)` has escaping bound vars, so it cannot be wrapped in a dummy binder.
+thread 'rustc' panicked at crates/flux-infer/src/infer.rs:378:73:
+called `Option::unwrap()` on a `None` value
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-note: uncaught panic [def_id: DefId(0:6128 ~ core[8058]::iter::adapters::copied::copy_fold), span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/copied.rs:29:1: 29:91 (#0)]
+note: uncaught panic [def_id: DefId(0:13424 ~ core[8058]::str::count::do_count_chars), span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/count.rs:40:1: 40:36 (#0)]
 
-error: could not compile `core` (lib) due to 4 previous errors
+error: could not compile `core` (lib) due to 24 previous errors

@@ -25,6 +25,16 @@ fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
     N
 }
 
+#[flux_attrs::sig(fn (_) -> usize[N])]
+const fn flux_len0<T: Copy, const N: usize>(_: [T; N]) -> usize {
+    N
+}
+
+#[flux_attrs::sig(fn (_) -> usize[N])]
+const fn flux_len1<T, const N: usize>(_: &[T; N]) -> usize {
+    N
+}
+
 ## Dynamic vector len
 #[flux::trusted]
 #[flux::sig(fn (&[T][@n]) -> usize[n])]

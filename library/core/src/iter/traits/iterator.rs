@@ -2219,6 +2219,7 @@ pub trait Iterator {
         // These closure "factory" functions exist to avoid genericity in `Self`.
 
         #[inline]
+        #[flux_attrs::trusted]
         fn is_false<'a, T>(
             predicate: &'a mut impl FnMut(&T) -> bool,
             true_count: &'a mut usize,
@@ -2231,6 +2232,7 @@ pub trait Iterator {
         }
 
         #[inline]
+        #[flux_attrs::trusted]
         fn is_true<T>(predicate: &mut impl FnMut(&T) -> bool) -> impl FnMut(&&mut T) -> bool + '_ {
             move |x| predicate(&**x)
         }

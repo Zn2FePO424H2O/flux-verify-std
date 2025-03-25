@@ -42,6 +42,7 @@ where
 
     #[inline]
     fn next(&mut self) -> Option<I::Item> {
+        #[flux_attrs::trusted]
         fn check<'a, T>(
             flag: &'a mut bool,
             pred: &'a mut impl FnMut(&T) -> bool,

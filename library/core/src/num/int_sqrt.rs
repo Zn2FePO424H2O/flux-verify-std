@@ -132,7 +132,7 @@ macro_rules! unsigned_fn {
 }
 
 #[flux_attrs::sig(fn (_) -> usize[N])]
-fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
+const fn flux_len0<T: Copy, const N: usize>(_: [T; N]) -> usize {
     N
 }
 
@@ -147,8 +147,10 @@ macro_rules! first_stage {
 
         const N_SHIFT: u32 = $original_bits - 8;
         let n = $n >> N_SHIFT;
-        //flux_assume(flux_len(U8_ISQRT_WITH_REMAINDER)==256);
-        let (s, r) = U8_ISQRT_WITH_REMAINDER[n as usize];
+        flux_assume(flux_len0(U8_ISQRT_WITH_REMAINDER)==256);
+        let n_usize = n as usize;
+        flux_assume(n_usize < 256);
+        let (s, r) = U8_ISQRT_WITH_REMAINDER[n_usize];
 
         // Inform the optimizer that `s` is nonzero. This will allow it to
         // avoid generating code to handle division-by-zero panics in the next

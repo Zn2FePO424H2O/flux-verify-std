@@ -26,10 +26,12 @@ impl<I> Copied<I> {
     }
 }
 
+#[flux_attrs::trusted]
 fn copy_fold<T: Copy, Acc>(mut f: impl FnMut(Acc, T) -> Acc) -> impl FnMut(Acc, &T) -> Acc {
     move |acc, &elt| f(acc, elt)
 }
 
+#[flux_attrs::trusted]
 fn copy_try_fold<T: Copy, Acc, R>(mut f: impl FnMut(Acc, T) -> R) -> impl FnMut(Acc, &T) -> R {
     move |acc, &elt| f(acc, elt)
 }

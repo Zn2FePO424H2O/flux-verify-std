@@ -1012,6 +1012,7 @@ impl<T> [T] {
         revswap(front_half, back_half, half_len);
 
         #[inline]
+        #[flux_attrs::trusted]
         const fn revswap<T>(a: &mut [T], b: &mut [T], n: usize) {
             debug_assert!(a.len() == n);
             debug_assert!(b.len() == n);

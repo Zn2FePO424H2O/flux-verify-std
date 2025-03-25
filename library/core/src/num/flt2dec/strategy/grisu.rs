@@ -132,10 +132,10 @@ pub fn cached_power(alpha: i16, gamma: i16) -> (i16, Fp) {
     let range = (CACHED_POW10.len() as i32) - 1;
     let domain = (CACHED_POW10_LAST_E - CACHED_POW10_FIRST_E) as i32;
     let idx = ((gamma as i32) - offset) * range / domain;
-    flux_assume(idx >= 0);
-    flux_assume(idx <= 80);
+    let idx_usize = idx as usize;
+    flux_assume(idx_usize <= 80);
     flux_assume(flux_len(CACHED_POW10) == 81);
-    let (f, e, k) = CACHED_POW10[idx as usize];
+    let (f, e, k) = CACHED_POW10[idx_usize];
     debug_assert!(alpha <= e && e <= gamma);
     (k, Fp { f, e })
 }

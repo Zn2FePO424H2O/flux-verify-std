@@ -98,6 +98,7 @@ const unsafe fn get_mut_noubcheck<T>(ptr: *mut [T], index: usize) -> *mut T {
 }
 
 #[inline(always)]
+#[flux_attrs::trusted]
 const unsafe fn get_offset_len_noubcheck<T>(
     ptr: *const [T],
     offset: usize,
@@ -109,6 +110,7 @@ const unsafe fn get_offset_len_noubcheck<T>(
 }
 
 #[inline(always)]
+#[flux_attrs::trusted]
 const unsafe fn get_offset_len_mut_noubcheck<T>(
     ptr: *mut [T],
     offset: usize,

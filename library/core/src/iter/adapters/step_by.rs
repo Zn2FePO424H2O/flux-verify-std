@@ -299,6 +299,7 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn nth<I: Iterator>(
             iter: &mut I,
             step_minus_one: usize,
@@ -321,6 +322,7 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
         F: FnMut(Acc, Self::Item) -> Acc,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn nth<I: Iterator>(
             iter: &mut I,
             step_minus_one: usize,
@@ -363,6 +365,7 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         R: Try<Output = Acc>,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
             step_minus_one: usize,
@@ -386,6 +389,7 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         F: FnMut(Acc, I::Item) -> Acc,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
             step_minus_one: usize,

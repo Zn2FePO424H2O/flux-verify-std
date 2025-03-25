@@ -45,3 +45,58 @@ Misunderstanding a..b: 1
 Magic numbers: 3
 Can not overflow design for non-zero size: 1
 Bit mask errors: 3
+
+List of trusted files
+library/core/src/cell.rs
+library/core/src/array/drain.rs
+library/core/src/array/mod.rs
+library/core/src/char/convert.rs
+library/core/src/char/methods.rs
+library/core/src/iter/adapters/cloned.rs
+library/core/src/num/flt2dec/mod.rs
+library/core/src/num/flt2dec/strategy/dragon.rs
+library/core/src/num/flt2dec/strategy/grisu.rs
+library/core/src/ptr/metadata.rs
+
+
+
+
+
+Bit shift errors
+$s != 0
+denominator = ($s as $ty) << 1
+denominator > 0
+
+
+Failure to obtain constant vector length: 3
+static POW10: [Digit; 10] =
+    [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
+...POW10.len()
+not know POW10.len() == 10
+maybe refine the fn len in core/slice/mod.rs 
+
+
+Misunderstanding of ASCII range vs hexadecimal: 3
+refine is_8digit as fn (v:u64) -> bool[v >= ....]
+
+
+Loss of refinement on numbers: 2
+usize cast 
+
+
+Sub-vector <= original vector: 4
+
+
+Misunderstanding a..b: 1
+for i in d.num_digits..Decimal::MAX_DIGITS_WITHOUT_OVERFLOW {
+    flux_assume(i >= d.num_digits);
+    flux_assume(i < Decimal::MAX_DIGITS_WITHOUT_OVERFLOW);
+    d.digits[i] = 0;
+}
+
+Magic numbers: 3
+
+Can not overflow design for non-zero size: 1
+
+
+Bit mask errors: 3
