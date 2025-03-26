@@ -1,153 +1,1731 @@
-error[E0999]: unsupported statement
-    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/traits/iterator.rs:3010:21
-     |
-3010 |                     *acc += 1;
-     |                     ^^^^^^^^^
-     |
-     = note: unsupported binary op `AddWithOverflow`
-
-error[E0999]: assertion might fail: possible division by zero
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:729:9
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:161:17
     |
-729 |         ((n >> 19) as u64 / (DIV >> 19)) as u128
-    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:734:15
+161 |                 v[index]
+    |                 ^^^^^^^^
+...
+200 |                     if next!() as i8 >= -64 {
+    |                        ------- in this macro invocation
     |
-734 |     let rem = (n - quot * DIV as u128) as u64;
-    |               ^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: this error originates in the macro `next` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:41:12
-   |
-41 |         if text[i] == x {
-   |            ^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:147:31
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:161:17
     |
-147 |             let u = *(ptr.add(offset - 2 * chunk_bytes) as *const Chunk);
-    |                               ^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:148:31
+161 |                 v[index]
+    |                 ^^^^^^^^
+...
+205 |                     match (first, next!()) {
+    |                                   ------- in this macro invocation
     |
-148 |             let v = *(ptr.add(offset - chunk_bytes) as *const Chunk);
-    |                               ^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:157:9
-    |
-157 |         offset -= 2 * chunk_bytes;
-    |         ^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/memchr.rs:129:24
-    |
-129 |         (prefix.len(), len - suffix.len())
-    |                        ^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/drift.rs:66:17
-   |
-66 |                 scan_idx - prev_run.len(),
-   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/drift.rs:161:5
-    |
-161 |     ((1 << 62) + n as u64 - 1) / n as u64
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: assertion might fail: possible division by zero
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/drift.rs:161:5
-    |
-161 |     ((1 << 62) + n as u64 - 1) / n as u64
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: assertion might fail: possible division by zero
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/stable/mod.rs:100:26
-    |
-100 |     let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem::size_of::<T>();
-    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:188:17
-    |
-188 |         if k == v.len() - 1 {
-    |                 ^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:237:32
-    |
-237 |         ninther(v, is_less, a, i - frac, b, a + 1, i, b + 1, a + 2, i + frac, b + 2);
-    |                                ^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:231:14
-    |
-231 |     let lo = v.len() / 2 - pivot;
-    |              ^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:233:15
-    |
-233 |     let gap = (v.len() - 9 * frac) / 4;
-    |               ^^^^^^^^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:234:17
-    |
-234 |     let mut a = lo - 4 * frac - gap;
-    |                 ^^^^^^^^^^^^^
-
-error[E0999]: arithmetic operation may overflow
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:234:17
-    |
-234 |     let mut a = lo - 4 * frac - gap;
-    |                 ^^^^^^^^^^^^^^^^^^^
+    = note: this error originates in the macro `next` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:302:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:242:38
     |
-302 |     if is_less(&v[c], &v[a]) {
-    |                 ^^^^
+242 |                 while index < len && v[index] < 128 {
+    |                                      ^^^^^^^^
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:302:24
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:165:21
     |
-302 |     if is_less(&v[c], &v[a]) {
-    |                        ^^^^
-
-error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/sort/select.rs:305:24
-    |
-305 |     if is_less(&v[c], &v[b]) {
-    |                        ^^^^
-
-error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/ascii.rs:499:21
-    |
-499 |         is_ascii &= bytes[i].is_ascii();
+165 |         let first = v[index];
     |                     ^^^^^^^^
 
 error[E0999]: assertion might fail: possible out-of-bounds access
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/ascii.rs:486:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:161:17
     |
-486 |             count += bytes[i].is_ascii() as u8;
-    |                      ^^^^^^^^
+161 |                 v[index]
+    |                 ^^^^^^^^
+...
+188 |                     if next!() as i8 >= -64 {
+    |                        ------- in this macro invocation
+    |
+    = note: this error originates in the macro `next` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:161:17
+    |
+161 |                 v[index]
+    |                 ^^^^^^^^
+...
+209 |                     if next!() as i8 >= -64 {
+    |                        ------- in this macro invocation
+    |
+    = note: this error originates in the macro `next` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:161:17
+    |
+161 |                 v[index]
+    |                 ^^^^^^^^
+...
+212 |                     if next!() as i8 >= -64 {
+    |                        ------- in this macro invocation
+    |
+    = note: this error originates in the macro `next` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:161:17
+    |
+161 |                 v[index]
+    |                 ^^^^^^^^
+...
+193 |                     match (first, next!()) {
+    |                                   ------- in this macro invocation
+    |
+    = note: this error originates in the macro `next` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/validations.rs:280:5
+    |
+280 |     UTF8_CHAR_WIDTH[b as usize] as usize
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: internal flux error: crates/flux-infer/src/infer.rs:844:22
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/mod.rs:68:5
+   |
+68 |     crate::intrinsics::const_eval_select((s, begin, end), slice_error_fail_ct, slice_error_fail_rt)
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: incompatible base types: `!` - `!`
 
 error[E0999]: assertion might fail: possible division by zero
-   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/rotate.rs:163:41
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/time.rs:1261:35
+     |
+1261 |                 buf[pos] = b'0' + (fractional_part / divisor) as u8;
+     |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/time.rs:1261:17
+     |
+1261 |                 buf[pos] = b'0' + (fractional_part / divisor) as u8;
+     |                 ^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/time.rs:1261:17
+     |
+1261 |                 buf[pos] = b'0' + (fractional_part / divisor) as u8;
+     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/time.rs:1286:24
+     |
+1286 |                     if buf[rev_pos] < b'9' {
+     |                        ^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/time.rs:1287:25
+     |
+1287 |                         buf[rev_pos] += 1;
+     |                         ^^^^^^^^^^^^^^^^^
+
+error[E0999]: unsupported terminator call
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/printable.rs:24:25
+   |
+24 |     while let Some(v) = normal.next() {
+   |                         ^^^^^^^^^^^^^
+   |
+   = note: unsupported type `?8t`
+
+error[E0999]: assertion might fail: possible division by zero
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:18:25
+   |
+18 |     let chunk_map_idx = bucket_idx / CHUNK_SIZE;
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:22:9
+   |
+22 |         chunk_idx_map[chunk_map_idx]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:26:15
+   |
+26 |     let idx = bitset_chunk_idx[chunk_idx as usize][chunk_piece] as usize;
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:26:15
+   |
+26 |     let idx = bitset_chunk_idx[chunk_idx as usize][chunk_piece] as usize;
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:31:56
+   |
+31 |         let (real_idx, mapping) = bitset_canonicalized[idx - bitset_canonical.len()];
+   |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:31:35
+   |
+31 |         let (real_idx, mapping) = bitset_canonicalized[idx - bitset_canonical.len()];
+   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:32:24
+   |
+32 |         let mut word = bitset_canonical[real_idx as usize];
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:29:9
+   |
+29 |         bitset_canonical[idx]
+   |         ^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:38:34
+   |
+38 |         let quantity = mapping & ((1 << 6) - 1);
+   |                                  ^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:51:31
+   |
+51 |     short_offset_run_header & ((1 << 21) - 1)
+   |                               ^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:84:62
+   |
+84 |         last_idx.checked_sub(1).map(|prev| decode_prefix_sum(short_offset_runs[prev])).unwrap_or(0);
+   |                                                              ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:86:17
+   |
+86 |     let total = needle - prev;
+   |                 ^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:88:17
+   |
+88 |     for _ in 0..(length - 1) {
+   |                 ^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:77:40
+   |
+77 |     let mut offset_idx = decode_length(short_offset_runs[last_idx]);
+   |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:79:9
+   |
+79 |         decode_length(*next) - offset_idx
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:81:9
+   |
+81 |         offsets.len() - offset_idx
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/unicode/unicode_data.rs:89:22
+   |
+89 |         let offset = offsets[offset_idx];
+   |                      ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:15:5
+   |
+15 |     output[0] = ascii::Char::ReverseSolidus;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:16:5
+   |
+16 |     output[1] = a;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:27:14
+   |
+27 |     let hi = HEX_DIGITS[(byte >> 4) as usize];
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:28:14
+   |
+28 |     let lo = HEX_DIGITS[(byte & 0xf) as usize];
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:30:5
+   |
+30 |     output[0] = ascii::Char::ReverseSolidus;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:31:5
+   |
+31 |     output[1] = ascii::Char::SmallX;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:32:5
+   |
+32 |     output[2] = hi;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:33:5
+   |
+33 |     output[3] = lo;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:44:5
+   |
+44 |     output[0] = a;
+   |     ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/escape.rs:104:22
     |
-163 |             && cmp::min(left, right) <= mem::size_of::<BufType>() / mem::size_of::<T>()
-    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+104 |         let lookup = LOOKUP[byte as usize];
+    |                      ^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/simd.rs:970:69
+    |
+970 |         &crate::array::from_fn::<&dyn crate::fmt::Debug, N, _>(|i| &array[i]),
+    |                                                                     ^^^^^^^^
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/eflags.rs:35:5
+   |
+35 |     asm!("pushfq", "pop {}", out(reg) eflags, options(nomem, att_syntax));
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/eflags.rs:35:5: 35:74 (#0), scope: scope[1] }, kind: asm!("pushfq
+           pop {0}", out(reg) _1, options(NOMEM | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/eflags.rs:66:5
+   |
+66 |     asm!("push {}", "popfq", in(reg) eflags, options(nomem, att_syntax));
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/eflags.rs:66:5: 66:73 (#0), scope: scope[0] }, kind: asm!("push {0}
+           popfq", in(reg) move _3, options(NOMEM | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/cpuid.rs:77:9
+   |
+77 | /         asm!(
+78 | |             "mov {0:r}, rbx",
+79 | |             "cpuid",
+80 | |             "xchg {0:r}, rbx",
+...  |
+85 | |             options(nostack, preserves_flags),
+86 | |         );
+   | |_________^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/cpuid.rs:77:9: 86:10 (#0), scope: scope[4] }, kind: asm!("mov {0:r}, rbx
+           cpuid
+           xchg {0:r}, rbx", out(reg) _4, inout("ax") move _9 => _3, inout("cx") move _10 => _5, out("dx") _6, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse.rs:1994:5
+     |
+1994 | /     crate::arch::asm!(
+1995 | |         vps!("movntps", ",{a}"),
+1996 | |         p = in(reg) mem_addr,
+1997 | |         a = in(xmm_reg) a,
+1998 | |         options(nostack, preserves_flags),
+1999 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse.rs:1994:5: 1999:6 (#0), scope: scope[0] }, kind: asm!("movntps [{0}],{1}", in(reg) move _4, in(xmm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:1312:5
+     |
+1312 | /     crate::arch::asm!(
+1313 | |         vps!("movntdq",  ",{a}"),
+1314 | |         p = in(reg) mem_addr,
+1315 | |         a = in(xmm_reg) a,
+1316 | |         options(nostack, preserves_flags),
+1317 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:1312:5: 1317:6 (#0), scope: scope[0] }, kind: asm!("movntdq [{0}],{1}", in(reg) move _4, in(xmm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:1339:5
+     |
+1339 | /     crate::arch::asm!(
+1340 | |         vps!("movnti", ",{a:e}"), // `:e` for 32bit value
+1341 | |         p = in(reg) mem_addr,
+1342 | |         a = in(reg) a,
+1343 | |         options(nostack, preserves_flags),
+1344 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:1339:5: 1344:6 (#0), scope: scope[0] }, kind: asm!("movnti [{0}],{1:e}", in(reg) move _4, in(reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:2541:5
+     |
+2541 | /     crate::arch::asm!(
+2542 | |         vps!("movntpd", ",{a}"),
+2543 | |         p = in(reg) mem_addr,
+2544 | |         a = in(xmm_reg) a,
+2545 | |         options(nostack, preserves_flags),
+2546 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:2541:5: 2546:6 (#0), scope: scope[0] }, kind: asm!("movntpd [{0}],{1}", in(reg) move _4, in(xmm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse41.rs:1080:5
+     |
+1080 | /     crate::arch::asm!(
+1081 | |         vpl!("movntdqa {a}"),
+1082 | |         a = out(xmm_reg) dst,
+1083 | |         p = in(reg) mem_addr,
+1084 | |         options(pure, readonly, nostack, preserves_flags),
+1085 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/sse41.rs:1080:5: 1085:6 (#0), scope: scope[1] }, kind: asm!("movntdqa {0}, [{1}]", out(xmm_reg) _2, in(reg) move _4, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx.rs:1736:5
+     |
+1736 | /     crate::arch::asm!(
+1737 | |         vps!("vmovntdq", ",{a}"),
+1738 | |         p = in(reg) mem_addr,
+1739 | |         a = in(ymm_reg) a,
+1740 | |         options(nostack, preserves_flags),
+1741 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx.rs:1736:5: 1741:6 (#0), scope: scope[0] }, kind: asm!("vmovntdq [{0}],{1}", in(reg) move _4, in(ymm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx.rs:1764:5
+     |
+1764 | /     crate::arch::asm!(
+1765 | |         vps!("vmovntpd", ",{a}"),
+1766 | |         p = in(reg) mem_addr,
+1767 | |         a = in(ymm_reg) a,
+1768 | |         options(nostack, preserves_flags),
+1769 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx.rs:1764:5: 1769:6 (#0), scope: scope[0] }, kind: asm!("vmovntpd [{0}],{1}", in(reg) move _4, in(ymm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx.rs:1793:5
+     |
+1793 | /     crate::arch::asm!(
+1794 | |         vps!("vmovntps", ",{a}"),
+1795 | |         p = in(reg) mem_addr,
+1796 | |         a = in(ymm_reg) a,
+1797 | |         options(nostack, preserves_flags),
+1798 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx.rs:1793:5: 1798:6 (#0), scope: scope[0] }, kind: asm!("vmovntps [{0}],{1}", in(reg) move _4, in(ymm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx2.rs:3145:5
+     |
+3145 | /     crate::arch::asm!(
+3146 | |         vpl!("vmovntdqa {a}"),
+3147 | |         a = out(ymm_reg) dst,
+3148 | |         p = in(reg) mem_addr,
+3149 | |         options(pure, readonly, nostack, preserves_flags),
+3150 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx2.rs:3145:5: 3150:6 (#0), scope: scope[1] }, kind: asm!("vmovntdqa {0}, [{1}]", out(ymm_reg) _2, in(reg) move _4, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28076:5
+      |
+28076 | /     crate::arch::asm!(
+28077 | |         vps!("vmovntps", ",{a}"),
+28078 | |         p = in(reg) mem_addr,
+28079 | |         a = in(zmm_reg) a,
+28080 | |         options(nostack, preserves_flags),
+28081 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28076:5: 28081:6 (#0), scope: scope[0] }, kind: asm!("vmovntps [{0}],{1}", in(reg) move _4, in(zmm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28102:5
+      |
+28102 | /     crate::arch::asm!(
+28103 | |         vps!("vmovntpd", ",{a}"),
+28104 | |         p = in(reg) mem_addr,
+28105 | |         a = in(zmm_reg) a,
+28106 | |         options(nostack, preserves_flags),
+28107 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28102:5: 28107:6 (#0), scope: scope[0] }, kind: asm!("vmovntpd [{0}],{1}", in(reg) move _4, in(zmm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28128:5
+      |
+28128 | /     crate::arch::asm!(
+28129 | |         vps!("vmovntdq", ",{a}"),
+28130 | |         p = in(reg) mem_addr,
+28131 | |         a = in(zmm_reg) a,
+28132 | |         options(nostack, preserves_flags),
+28133 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28128:5: 28133:6 (#0), scope: scope[0] }, kind: asm!("vmovntdq [{0}],{1}", in(reg) move _4, in(zmm_reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28146:5
+      |
+28146 | /     crate::arch::asm!(
+28147 | |         vpl!("vmovntdqa {a}"),
+28148 | |         a = out(zmm_reg) dst,
+28149 | |         p = in(reg) mem_addr,
+28150 | |         options(pure, readonly, nostack, preserves_flags),
+28151 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:28146:5: 28151:6 (#0), scope: scope[1] }, kind: asm!("vmovntdqa {0}, [{1}]", out(zmm_reg) _2, in(reg) move _4, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33677:5
+      |
+33677 | /     asm!(
+33678 | |         vpl!("vmovss {dst}{{{k}}}"),
+33679 | |         p = in(reg) mem_addr,
+33680 | |         k = in(kreg) k,
+33681 | |         dst = inout(xmm_reg) dst,
+33682 | |         options(pure, readonly, nostack, preserves_flags),
+33683 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33677:5: 33683:6 (#0), scope: scope[1] }, kind: asm!("vmovss {2}{{{1}}}, [{0}]", in(reg) move _6, in(kreg) move _7, inout(xmm_reg) copy _4 => _4, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33699:5
+      |
+33699 | /     asm!(
+33700 | |         vpl!("vmovss {dst}{{{k}}} {{z}}"),
+33701 | |         p = in(reg) mem_addr,
+33702 | |         k = in(kreg) k,
+33703 | |         dst = out(xmm_reg) dst,
+33704 | |         options(pure, readonly, nostack, preserves_flags),
+33705 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33699:5: 33705:6 (#0), scope: scope[1] }, kind: asm!("vmovss {2}{{{1}}} {{z}}, [{0}]", in(reg) move _5, in(kreg) move _6, out(xmm_reg) _3, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33721:5
+      |
+33721 | /     asm!(
+33722 | |         vpl!("vmovsd {dst}{{{k}}}"),
+33723 | |         p = in(reg) mem_addr,
+33724 | |         k = in(kreg) k,
+33725 | |         dst = inout(xmm_reg) dst,
+33726 | |         options(pure, readonly, nostack, preserves_flags),
+33727 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33721:5: 33727:6 (#0), scope: scope[1] }, kind: asm!("vmovsd {2}{{{1}}}, [{0}]", in(reg) move _6, in(kreg) move _7, inout(xmm_reg) copy _4 => _4, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33743:5
+      |
+33743 | /     asm!(
+33744 | |         vpl!("vmovsd {dst}{{{k}}} {{z}}"),
+33745 | |         p = in(reg) mem_addr,
+33746 | |         k = in(kreg) k,
+33747 | |         dst = out(xmm_reg) dst,
+33748 | |         options(pure, readonly, nostack, preserves_flags),
+33749 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:33743:5: 33749:6 (#0), scope: scope[1] }, kind: asm!("vmovsd {2}{{{1}}} {{z}}, [{0}]", in(reg) move _5, in(kreg) move _6, out(xmm_reg) _3, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:34050:5
+      |
+34050 | /     asm!(
+34051 | |         vps!("vmovss", "{{{k}}}, {a}"),
+34052 | |         p = in(reg) mem_addr,
+34053 | |         k = in(kreg) k,
+34054 | |         a = in(xmm_reg) a,
+34055 | |         options(nostack, preserves_flags),
+34056 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:34050:5: 34056:6 (#0), scope: scope[0] }, kind: asm!("vmovss [{0}]{{{1}}}, {2}", in(reg) move _5, in(kreg) move _6, in(xmm_reg) move _7, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:34068:5
+      |
+34068 | /     asm!(
+34069 | |         vps!("vmovsd", "{{{k}}}, {a}"),
+34070 | |         p = in(reg) mem_addr,
+34071 | |         k = in(kreg) k,
+34072 | |         a = in(xmm_reg) a,
+34073 | |         options(nostack, preserves_flags),
+34074 | |     );
+      | |_____^
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512f.rs:34068:5: 34074:6 (#0), scope: scope[0] }, kind: asm!("vmovsd [{0}]{{{1}}}, {2}", in(reg) move _5, in(kreg) move _6, in(xmm_reg) move _7, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:29:5
+   |
+29 | /     asm!(
+30 | |         bt!("btl"),
+31 | |         "setc {r}",
+32 | |         p = in(reg) p,
+...  |
+35 | |         options(readonly, nostack, pure, att_syntax)
+36 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:29:5: 36:6 (#0), scope: scope[1] }, kind: asm!("btl {1:e}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(PURE | READONLY | NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:48:5
+   |
+48 | /     asm!(
+49 | |         bt!("btsl"),
+50 | |         "setc {r}",
+51 | |         p = in(reg) p,
+...  |
+54 | |         options(nostack, att_syntax)
+55 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:48:5: 55:6 (#0), scope: scope[1] }, kind: asm!("btsl {1:e}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:67:5
+   |
+67 | /     asm!(
+68 | |         bt!("btrl"),
+69 | |         "setc {r}",
+70 | |         p = in(reg) p,
+...  |
+73 | |         options(nostack, att_syntax)
+74 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:67:5: 74:6 (#0), scope: scope[1] }, kind: asm!("btrl {1:e}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:86:5
+   |
+86 | /     asm!(
+87 | |         bt!("btcl"),
+88 | |         "setc {r}",
+89 | |         p = in(reg) p,
+...  |
+92 | |         options(nostack, att_syntax)
+93 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/bt.rs:86:5: 93:6 (#0), scope: scope[1] }, kind: asm!("btcl {1:e}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512bf16.rs:494:5
+    |
+494 | /     asm!(
+495 | |         "vcvtneps2bf16 {dst}, {src}",
+496 | |         dst = lateout(xmm_reg) dst,
+497 | |         src = in(xmm_reg) a,
+498 | |         options(pure, nomem, nostack, preserves_flags)
+499 | |     );
+    | |_____^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512bf16.rs:494:5: 499:6 (#0), scope: scope[1] }, kind: asm!("vcvtneps2bf16 {0}, {1}", lateout(xmm_reg) _2, in(xmm_reg) move _4, options(PURE | NOMEM | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512bf16.rs:514:5
+    |
+514 | /     asm!(
+515 | |         "vcvtneps2bf16 {dst}{{{k}}},{src}",
+516 | |         dst = inlateout(xmm_reg) dst,
+517 | |         src = in(xmm_reg) a,
+518 | |         k = in(kreg) k,
+519 | |         options(pure, nomem, nostack, preserves_flags)
+520 | |     );
+    | |_____^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512bf16.rs:514:5: 520:6 (#0), scope: scope[1] }, kind: asm!("vcvtneps2bf16 {0}{{{2}}},{1}", inlateout(xmm_reg) copy _4 => _4, in(xmm_reg) move _6, in(kreg) move _7, options(PURE | NOMEM | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512bf16.rs:535:5
+    |
+535 | /     asm!(
+536 | |         "vcvtneps2bf16 {dst}{{{k}}}{{z}},{src}",
+537 | |         dst = lateout(xmm_reg) dst,
+538 | |         src = in(xmm_reg) a,
+539 | |         k = in(kreg) k,
+540 | |         options(pure, nomem, nostack, preserves_flags)
+541 | |     );
+    | |_____^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512bf16.rs:535:5: 541:6 (#0), scope: scope[1] }, kind: asm!("vcvtneps2bf16 {0}{{{2}}}{{z}},{1}", lateout(xmm_reg) _3, in(xmm_reg) move _5, in(kreg) move _6, options(PURE | NOMEM | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avxneconvert.rs:204:5
+    |
+204 | /     asm!(
+205 | |         "{{vex}}vcvtneps2bf16 {dst},{src}",
+206 | |         dst = lateout(xmm_reg) dst,
+207 | |         src = in(xmm_reg) a,
+208 | |         options(pure, nomem, nostack, preserves_flags)
+209 | |     );
+    | |_____^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avxneconvert.rs:204:5: 209:6 (#0), scope: scope[1] }, kind: asm!("{{vex}}vcvtneps2bf16 {0},{1}", lateout(xmm_reg) _2, in(xmm_reg) move _4, options(PURE | NOMEM | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avxneconvert.rs:226:5
+    |
+226 | /     asm!(
+227 | |         "{{vex}}vcvtneps2bf16 {dst},{src}",
+228 | |         dst = lateout(xmm_reg) dst,
+229 | |         src = in(ymm_reg) a,
+230 | |         options(pure, nomem, nostack, preserves_flags)
+231 | |     );
+    | |_____^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avxneconvert.rs:226:5: 231:6 (#0), scope: scope[1] }, kind: asm!("{{vex}}vcvtneps2bf16 {0},{1}", lateout(xmm_reg) _2, in(ymm_reg) move _4, options(PURE | NOMEM | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:640:9
+    |
+640 | /         asm!(
+641 | |             "vcmpph {k}, {a}, {b}, {imm8}",
+642 | |             k = lateout(kreg) dst,
+643 | |             a = in($reg) $a,
+...   |
+646 | |             options(pure, nomem, nostack)
+647 | |         );
+    | |_________^
+...
+675 |       cmp_asm!(__mmask8, xmm_reg, a, b)
+    |       --------------------------------- in this macro invocation
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:640:9: 647:10 (#35478), scope: scope[2] }, kind: asm!("vcmpph {0}, {1}, {2}, {3}", lateout(kreg) _4, in(xmm_reg) move _6, in(xmm_reg) move _7, const const core_arch::x86::avx512fp16::_mm_cmp_ph_mask::<IMM5>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+    = note: this error originates in the macro `cmp_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:652:9
+    |
+652 | /         asm!(
+653 | |             "vcmpph {k} {{ {mask} }}, {a}, {b}, {imm8}",
+654 | |             k = lateout(kreg) dst,
+655 | |             mask = in(kreg) $mask,
+...   |
+659 | |             options(pure, nomem, nostack)
+660 | |         );
+    | |_________^
+...
+693 |       cmp_asm!(__mmask8, k1, xmm_reg, a, b)
+    |       ------------------------------------- in this macro invocation
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:652:9: 660:10 (#35488), scope: scope[2] }, kind: asm!("vcmpph {0} {{ {1} }}, {2}, {3}, {4}", lateout(kreg) _5, in(kreg) move _7, in(xmm_reg) move _8, in(xmm_reg) move _9, const const core_arch::x86::avx512fp16::_mm_mask_cmp_ph_mask::<IMM5>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+    = note: this error originates in the macro `cmp_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:640:9
+    |
+640 | /         asm!(
+641 | |             "vcmpph {k}, {a}, {b}, {imm8}",
+642 | |             k = lateout(kreg) dst,
+643 | |             a = in($reg) $a,
+...   |
+646 | |             options(pure, nomem, nostack)
+647 | |         );
+    | |_________^
+...
+706 |       cmp_asm!(__mmask16, ymm_reg, a, b)
+    |       ---------------------------------- in this macro invocation
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:640:9: 647:10 (#35498), scope: scope[2] }, kind: asm!("vcmpph {0}, {1}, {2}, {3}", lateout(kreg) _4, in(ymm_reg) move _6, in(ymm_reg) move _7, const const core_arch::x86::avx512fp16::_mm256_cmp_ph_mask::<IMM5>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+    = note: this error originates in the macro `cmp_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:652:9
+    |
+652 | /         asm!(
+653 | |             "vcmpph {k} {{ {mask} }}, {a}, {b}, {imm8}",
+654 | |             k = lateout(kreg) dst,
+655 | |             mask = in(kreg) $mask,
+...   |
+659 | |             options(pure, nomem, nostack)
+660 | |         );
+    | |_________^
+...
+724 |       cmp_asm!(__mmask16, k1, ymm_reg, a, b)
+    |       -------------------------------------- in this macro invocation
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:652:9: 660:10 (#35508), scope: scope[2] }, kind: asm!("vcmpph {0} {{ {1} }}, {2}, {3}, {4}", lateout(kreg) _5, in(kreg) move _7, in(ymm_reg) move _8, in(ymm_reg) move _9, const const core_arch::x86::avx512fp16::_mm256_mask_cmp_ph_mask::<IMM5>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+    = note: this error originates in the macro `cmp_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:640:9
+    |
+640 | /         asm!(
+641 | |             "vcmpph {k}, {a}, {b}, {imm8}",
+642 | |             k = lateout(kreg) dst,
+643 | |             a = in($reg) $a,
+...   |
+646 | |             options(pure, nomem, nostack)
+647 | |         );
+    | |_________^
+...
+737 |       cmp_asm!(__mmask32, zmm_reg, a, b)
+    |       ---------------------------------- in this macro invocation
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:640:9: 647:10 (#35518), scope: scope[2] }, kind: asm!("vcmpph {0}, {1}, {2}, {3}", lateout(kreg) _4, in(zmm_reg) move _6, in(zmm_reg) move _7, const const core_arch::x86::avx512fp16::_mm512_cmp_ph_mask::<IMM5>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+    = note: this error originates in the macro `cmp_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:652:9
+    |
+652 | /         asm!(
+653 | |             "vcmpph {k} {{ {mask} }}, {a}, {b}, {imm8}",
+654 | |             k = lateout(kreg) dst,
+655 | |             mask = in(kreg) $mask,
+...   |
+659 | |             options(pure, nomem, nostack)
+660 | |         );
+    | |_________^
+...
+755 |       cmp_asm!(__mmask32, k1, zmm_reg, a, b)
+    |       -------------------------------------- in this macro invocation
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:652:9: 660:10 (#35528), scope: scope[2] }, kind: asm!("vcmpph {0} {{ {1} }}, {2}, {3}, {4}", lateout(kreg) _5, in(kreg) move _7, in(zmm_reg) move _8, in(zmm_reg) move _9, const const core_arch::x86::avx512fp16::_mm512_mask_cmp_ph_mask::<IMM5>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+    = note: this error originates in the macro `cmp_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:776:9
+    |
+776 | /         asm!(
+777 | |             "vcmpph {k}, {a}, {b}, {{sae}}, {imm8}",
+778 | |             k = lateout(kreg) dst,
+779 | |             a = in(zmm_reg) a,
+...   |
+782 | |             options(pure, nomem, nostack)
+783 | |         );
+    | |_________^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:776:9: 783:10 (#0), scope: scope[2] }, kind: asm!("vcmpph {0}, {1}, {2}, {{sae}}, {3}", lateout(kreg) _6, in(zmm_reg) move _8, in(zmm_reg) move _9, const const core_arch::x86::avx512fp16::_mm512_cmp_round_ph_mask::<IMM5, SAE>::{constant#2}, options(PURE | NOMEM | NOSTACK)) -> [return: bb2, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:810:9
+    |
+810 | /         asm!(
+811 | |             "vcmpph {k} {{{k1}}}, {a}, {b}, {{sae}}, {imm8}",
+812 | |             k = lateout(kreg) dst,
+813 | |             k1 = in(kreg) k1,
+...   |
+817 | |             options(pure, nomem, nostack)
+818 | |         );
+    | |_________^
+    |
+    = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:810:9: 818:10 (#0), scope: scope[2] }, kind: asm!("vcmpph {0} {{{1}}}, {2}, {3}, {{sae}}, {4}", lateout(kreg) _7, in(kreg) move _9, in(zmm_reg) move _10, in(zmm_reg) move _11, const const core_arch::x86::avx512fp16::_mm512_mask_cmp_round_ph_mask::<IMM5, SAE>::{constant#2}, options(PURE | NOMEM | NOSTACK)) -> [return: bb2, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:1105:5
+     |
+1105 | /     asm!(
+1106 | |         vpl!("vmovsh {dst}{{{k}}}"),
+1107 | |         dst = inout(xmm_reg) dst,
+1108 | |         k = in(kreg) k,
+1109 | |         p = in(reg) mem_addr,
+1110 | |         options(pure, readonly, nostack, preserves_flags)
+1111 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:1105:5: 1111:6 (#0), scope: scope[1] }, kind: asm!("vmovsh {0}{{{1}}}, [{2}]", inout(xmm_reg) copy _4 => _4, in(kreg) move _6, in(reg) move _7, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:1124:5
+     |
+1124 | /     asm!(
+1125 | |         vpl!("vmovsh {dst}{{{k}}}{{z}}"),
+1126 | |         dst = out(xmm_reg) dst,
+1127 | |         k = in(kreg) k,
+1128 | |         p = in(reg) mem_addr,
+1129 | |         options(pure, readonly, nostack, preserves_flags)
+1130 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:1124:5: 1130:6 (#0), scope: scope[1] }, kind: asm!("vmovsh {0}{{{1}}}{{z}}, [{2}]", out(xmm_reg) _3, in(kreg) move _5, in(reg) move _6, options(PURE | READONLY | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:1261:5
+     |
+1261 | /     asm!(
+1262 | |         vps!("vmovdqu16", "{{{k}}}, {src}"),
+1263 | |         p = in(reg) mem_addr,
+1264 | |         k = in(kreg) k,
+1265 | |         src = in(xmm_reg) a,
+1266 | |         options(nostack, preserves_flags)
+1267 | |     );
+     | |_____^
+     |
+     = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:1261:5: 1267:6 (#0), scope: scope[0] }, kind: asm!("vmovdqu16 [{0}]{{{1}}}, {2}", in(reg) move _5, in(kreg) move _6, in(xmm_reg) move _7, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11014:9
+      |
+11014 | /         asm!(
+11015 | |             "vfpclassph {k}, {src}, {imm8}",
+11016 | |             k = lateout(kreg) dst,
+11017 | |             src = in($reg) $a,
+11018 | |             imm8 = const IMM8,
+11019 | |             options(pure, nomem, nostack)
+11020 | |         );
+      | |_________^
+...
+11058 |       fpclass_asm!(__mmask8, xmm_reg, a)
+      |       ---------------------------------- in this macro invocation
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11014:9: 11020:10 (#37372), scope: scope[2] }, kind: asm!("vfpclassph {0}, {1}, {2}", lateout(kreg) _3, in(xmm_reg) move _5, const const core_arch::x86::avx512fp16::_mm_fpclass_ph_mask::<IMM8>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+      = note: this error originates in the macro `fpclass_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11025:9
+      |
+11025 | /         asm!(
+11026 | |             "vfpclassph {k} {{ {mask} }}, {src}, {imm8}",
+11027 | |             k = lateout(kreg) dst,
+11028 | |             mask = in(kreg) $mask,
+...     |
+11031 | |             options(pure, nomem, nostack)
+11032 | |         );
+      | |_________^
+...
+11083 |       fpclass_asm!(__mmask8, k1, xmm_reg, a)
+      |       -------------------------------------- in this macro invocation
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11025:9: 11032:10 (#37382), scope: scope[2] }, kind: asm!("vfpclassph {0} {{ {1} }}, {2}, {3}", lateout(kreg) _4, in(kreg) move _6, in(xmm_reg) move _7, const const core_arch::x86::avx512fp16::_mm_mask_fpclass_ph_mask::<IMM8>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+      = note: this error originates in the macro `fpclass_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11014:9
+      |
+11014 | /         asm!(
+11015 | |             "vfpclassph {k}, {src}, {imm8}",
+11016 | |             k = lateout(kreg) dst,
+11017 | |             src = in($reg) $a,
+11018 | |             imm8 = const IMM8,
+11019 | |             options(pure, nomem, nostack)
+11020 | |         );
+      | |_________^
+...
+11107 |       fpclass_asm!(__mmask16, ymm_reg, a)
+      |       ----------------------------------- in this macro invocation
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11014:9: 11020:10 (#37392), scope: scope[2] }, kind: asm!("vfpclassph {0}, {1}, {2}", lateout(kreg) _3, in(ymm_reg) move _5, const const core_arch::x86::avx512fp16::_mm256_fpclass_ph_mask::<IMM8>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+      = note: this error originates in the macro `fpclass_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11025:9
+      |
+11025 | /         asm!(
+11026 | |             "vfpclassph {k} {{ {mask} }}, {src}, {imm8}",
+11027 | |             k = lateout(kreg) dst,
+11028 | |             mask = in(kreg) $mask,
+...     |
+11031 | |             options(pure, nomem, nostack)
+11032 | |         );
+      | |_________^
+...
+11132 |       fpclass_asm!(__mmask16, k1, ymm_reg, a)
+      |       --------------------------------------- in this macro invocation
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11025:9: 11032:10 (#37402), scope: scope[2] }, kind: asm!("vfpclassph {0} {{ {1} }}, {2}, {3}", lateout(kreg) _4, in(kreg) move _6, in(ymm_reg) move _7, const const core_arch::x86::avx512fp16::_mm256_mask_fpclass_ph_mask::<IMM8>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+      = note: this error originates in the macro `fpclass_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11014:9
+      |
+11014 | /         asm!(
+11015 | |             "vfpclassph {k}, {src}, {imm8}",
+11016 | |             k = lateout(kreg) dst,
+11017 | |             src = in($reg) $a,
+11018 | |             imm8 = const IMM8,
+11019 | |             options(pure, nomem, nostack)
+11020 | |         );
+      | |_________^
+...
+11156 |       fpclass_asm!(__mmask32, zmm_reg, a)
+      |       ----------------------------------- in this macro invocation
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11014:9: 11020:10 (#37412), scope: scope[2] }, kind: asm!("vfpclassph {0}, {1}, {2}", lateout(kreg) _3, in(zmm_reg) move _5, const const core_arch::x86::avx512fp16::_mm512_fpclass_ph_mask::<IMM8>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+      = note: this error originates in the macro `fpclass_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+     --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11025:9
+      |
+11025 | /         asm!(
+11026 | |             "vfpclassph {k} {{ {mask} }}, {src}, {imm8}",
+11027 | |             k = lateout(kreg) dst,
+11028 | |             mask = in(kreg) $mask,
+...     |
+11031 | |             options(pure, nomem, nostack)
+11032 | |         );
+      | |_________^
+...
+11181 |       fpclass_asm!(__mmask32, k1, zmm_reg, a)
+      |       --------------------------------------- in this macro invocation
+      |
+      = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86/avx512fp16.rs:11025:9: 11032:10 (#37422), scope: scope[2] }, kind: asm!("vfpclassph {0} {{ {1} }}, {2}, {3}", lateout(kreg) _4, in(kreg) move _6, in(zmm_reg) move _7, const const core_arch::x86::avx512fp16::_mm512_mask_fpclass_ph_mask::<IMM8>::{constant#1}, options(PURE | NOMEM | NOSTACK)) -> [return: bb1, unwind unreachable] }
+      = note: this error originates in the macro `fpclass_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/sse2.rs:81:5
+   |
+81 | /     crate::arch::asm!(
+82 | |         vps!("movnti", ",{a}"),
+83 | |         p = in(reg) mem_addr,
+84 | |         a = in(reg) a,
+85 | |         options(nostack, preserves_flags),
+86 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/sse2.rs:81:5: 86:6 (#0), scope: scope[0] }, kind: asm!("movnti [{0}],{1}", in(reg) move _4, in(reg) move _5, options(PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:29:5
+   |
+29 | /     asm!(
+30 | |         bt!("btq"),
+31 | |         "setc {r}",
+32 | |         p = in(reg) p,
+...  |
+35 | |         options(readonly, nostack, pure, att_syntax)
+36 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:29:5: 36:6 (#0), scope: scope[1] }, kind: asm!("btq {1}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(PURE | READONLY | NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:48:5
+   |
+48 | /     asm!(
+49 | |         bt!("btsq"),
+50 | |         "setc {r}",
+51 | |         p = in(reg) p,
+...  |
+54 | |         options(nostack, att_syntax)
+55 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:48:5: 55:6 (#0), scope: scope[1] }, kind: asm!("btsq {1}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:67:5
+   |
+67 | /     asm!(
+68 | |         bt!("btrq"),
+69 | |         "setc {r}",
+70 | |         p = in(reg) p,
+...  |
+73 | |         options(nostack, att_syntax)
+74 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:67:5: 74:6 (#0), scope: scope[1] }, kind: asm!("btrq {1}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: unsupported terminator
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:86:5
+   |
+86 | /     asm!(
+87 | |         bt!("btcq"),
+88 | |         "setc {r}",
+89 | |         p = in(reg) p,
+...  |
+92 | |         options(nostack, att_syntax)
+93 | |     );
+   | |_____^
+   |
+   = note: Terminator { source_info: SourceInfo { span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../stdarch/crates/core_arch/src/x86_64/bt.rs:86:5: 93:6 (#0), scope: scope[1] }, kind: asm!("btcq {1}, ({0})
+           setc {2}", in(reg) move _5, in(reg) move _6, out(reg_byte) _3, options(NOSTACK | ATT_SYNTAX)) -> [return: bb1, unwind unreachable] }
+
+error[E0999]: assignment might be unsafe
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../portable-simd/crates/core_simd/src/swizzle.rs:288:17
+    |
+288 |                 idx[i] = src_index;
+    |                 ^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../portable-simd/crates/core_simd/src/swizzle.rs:337:17
+    |
+337 |                 idx[i] = i * 2 + second as usize;
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:1200:9
+     |
+1200 |         index[i] = i;
+     |         ^^^^^^^^
+
+error[E0999]: assignment might be unsafe
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/../../portable-simd/crates/core_simd/src/vector.rs:1200:9
+     |
+1200 |         index[i] = i;
+     |         ^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/traits/double_ended.rs:142:60
+    |
+142 |                 return Err(unsafe { NonZero::new_unchecked(n - i) });
+    |                                                            ^^^^^
+
+error[E0999]: unsupported statement
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/traits/iterator.rs:228:24
+    |
+228 |             |count, _| count + 1,
+    |                        ^^^^^^^^^
+    |
+    = note: unsupported binary op `AddWithOverflow`
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/traits/iterator.rs:300:60
+    |
+300 |                 return Err(unsafe { NonZero::new_unchecked(n - i) });
+    |                                                            ^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:71:17
+   |
+71 |                 curr -= 1;
+   |                 ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:72:17
+   |
+72 |                 buf[curr].write(Self::digit(n.to_u8())); // Store the digit in the buffer.
+   |                 ^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:83:17
+   |
+83 |                 curr -= 1;
+   |                 ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/num.rs:84:17
+   |
+84 |                 buf[curr].write(Self::digit(n.to_u8())); // Store the digit in the buffer.
+   |                 ^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/fmt/mod.rs:190:24
+    |
+190 |         self.write_str(c.encode_utf8(&mut [0; 4]))
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/f128.rs:542:13
+    |
+542 |             bits - 1
+    |             ^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/f16.rs:535:13
+    |
+535 |             bits - 1
+    |             ^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/f32.rs:761:13
+    |
+761 |             bits - 1
+    |             ^^^^^^^^
+
+error[E0999]: unsupported statement
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/f32.rs:1013:19
+     |
+1013 |                 ((self as f64 + other as f64) / 2.0) as f32
+     |                   ^^^^^^^^^^^
+     |
+     = note: unsupported cast `FloatToFloat`
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/f64.rs:778:13
+    |
+778 |             bits - 1
+    |             ^^^^^^^^
+
+error[E0999]: refinement type error
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/common.rs:24:9
+   |
+24 |         tmp.copy_from_slice(&self[..8]);
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:66:13
+   |
+66 |             self.digits[self.num_digits] = digit;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:81:51
+   |
+81 |         while self.num_digits != 0 && self.digits[self.num_digits - 1] == 0 {
+   |                                                   ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:81:39
+   |
+81 |         while self.num_digits != 0 && self.digits[self.num_digits - 1] == 0 {
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:82:13
+   |
+82 |             self.num_digits -= 1;
+   |             ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:102:24
+    |
+102 |             round_up = self.digits[dp] >= 5;
+    |                        ^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:97:22
+   |
+97 |                 n += self.digits[i] as u64;
+   |                      ^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:136:13
+    |
+136 |             write_index -= 1;
+    |             ^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:124:13
+    |
+124 |             write_index -= 1;
+    |             ^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:125:19
+    |
+125 |             n += (self.digits[read_index] as u64) << shift;
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:181:20
+    |
+181 |         let mask = (1_u64 << shift) - 1;
+    |                    ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:184:37
+    |
+184 |             n = (10 * (n & mask)) + self.digits[read_index] as u64;
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/decimal.rs:161:32
+    |
+161 |                 n = (10 * n) + self.digits[read_index] as u64;
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/float.rs:136:9
+    |
+136 |         TABLE[exponent & 15]
+    |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/float.rs:190:9
+    |
+190 |         TABLE[exponent & 31]
+    |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/dec2flt/number.rs:74:58
+   |
+74 |                 let mantissa = self.mantissa.checked_mul(INT_POW10[shift as usize])?;
+   |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/num/error.rs:38:5
+   |
+38 |     fn from(never: !) -> TryFromIntError {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: incompatible base types: `!` - `!`
+
+error[E0999]: arithmetic operation may overflow
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ptr/const_ptr.rs:1483:23
+     |
+1483 |         self.addr() & (align - 1) == 0
+     |                       ^^^^^^^^^^^
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ptr/const_ptr.rs:1680:9
+     |
+1680 |         self
+     |         ^^^^
+     |
+     = note: unsupported unsize cast from `*const [∃b0. T[b0]; N]` to `*const [T]`
+
+error[E0999]: arithmetic operation may overflow
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ptr/mut_ptr.rs:1736:23
+     |
+1736 |         self.addr() & (align - 1) == 0
+     |                       ^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ptr/mut_ptr.rs:1889:56
+     |
+1889 |             crate::ptr::slice_from_raw_parts_mut(tail, len - mid),
+     |                                                        ^^^^^^^^^
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ptr/mut_ptr.rs:2096:9
+     |
+2096 |         self
+     |         ^^^^
+     |
+     = note: unsupported unsize cast from `*mut [∃b0. T[b0]; N]` to `*mut [T]`
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/borrow.rs:239:5
+    |
+239 |     fn borrow_mut(&mut self) -> &mut T {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/clone.rs:354:9
+    |
+354 |         fn clone(&self) -> Self {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: incompatible base types: `!` - `!`
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/cmp.rs:1785:9
+     |
+1785 |         fn eq(&self, _: &!) -> bool {
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: incompatible base types: `!` - `!`
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/cmp.rs:1796:9
+     |
+1796 |         fn partial_cmp(&self, _: &!) -> Option<Ordering> {
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: incompatible base types: `!` - `!`
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/cmp.rs:1804:9
+     |
+1804 |         fn cmp(&self, _: &!) -> Ordering {
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = note: incompatible base types: `!` - `!`
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/convert/mod.rs:735:5
+    |
+735 |     fn as_mut(&mut self) -> &mut U {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/convert/mod.rs:785:5
+    |
+785 |     fn from(t: !) -> T {
+    |     ^^^^^^^^^^^^^^^^^^
+    |
+    = note: incompatible base types: `!` - `!`
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/convert/mod.rs:963:5
+    |
+963 |     fn from(x: !) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: incompatible base types: `!` - `!`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/error.rs:217:30
+    |
+217 |             unsafe { Some(&*(self as *const dyn Error as *const T)) }
+    |                              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `*const dyn Error + '?18` to `*const dyn error::Error + '?4`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/error.rs:230:34
+    |
+230 |             unsafe { Some(&mut *(self as *mut dyn Error as *mut T)) }
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `*mut dyn Error + '?18` to `*mut dyn error::Error + '?4`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/error.rs:937:22
+    |
+937 |         let erased = self as &mut Tagged<dyn Erased<'a> + 'a>;
+    |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `&'?27 mut Tagged<λb0. TaggedOption<'?28, λb1. I[b1]>[b0]>` to `&'?5 mut error::Tagged<dyn error::Erased<'?6> + '?7>`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/error.rs:966:30
+    |
+966 |             Some(&unsafe { &*(self as *const Self).cast::<Tagged<TaggedOption<'a, I>>>() }.value)
+    |                              ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `*const Tagged<λb0. dyn Erased<'?37> + '?38[b0]>` to `*const error::Tagged<dyn error::Erased<'?6> + '?7>`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/error.rs:982:37
+    |
+982 |                 &mut unsafe { &mut *(self as *mut Self).cast::<Tagged<TaggedOption<'a, I>>>() }
+    |                                     ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `*mut Tagged<λb0. dyn Erased<'?37> + '?38[b0]>` to `*mut error::Tagged<dyn error::Erased<'?6> + '?7>`
+
+error[E0999]: internal flux error: /Users/Exelica/Downloads/project/flux/crates/flux-infer/src/infer.rs:844:22
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ops/bit.rs:75:5
+   |
+75 |     fn not(self) -> ! {
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = note: incompatible base types: `!` - `!`
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ops/deref.rs:277:5
+    |
+277 |     fn deref_mut(&mut self) -> &mut T {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ops/function.rs:271:9
+    |
+271 |         extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ops/function.rs:293:9
+    |
+293 |         extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ops/index_range.rs:139:9
+    |
+139 |         NonZero::new(n - taken.len()).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ops/index_range.rs:157:9
+    |
+157 |         NonZero::new(n - taken.len()).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/any.rs:297:21
+    |
+297 |         unsafe { &*(self as *const dyn Any as *const T) }
+    |                     ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `*const dyn Any + '?16` to `*const dyn any::Any + '?5`
+
+error[E0999]: internal flux error: crates/flux-refineck/src/checker.rs:1395:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/any.rs:327:25
+    |
+327 |         unsafe { &mut *(self as *mut dyn Any as *mut T) }
+    |                         ^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported unsize cast from `*mut dyn Any + '?20` to `*mut dyn any::Any + '?5`
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/iter.rs:226:25
+    |
+226 |             let slice = self.data.get_unchecked_mut(self.alive.clone());
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/iter.rs:291:9
+    |
+291 |         NonZero::new(remaining).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/iter.rs:346:9
+    |
+346 |         NonZero::new(remaining).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:214:9
+    |
+214 |         self
+    |         ^^^^ a postcondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:353:9
+    |
+353 |         self.iter_mut()
+    |         ^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:377:9
+    |
+377 |         IndexMut::index_mut(self as &mut [T], index)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:427:9
+    |
+427 |         self.clone_from_slice(other);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/array/mod.rs:573:9
+    |
+573 |         self
+    |         ^^^^ a postcondition cannot be proved
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ascii/ascii_char.rs:607:26
+    |
+607 |                 let hi = HEX_DIGITS[usize::from(byte >> 4)];
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ascii/ascii_char.rs:608:26
+    |
+608 |                 let lo = HEX_DIGITS[usize::from(byte & 0xf)];
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/bstr.rs:246:9
+    |
+246 |         ByteStr::from_bytes_mut(&mut [])
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assertion might fail: possible out-of-bounds access
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/bstr.rs:310:10
+    |
+310 |         &self.0[idx]
+    |          ^^^^^^^^^^^
+
+error[E0999]: internal flux error: crates/flux-infer/src/infer.rs:844:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/cell/once.rs:161:53
+    |
+161 |         match self.get_or_try_init(|| Ok::<T, !>(f())) {
+    |                                                     ^
+    |
+    = note: incompatible base types: `!` - `!`
+
+error[E0999]: internal flux error: crates/flux-infer/src/infer.rs:844:22
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/cell/once.rs:197:57
+    |
+197 |         match self.get_mut_or_try_init(|| Ok::<T, !>(f())) {
+    |                                                         ^
+    |
+    = note: incompatible base types: `!` - `!`
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ffi/c_str.rs:527:9
+    |
+527 |         self.inner.len() - 1
+    |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/ffi/c_str.rs:585:56
+    |
+585 |         unsafe { slice::from_raw_parts(bytes.as_ptr(), bytes.len() - 1) }
+    |                                                        ^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/io/borrowed_buf.rs:218:9
+    |
+218 |         self.buf.capacity() - self.buf.filled
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: arithmetic operation may overflow
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/io/borrowed_buf.rs:227:9
+    |
+227 |         self.buf.filled - self.start
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/array_chunks.rs:66:9
+   |
+66 |         self.try_for_each(ControlFlow::Break).break_value()
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: generics_of called on `Local(DefId(0:43888 ~ core[8058]::ops::control_flow::ControlFlow::Break::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: assertion might fail: possible division by zero
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/array_chunks.rs:73:10
+   |
+73 |         (lower / N, upper.map(|n| n / N))
+   |          ^^^^^^^^^
+
+error[E0999]: assertion might fail: possible division by zero
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/array_chunks.rs:78:9
+   |
+78 |         self.iter.count() / N
+   |         ^^^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/array_chunks.rs:139:13
+    |
+139 |             chunk.reverse();
+    |             ^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: assertion might fail: possible remainder with a divisor of zero
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/array_chunks.rs:163:19
+    |
+163 |         let rem = self.iter.len() % N;
+    |                   ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: assertion might fail: possible division by zero
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/array_chunks.rs:189:9
+    |
+189 |         self.iter.len() / N
+    |         ^^^^^^^^^^^^^^^^^^^
+
+error[E0999]: unsupported statement
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/chain.rs:98:9
+   |
+98 |         a_count + b_count
+   |         ^^^^^^^^^^^^^^^^^
+   |
+   = note: unsupported binary op `AddWithOverflow`
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/chain.rs:146:9
+    |
+146 |         NonZero::new(n).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/chain.rs:232:9
+    |
+232 |         NonZero::new(n).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: unsupported terminator call
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/cloned.rs:64:9
+   |
+64 |         self.it.map(T::clone).fold(init, f)
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: unsupported type `?0t`
+
+error[E0999]: unsupported terminator call
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/cloned.rs:102:9
+    |
+102 |         self.it.map(T::clone).rfold(init, f)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported type `?0t`
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/copied.rs:246:62
+    |
+246 |             ptr::copy_nonoverlapping(self.as_ref().as_ptr(), raw_array.as_mut_ptr() as *mut T, N);
+    |                                                              ^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: refinement type error
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/copied.rs:235:21
+    |
+235 |                     raw_array.as_mut_ptr() as *mut T,
+    |                     ^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
+
+error[E0999]: internal flux error: crates/flux-fhir-analysis/src/lib.rs:353:17
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/cycle.rs:101:9
+    |
+101 |         NonZero::new(n).map_or(Ok(()), Err)
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: generics_of called on `Local(DefId(0:48469 ~ core[8058]::result::Result::Err::{constructor#0}))` with kind `Ctor(Variant, Fn)`
+
+error[E0999]: unsupported statement
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/enumerate.rs:49:9
+   |
+49 |         self.count += 1;
+   |         ^^^^^^^^^^^^^^^
+   |
+   = note: unsupported binary op `AddWithOverflow`
+
+error[E0999]: unsupported statement
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/enumerate.rs:62:17
+   |
+62 |         let i = self.count + n;
+   |                 ^^^^^^^^^^^^^^
+   |
+   = note: unsupported binary op `AddWithOverflow`
+
+error[E0999]: unsupported statement
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/enumerate.rs:124:25
+    |
+124 |             Err(rem) => n - rem.get(),
+    |                         ^^^^^^^^^^^^^
+    |
+    = note: unsupported binary op `SubWithOverflow`
+
+error[E0999]: unsupported statement
+   --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/enumerate.rs:139:10
+    |
+139 |         (self.count + idx, value)
+    |          ^^^^^^^^^^^^^^^^
+    |
+    = note: unsupported binary op `AddWithOverflow`
+
+error[E0999]: refinement type error
+  --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/filter.rs:50:22
+   |
+50 |             unsafe { array.get_unchecked_mut(idx) }.write(element);
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ a precondition cannot be proved
 
 
-thread 'rustc' panicked at crates/flux-infer/src/infer.rs:378:73:
-called `Option::unwrap()` on a `None` value
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-note: uncaught panic [def_id: DefId(0:13424 ~ core[8058]::str::count::do_count_chars), span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/str/count.rs:40:1: 40:36 (#0)]
+thread 'rustc' panicked at compiler/rustc_trait_selection/src/traits/select/mod.rs:305:24:
+`TraitPredicate(<P as ops::function::FnOnce<(&<I as iter::traits::iterator::Iterator>::Item,)>>, polarity:Positive)` has escaping bound vars, so it cannot be wrapped in a dummy binder.
+note: uncaught panic [def_id: DefId(0:45301 ~ core[8058]::iter::adapters::filter::{impl#9}::next), span: /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/iter/adapters/filter.rs:101:5: 101:42 (#0)]
 
-error: could not compile `core` (lib) due to 24 previous errors
+error: could not compile `core` (lib) due to 194 previous errors

@@ -1,6 +1,10 @@
 use crate::mem::{self, MaybeUninit, SizedTypeProperties};
 use crate::{cmp, ptr};
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Rotates the range `[mid-left, mid+right)` such that the element at `mid` becomes the first
 /// element. Equivalently, rotates the range `left` elements to the left or `right` elements to the
 /// right.
@@ -65,6 +69,9 @@ pub(super) unsafe fn ptr_rotate<T>(mut left: usize, mut mid: *mut T, mut right: 
     if T::IS_ZST {
         return;
     }
+    let mem_size_of_t = mem::size_of::<T>();
+    // flux_verify: ZST
+    flux_assume(mem_size_of_t!=0);
     loop {
         // N.B. the below algorithms can fail if these cases are not checked
         if (right == 0) || (left == 0) {
@@ -160,7 +167,7 @@ pub(super) unsafe fn ptr_rotate<T>(mut left: usize, mut mid: *mut T, mut right: 
             return;
         // `T` is not a zero-sized type, so it's okay to divide by its size.
         } else if !cfg!(feature = "optimize_for_size")
-            && cmp::min(left, right) <= mem::size_of::<BufType>() / mem::size_of::<T>()
+            && cmp::min(left, right) <= mem::size_of::<BufType>() / mem_size_of_t
         {
             // Algorithm 2
             // The `[T; 0]` here is to ensure this is appropriately aligned for T

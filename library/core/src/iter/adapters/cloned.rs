@@ -46,6 +46,8 @@ where
         self.it.size_hint()
     }
 
+    // flux_verify: panic
+    #[flux_attrs::trusted]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
         Self: Sized,
@@ -82,6 +84,8 @@ where
         self.it.next_back().cloned()
     }
 
+    // flux_verify: panic
+    #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
     where
         Self: Sized,

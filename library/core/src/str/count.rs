@@ -37,6 +37,7 @@ pub(super) fn count_chars(s: &str) -> usize {
     }
 }
 
+#[flux_attrs::trusted]
 fn do_count_chars(s: &str) -> usize {
     // For correctness, `CHUNK_SIZE` must be:
     //

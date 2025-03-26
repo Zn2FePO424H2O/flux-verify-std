@@ -713,6 +713,10 @@ fn fmt_u128(n: u128, is_nonnegative: bool, f: &mut fmt::Formatter<'_>) -> fmt::R
     f.pad_integral(is_nonnegative, "", buf_slice)
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Partition of `n` into n > 1e19 and rem <= 1e19
 ///
 /// Integer division algorithm is based on the following paper:
@@ -726,11 +730,17 @@ fn udiv_1e19(n: u128) -> (u128, u64) {
     const FACTOR: u128 = 156927543384667019095894735580191660403;
 
     let quot = if n < 1 << 83 {
-        ((n >> 19) as u64 / (DIV >> 19)) as u128
+        let div_shift: u64 = DIV >> 19;
+        // flux_verify: bit shift
+        flux_assume(div_shift != 0);
+        ((n >> 19) as u64 / div_shift) as u128
     } else {
         u128_mulhi(n, FACTOR) >> 62
     };
 
+    let quot_div_u128 = quot * DIV as u128;
+    // flux_verify: type cast
+    flux_assume(n >= quot_div_u128);
     let rem = (n - quot * DIV as u128) as u64;
     (quot, rem)
 }

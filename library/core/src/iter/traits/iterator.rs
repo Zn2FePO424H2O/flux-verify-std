@@ -2998,6 +2998,7 @@ pub trait Iterator {
         P: FnMut(Self::Item) -> bool,
     {
         #[inline]
+        #[flux_attrs::trusted]
         fn check<'a, T>(
             mut predicate: impl FnMut(T) -> bool + 'a,
             acc: &'a mut usize,

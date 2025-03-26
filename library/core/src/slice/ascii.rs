@@ -465,6 +465,8 @@ const fn is_ascii(s: &[u8]) -> bool {
 /// use SWAR techniques to test for ASCII in `usize`-sized chunks.
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
 #[inline]
+// flux_verify: vector length
+#[flux_attrs::trusted]
 const fn is_ascii(bytes: &[u8]) -> bool {
     // Process chunks of 32 bytes at a time in the fast path to enable
     // auto-vectorization and use of `pmovmskb`. Two 128-bit vector registers

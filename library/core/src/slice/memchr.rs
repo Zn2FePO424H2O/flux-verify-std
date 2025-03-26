@@ -33,6 +33,8 @@ pub const fn memchr(x: u8, text: &[u8]) -> Option<usize> {
 }
 
 #[inline]
+// flux_verify: complex
+#[flux_attrs::trusted]
 const fn memchr_naive(x: u8, text: &[u8]) -> Option<usize> {
     let mut i = 0;
 
@@ -107,6 +109,10 @@ const fn memchr_aligned(x: u8, text: &[u8]) -> Option<usize> {
     )
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Returns the last index matching the byte `x` in `text`.
 #[must_use]
 pub fn memrchr(x: u8, text: &[u8]) -> Option<usize> {
@@ -126,7 +132,10 @@ pub fn memrchr(x: u8, text: &[u8]) -> Option<usize> {
         // SAFETY: transmuting `[u8]` to `[usize]` is safe except for size differences
         // which are handled by `align_to`.
         let (prefix, _, suffix) = unsafe { text.align_to::<(Chunk, Chunk)>() };
-        (prefix.len(), len - suffix.len())
+        let suffix_len = suffix.len();
+        // flux_verify: vector length
+        flux_assume(len >= suffix_len);
+        (prefix.len(), len - suffix_len)
     };
 
     let mut offset = max_aligned_offset;
@@ -143,6 +152,8 @@ pub fn memrchr(x: u8, text: &[u8]) -> Option<usize> {
     while offset > min_aligned_offset {
         // SAFETY: offset starts at len - suffix.len(), as long as it is greater than
         // min_aligned_offset (prefix.len()) the remaining distance is at least 2 * chunk_bytes.
+        // flux_verify: complex
+        flux_assume(offset >= 2 * chunk_bytes);
         unsafe {
             let u = *(ptr.add(offset - 2 * chunk_bytes) as *const Chunk);
             let v = *(ptr.add(offset - chunk_bytes) as *const Chunk);

@@ -81,6 +81,10 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], is_less
     }
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// See [`sort`]
 ///
 /// Deliberately don't inline the main sorting routine entrypoint to ensure the
@@ -97,7 +101,10 @@ fn driftsort_main<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], i
     // also need to ensure our alloc >= MIN_SMALL_SORT_SCRATCH_LEN, as the
     // small-sort always needs this much memory.
     const MAX_FULL_ALLOC_BYTES: usize = 8_000_000; // 8MB
-    let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem::size_of::<T>();
+    let mem_size_of_t = mem::size_of::<T>();
+    // flux_verify: complex
+    flux_assume(mem_size_of_t != 0);
+    let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem_size_of_t;
     let len = v.len();
     let alloc_len =
         cmp::max(cmp::max(len / 2, cmp::min(len, max_full_alloc)), SMALL_SORT_GENERAL_SCRATCH_LEN);

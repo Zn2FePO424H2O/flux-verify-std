@@ -87,6 +87,8 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify: panic
+#[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where
     P: FnMut(&I::Item) -> bool,
@@ -94,6 +96,8 @@ where
     type Item = I::Item;
 
     #[inline]
+    // flux_verify: panic
+    #[flux_attrs::trusted]
     fn next(&mut self) -> Option<I::Item> {
         self.iter.find(&mut self.predicate)
     }

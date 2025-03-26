@@ -164,6 +164,10 @@ fn max_index<T, F: FnMut(&T, &T) -> bool>(slice: &[T], is_less: &mut F) -> Optio
         .map(|(i, _)| i)
 }
 
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Selection algorithm to select the k-th element from the slice in guaranteed O(n) time.
 /// This is essentially a quickselect that uses Tukey's Ninther for pivot selection
 fn median_of_medians<T, F: FnMut(&T, &T) -> bool>(mut v: &mut [T], is_less: &mut F, mut k: usize) {
@@ -185,7 +189,10 @@ fn median_of_medians<T, F: FnMut(&T, &T) -> bool>(mut v: &mut [T], is_less: &mut
 
         // `median_of_{minima,maxima}` can't handle the extreme cases of the first/last element,
         // so we catch them here and just do a linear search.
-        if k == v.len() - 1 {
+        let v_len = v.len();
+        // flux_verify: vector length
+        flux_assume(v_len >= 1);
+        if k == v_len - 1 {
             // Find max element and place it in the last position of the array. We're free to use
             // `unwrap()` here because we know v must not be empty.
             let max_idx = max_index(v, is_less).unwrap();
@@ -219,21 +226,25 @@ fn median_of_medians<T, F: FnMut(&T, &T) -> bool>(mut v: &mut [T], is_less: &mut
 // operates, refer to the paper <https://drops.dagstuhl.de/opus/volltexte/2017/7612/pdf/LIPIcs-SEA-2017-24.pdf>.
 fn median_of_ninthers<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F) -> usize {
     // use `saturating_mul` so the multiplication doesn't overflow on 16-bit platforms.
-    let frac = if v.len() <= 1024 {
-        v.len() / 12
-    } else if v.len() <= 128_usize.saturating_mul(1024) {
-        v.len() / 64
+    // flux_verify: vector length
+    let v_len = v.len();
+    let frac = if v_len <= 1024 {
+        v_len / 12
+    } else if v_len <= 128_usize.saturating_mul(1024) {
+        v_len / 64
     } else {
-        v.len() / 1024
+        v_len / 1024
     };
 
     let pivot = frac / 2;
-    let lo = v.len() / 2 - pivot;
+    let lo = v_len / 2 - pivot;
     let hi = frac + lo;
-    let gap = (v.len() - 9 * frac) / 4;
+    let gap = (v_len - 9 * frac) / 4;
     let mut a = lo - 4 * frac - gap;
     let mut b = hi + gap;
     for i in lo..hi {
+        // flux_verify: complex
+        flux_assume(i >= frac);
         ninther(v, is_less, a, i - frac, b, a + 1, i, b + 1, a + 2, i + frac, b + 2);
         a += 3;
         b += 3;
@@ -292,6 +303,8 @@ fn ninther<T, F: FnMut(&T, &T) -> bool>(
 
 /// returns the index pointing to the median of the 3
 /// elements `v[a]`, `v[b]` and `v[c]`
+// flux_verify: complex
+#[flux_attrs::trusted]
 fn median_idx<T, F: FnMut(&T, &T) -> bool>(
     v: &[T],
     is_less: &mut F,
