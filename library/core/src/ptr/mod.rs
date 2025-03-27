@@ -1833,6 +1833,7 @@ pub unsafe fn write_volatile<T>(dst: *mut T, src: T) {
     }
 }
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume(_:bool) {}

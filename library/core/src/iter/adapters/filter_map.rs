@@ -153,6 +153,7 @@ where
     F: FnMut(I::Item) -> Option<B>,
 {
     #[inline]
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     fn next_back(&mut self) -> Option<B> {
         #[inline]

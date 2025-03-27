@@ -168,6 +168,7 @@ fn compute_product_approx(q: i64, w: u64, precision: usize) -> (u64, u64) {
     (first_lo, first_hi)
 }
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

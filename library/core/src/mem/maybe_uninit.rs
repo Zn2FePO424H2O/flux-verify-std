@@ -283,6 +283,8 @@ impl<T> fmt::Debug for MaybeUninit<T> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> MaybeUninit<T> {
     /// Creates a new `MaybeUninit<T>` initialized with the given value.
     /// It is safe to call [`assume_init`] on the return value of this function.
@@ -648,6 +650,8 @@ impl<T> MaybeUninit<T> {
     #[inline(always)]
     #[rustc_diagnostic_item = "assume_init"]
     #[track_caller]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const unsafe fn assume_init(self) -> T {
         // SAFETY: the caller must guarantee that `self` is initialized.
         // This also means that `self` must be a `value` variant.
@@ -1282,6 +1286,8 @@ impl<T> MaybeUninit<T> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> [MaybeUninit<T>] {
     /// Copies the elements from `src` to `self`,
     /// returning a mutable reference to the now initialized contents of `self`.
@@ -1391,6 +1397,8 @@ impl<T> [MaybeUninit<T>] {
     ///
     /// [`write_copy_of_slice`]: slice::write_copy_of_slice
     #[unstable(feature = "maybe_uninit_write_slice", issue = "79995")]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn write_clone_of_slice(&mut self, src: &[T]) -> &mut [T]
     where
         T: Clone,

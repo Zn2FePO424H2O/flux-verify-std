@@ -4,6 +4,7 @@ use crate::num::dec2flt::common::BiasedFp;
 use crate::num::dec2flt::decimal::{Decimal, parse_decimal};
 use crate::num::dec2flt::float::RawFloat;
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

@@ -1,6 +1,8 @@
 use crate::simd::{LaneCount, Simd, SupportedLaneCount};
 use core::mem;
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<const N: usize> Simd<u8, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -14,6 +16,8 @@ where
     /// to unlock better performance, especially for larger vectors.
     /// A planned compiler improvement will enable using `#[target_feature]` instead.
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn swizzle_dyn(self, idxs: Simd<u8, N>) -> Self {
         #![allow(unused_imports, unused_unsafe)]
         #[cfg(all(
@@ -133,6 +137,8 @@ unsafe fn avx2_pshufb(bytes: Simd<u8, 32>, idxs: Simd<u8, 32>) -> Simd<u8, 32> {
 /// The correctness of this function hinges on the sizes agreeing in actuality.
 #[allow(dead_code)]
 #[inline(always)]
+// flux_verify_unknown: type parameter out of range
+#[flux_attrs::trusted]
 unsafe fn transize<T, const N: usize>(
     f: unsafe fn(T, T) -> T,
     a: Simd<u8, N>,

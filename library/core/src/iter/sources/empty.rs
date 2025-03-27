@@ -17,6 +17,7 @@ use crate::{fmt, marker};
 /// ```
 #[stable(feature = "iter_empty", since = "1.2.0")]
 #[rustc_const_stable(feature = "const_iter_empty", since = "1.32.0")]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub const fn empty<T>() -> Empty<T> {
     Empty(marker::PhantomData)
@@ -73,7 +74,11 @@ impl<T> FusedIterator for Empty<T> {}
 // not #[derive] because that adds a Clone bound on T,
 // which isn't necessary.
 #[stable(feature = "iter_empty", since = "1.2.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> Clone for Empty<T> {
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn clone(&self) -> Empty<T> {
         Empty(marker::PhantomData)
     }
@@ -81,8 +86,12 @@ impl<T> Clone for Empty<T> {
 
 // not #[derive] because that adds a Default bound on T,
 // which isn't necessary.
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 #[stable(feature = "iter_empty", since = "1.2.0")]
 impl<T> Default for Empty<T> {
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn default() -> Empty<T> {
         Empty(marker::PhantomData)
     }

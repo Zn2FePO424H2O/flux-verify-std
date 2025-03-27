@@ -1616,9 +1616,13 @@ impl<T: ?Sized> fmt::Pointer for NonNull<T> {
 impl<T: ?Sized> Eq for NonNull<T> {}
 
 #[stable(feature = "nonnull", since = "1.25.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T: ?Sized> PartialEq for NonNull<T> {
     #[inline]
     #[allow(ambiguous_wide_pointer_comparisons)]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn eq(&self, other: &Self) -> bool {
         self.as_ptr() == other.as_ptr()
     }

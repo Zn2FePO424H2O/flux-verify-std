@@ -181,6 +181,7 @@ impl<'a> Parser<'a> {
         /// trailing IPv4 address was read. Specifically, read a series of
         /// colon-separated IPv6 groups (0x0000 - 0xFFFF), with an optional
         /// trailing embedded IPv4 address.
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn read_groups(p: &mut Parser<'_>, groups: &mut [u16]) -> (usize, bool) {
             let limit = groups.len();

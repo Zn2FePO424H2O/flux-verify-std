@@ -53,6 +53,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I: Iterator, U: IntoIterator, F> Iterator for FlatMap<I, U, F>
 where
     F: FnMut(I::Item) -> U,
@@ -98,6 +100,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         self.inner.last()
     }
@@ -423,6 +427,8 @@ where
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, U> FlattenCompat<I, U>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U>>,
@@ -432,11 +438,14 @@ where
     /// Folds over the inner iterators, not over their elements. Is used by the `fold`, `count`,
     /// and `last` methods.
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn iter_fold<Acc, Fold>(self, mut acc: Acc, mut fold: Fold) -> Acc
     where
         Fold: FnMut(Acc, U) -> Acc,
     {
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
@@ -463,13 +472,14 @@ where
     /// Folds over the inner iterators, not over their elements. Is used by the `try_fold` and
     /// `advance_by` methods.
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn iter_try_fold<Acc, Fold, R>(&mut self, mut acc: Acc, mut fold: Fold) -> R
     where
         Fold: FnMut(Acc, &mut U) -> R,
         R: Try<Output = Acc>,
     {
         #[inline]
-        #[flux_attrs::trusted]
         fn flatten<'a, T: IntoIterator, Acc, R: Try<Output = Acc>>(
             frontiter: &'a mut Option<T::IntoIter>,
             fold: &'a mut impl FnMut(Acc, &mut T::IntoIter) -> R,
@@ -494,6 +504,8 @@ where
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, U> FlattenCompat<I, U>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U>>,
@@ -503,11 +515,12 @@ where
     ///
     /// Folds over the inner iterators, not over their elements. Is used by the `rfold` method.
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn iter_rfold<Acc, Fold>(self, mut acc: Acc, mut fold: Fold) -> Acc
     where
         Fold: FnMut(Acc, U) -> Acc,
     {
-        #[inline]
         #[flux_attrs::trusted]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
@@ -540,6 +553,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn flatten<'a, T: IntoIterator, Acc, R: Try>(
             backiter: &'a mut Option<T::IntoIter>,
@@ -566,6 +580,8 @@ where
 }
 
 // See also the `OneShot` specialization below.
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, U> Iterator for FlattenCompat<I, U>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -609,6 +625,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: unknown
+    #[flux_attrs::trusted_impl]
     default fn try_fold<Acc, Fold, R>(&mut self, init: Acc, fold: Fold) -> R
     where
         Self: Sized,
@@ -616,7 +634,6 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
-        #[flux_attrs::trusted]
         fn flatten<U: Iterator, Acc, R: Try<Output = Acc>>(
             mut fold: impl FnMut(Acc, U::Item) -> R,
         ) -> impl FnMut(Acc, &mut U) -> R {
@@ -663,6 +680,7 @@ where
     default fn count(self) -> usize {
         #[inline]
         #[rustc_inherit_overflow_checks]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn count<U: Iterator>(acc: usize, iter: U) -> usize {
             acc + iter.count()
@@ -683,6 +701,8 @@ where
 }
 
 // See also the `OneShot` specialization below.
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, U> DoubleEndedIterator for FlattenCompat<I, U>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -702,6 +722,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     default fn try_rfold<Acc, Fold, R>(&mut self, init: Acc, fold: Fold) -> R
     where
         Self: Sized,
@@ -709,7 +731,6 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
-        #[flux_attrs::trusted]
         fn flatten<U: DoubleEndedIterator, Acc, R: Try<Output = Acc>>(
             mut fold: impl FnMut(Acc, U::Item) -> R,
         ) -> impl FnMut(Acc, &mut U) -> R {
@@ -881,6 +902,7 @@ fn try_flatten_one<I: IntoIterator<IntoIter: OneShot>, Acc, R: Try<Output = Acc>
     }
 }
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -912,12 +934,16 @@ where
 //
 // An exception to that is `advance_by(0)` and `advance_back_by(0)`, where the generic impls may set
 // `frontiter` or `backiter` without consuming the item, so we **must** override those.
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, U> Iterator for FlattenCompat<I, U>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
     U: Iterator + OneShot,
 {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<U::Item> {
         while let Some(inner) = self.iter.next() {
             if let item @ Some(_) = inner.into_iter().next() {
@@ -971,6 +997,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         self.iter.filter_map(into_item).last()
     }
@@ -978,12 +1006,16 @@ where
 
 // Note: We don't actually care about `U: DoubleEndedIterator`, since forward and backward are the
 // same for a one-shot iterator, but we have to keep that to match the default specialization.
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, U> DoubleEndedIterator for FlattenCompat<I, U>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
     U: DoubleEndedIterator + OneShot,
 {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<U::Item> {
         while let Some(inner) = self.iter.next_back() {
             if let item @ Some(_) = inner.into_iter().next() {

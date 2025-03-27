@@ -6,6 +6,7 @@ use crate::num::dec2flt::number::Number;
 
 const MIN_19DIGIT_INT: u64 = 100_0000_0000_0000_0000;
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -201,6 +202,7 @@ pub fn parse_number(s: &[u8]) -> Option<Number> {
 }
 
 /// Try to parse a special, non-finite float.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> {
     // Since a valid string has at most the length 8, we can load

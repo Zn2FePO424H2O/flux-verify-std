@@ -350,16 +350,22 @@ where
 /// Specialized `Fuse` impl which doesn't bother clearing `iter` when exhausted.
 /// However, we must still be prepared for the possibility that it was already cleared!
 #[doc(hidden)]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I> FuseImpl<I> for Fuse<I>
 where
     I: FusedIterator,
 {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<<I as Iterator>::Item> {
         self.iter.as_mut()?.next()
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<I::Item> {
         self.iter.as_mut()?.nth(n)
     }
@@ -378,6 +384,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn find<P>(&mut self, predicate: P) -> Option<Self::Item>
     where
         P: FnMut(&Self::Item) -> bool,
@@ -386,6 +394,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<<I as Iterator>::Item>
     where
         I: DoubleEndedIterator,
@@ -394,6 +404,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<<I as Iterator>::Item>
     where
         I: DoubleEndedIterator,
@@ -416,6 +428,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn rfind<P>(&mut self, predicate: P) -> Option<Self::Item>
     where
         P: FnMut(&Self::Item) -> bool,

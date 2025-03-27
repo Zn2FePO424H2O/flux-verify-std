@@ -140,12 +140,16 @@ impl<F> fmt::Debug for PollFn<F> {
 }
 
 #[stable(feature = "future_poll_fn", since = "1.64.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, F> Future for PollFn<F>
 where
     F: FnMut(&mut Context<'_>) -> Poll<T>,
 {
     type Output = T;
 
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<T> {
         // SAFETY: We are not moving out of the pinned field.
         (unsafe { &mut self.get_unchecked_mut().f })(cx)

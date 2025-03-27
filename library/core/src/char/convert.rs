@@ -34,6 +34,8 @@ pub(super) const unsafe fn from_u32_unchecked(i: u32) -> char {
 }
 
 #[stable(feature = "char_convert", since = "1.13.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl From<char> for u32 {
     /// Converts a [`char`] into a [`u32`].
     ///
@@ -47,12 +49,16 @@ impl From<char> for u32 {
     /// assert!(4 == mem::size_of_val(&u))
     /// ```
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn from(c: char) -> Self {
         c as u32
     }
 }
 
 #[stable(feature = "more_char_conversions", since = "1.51.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl From<char> for u64 {
     /// Converts a [`char`] into a [`u64`].
     ///
@@ -66,6 +72,8 @@ impl From<char> for u64 {
     /// assert!(8 == mem::size_of_val(&u))
     /// ```
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn from(c: char) -> Self {
         // The char is casted to the value of the code point, then zero-extended to 64 bit.
         // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
@@ -74,6 +82,8 @@ impl From<char> for u64 {
 }
 
 #[stable(feature = "more_char_conversions", since = "1.51.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl From<char> for u128 {
     /// Converts a [`char`] into a [`u128`].
     ///
@@ -87,6 +97,8 @@ impl From<char> for u128 {
     /// assert!(16 == mem::size_of_val(&u))
     /// ```
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn from(c: char) -> Self {
         // The char is casted to the value of the code point, then zero-extended to 128 bit.
         // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
@@ -161,6 +173,8 @@ impl TryFrom<char> for u16 {
 /// for a superset of Windows-1252 that fills the remaining blanks with corresponding
 /// C0 and C1 control codes.
 #[stable(feature = "char_convert", since = "1.13.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl From<u8> for char {
     /// Converts a [`u8`] into a [`char`].
     ///
@@ -174,6 +188,8 @@ impl From<u8> for char {
     /// assert!(4 == mem::size_of_val(&c))
     /// ```
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn from(i: u8) -> Self {
         i as char
     }
@@ -279,6 +295,7 @@ impl fmt::Display for CharTryFromError {
 /// Converts a digit in the given radix to a `char`. See [`char::from_digit`].
 #[inline]
 #[must_use]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub(super) const fn from_digit(num: u32, radix: u32) -> Option<char> {
     if radix > 36 {

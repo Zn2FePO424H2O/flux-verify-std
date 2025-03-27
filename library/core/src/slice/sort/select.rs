@@ -13,6 +13,7 @@ use crate::slice::sort::shared::smallsort::insertion_sort_shift_left;
 use crate::slice::sort::unstable::quicksort::partition;
 
 /// Reorders the slice such that the element at `index` is at its final sorted position.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub(crate) fn partition_at_index<T, F>(
     v: &mut [T],
@@ -62,6 +63,7 @@ where
 const INSERTION_SORT_THRESHOLD: usize = 16;
 
 #[cfg(not(feature = "optimize_for_size"))]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn partition_at_index_loop<'a, T, F>(
     mut v: &'a mut [T],
@@ -164,6 +166,7 @@ fn max_index<T, F: FnMut(&T, &T) -> bool>(slice: &[T], is_less: &mut F) -> Optio
         .map(|(i, _)| i)
 }
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -190,7 +193,7 @@ fn median_of_medians<T, F: FnMut(&T, &T) -> bool>(mut v: &mut [T], is_less: &mut
         // `median_of_{minima,maxima}` can't handle the extreme cases of the first/last element,
         // so we catch them here and just do a linear search.
         let v_len = v.len();
-        // flux_verify: vector length
+        // flux_verify_error: vector length
         flux_assume(v_len >= 1);
         if k == v_len - 1 {
             // Find max element and place it in the last position of the array. We're free to use
@@ -226,7 +229,7 @@ fn median_of_medians<T, F: FnMut(&T, &T) -> bool>(mut v: &mut [T], is_less: &mut
 // operates, refer to the paper <https://drops.dagstuhl.de/opus/volltexte/2017/7612/pdf/LIPIcs-SEA-2017-24.pdf>.
 fn median_of_ninthers<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F) -> usize {
     // use `saturating_mul` so the multiplication doesn't overflow on 16-bit platforms.
-    // flux_verify: vector length
+    // flux_verify_error: vector length
     let v_len = v.len();
     let frac = if v_len <= 1024 {
         v_len / 12
@@ -243,7 +246,7 @@ fn median_of_ninthers<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F)
     let mut a = lo - 4 * frac - gap;
     let mut b = hi + gap;
     for i in lo..hi {
-        // flux_verify: complex
+        // flux_verify_error: complex
         flux_assume(i >= frac);
         ninther(v, is_less, a, i - frac, b, a + 1, i, b + 1, a + 2, i + frac, b + 2);
         a += 3;
@@ -258,6 +261,7 @@ fn median_of_ninthers<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F)
 /// Moves around the 9 elements at the indices a..i, such that
 /// `v[d]` contains the median of the 9 elements and the other
 /// elements are partitioned around it.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn ninther<T, F: FnMut(&T, &T) -> bool>(
     v: &mut [T],
@@ -303,7 +307,7 @@ fn ninther<T, F: FnMut(&T, &T) -> bool>(
 
 /// returns the index pointing to the median of the 3
 /// elements `v[a]`, `v[b]` and `v[c]`
-// flux_verify: complex
+// flux_verify_error: complex
 #[flux_attrs::trusted]
 fn median_idx<T, F: FnMut(&T, &T) -> bool>(
     v: &[T],

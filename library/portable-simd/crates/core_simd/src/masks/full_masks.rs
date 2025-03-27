@@ -96,6 +96,8 @@ macro_rules! impl_reverse_bits {
 
 impl_reverse_bits! { u8, u16, u32, u64 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Mask<T, N>
 where
     T: MaskElement,
@@ -142,6 +144,8 @@ where
 
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original value"]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn to_bitmask_vector(self) -> Simd<u8, N> {
         let mut bitmask = Simd::splat(0);
 
@@ -169,6 +173,8 @@ where
 
     #[inline]
     #[must_use = "method returns a new mask and does not mutate the original value"]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn from_bitmask_vector(bitmask: Simd<u8, N>) -> Self {
         let mut bytes = <LaneCount<N> as SupportedLaneCount>::BitMask::default();
 

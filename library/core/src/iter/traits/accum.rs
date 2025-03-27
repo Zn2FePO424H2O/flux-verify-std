@@ -150,6 +150,8 @@ integer_sum_product! { i8 i16 i32 i64 i128 isize u8 u16 u32 u64 u128 usize }
 float_sum_product! { f32 f64 }
 
 #[stable(feature = "iter_arith_traits_result", since = "1.16.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, U, E> Sum<Result<U, E>> for Result<T, E>
 where
     T: Sum<U>,
@@ -172,6 +174,8 @@ where
     /// let res: Result<i32, _> = v.iter().map(f).sum();
     /// assert_eq!(res, Err("Negative element found"));
     /// ```
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn sum<I>(iter: I) -> Result<T, E>
     where
         I: Iterator<Item = Result<U, E>>,
@@ -181,6 +185,8 @@ where
 }
 
 #[stable(feature = "iter_arith_traits_result", since = "1.16.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, U, E> Product<Result<U, E>> for Result<T, E>
 where
     T: Product<U>,
@@ -202,6 +208,8 @@ where
     /// let total: Result<usize, _> = nums.iter().map(|w| w.parse::<usize>()).product();
     /// assert!(total.is_err());
     /// ```
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn product<I>(iter: I) -> Result<T, E>
     where
         I: Iterator<Item = Result<U, E>>,
@@ -211,6 +219,8 @@ where
 }
 
 #[stable(feature = "iter_arith_traits_option", since = "1.37.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, U> Sum<Option<U>> for Option<T>
 where
     T: Sum<U>,
@@ -232,6 +242,8 @@ where
     /// let total: Option<usize> = words.iter().map(|w| w.find('a')).sum();
     /// assert_eq!(total, None);
     /// ```
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn sum<I>(iter: I) -> Option<T>
     where
         I: Iterator<Item = Option<U>>,
@@ -241,6 +253,8 @@ where
 }
 
 #[stable(feature = "iter_arith_traits_option", since = "1.37.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, U> Product<Option<U>> for Option<T>
 where
     T: Product<U>,
@@ -262,6 +276,8 @@ where
     /// let total: Option<usize> = nums.iter().map(|w| w.parse::<usize>().ok()).product();
     /// assert_eq!(total, None);
     /// ```
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn product<I>(iter: I) -> Option<T>
     where
         I: Iterator<Item = Option<U>>,

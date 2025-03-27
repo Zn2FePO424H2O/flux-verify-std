@@ -750,10 +750,14 @@ pub trait BuildHasher {
 #[stable(since = "1.7.0", feature = "build_hasher")]
 pub struct BuildHasherDefault<H>(marker::PhantomData<fn() -> H>);
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<H> BuildHasherDefault<H> {
     /// Creates a new BuildHasherDefault for Hasher `H`.
     #[stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
     #[rustc_const_stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const fn new() -> Self {
         BuildHasherDefault(marker::PhantomData)
     }
@@ -776,7 +780,11 @@ impl<H: Default + Hasher> BuildHasher for BuildHasherDefault<H> {
 }
 
 #[stable(since = "1.7.0", feature = "build_hasher")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<H> Clone for BuildHasherDefault<H> {
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn clone(&self) -> BuildHasherDefault<H> {
         BuildHasherDefault(marker::PhantomData)
     }
@@ -850,8 +858,12 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_impl: impl
+    #[flux_attrs::trusted]
     impl Hash for char {
         #[inline]
+        // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
         fn hash<H: Hasher>(&self, state: &mut H) {
             state.write_u32(*self as u32)
         }

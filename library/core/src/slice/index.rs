@@ -98,6 +98,7 @@ const unsafe fn get_mut_noubcheck<T>(ptr: *mut [T], index: usize) -> *mut T {
 }
 
 #[inline(always)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 const unsafe fn get_offset_len_noubcheck<T>(
     ptr: *const [T],
@@ -110,6 +111,7 @@ const unsafe fn get_offset_len_noubcheck<T>(
 }
 
 #[inline(always)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 const unsafe fn get_offset_len_mut_noubcheck<T>(
     ptr: *mut [T],
@@ -221,6 +223,8 @@ pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
 
 /// The methods `index` and `index_mut` panic if the index is out of bounds.
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 unsafe impl<T> SliceIndex<[T]> for usize {
     type Output = T;
 
@@ -277,6 +281,8 @@ unsafe impl<T> SliceIndex<[T]> for usize {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn index_mut(self, slice: &mut [T]) -> &mut T {
         // N.B., use intrinsic indexing
         &mut (*slice)[self]

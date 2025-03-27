@@ -293,6 +293,8 @@ where
 }
 
 #[doc(hidden)]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<A, B> ZipImpl<A, B> for Zip<A, B>
 where
     A: TrustedRandomAccess + Iterator,
@@ -305,6 +307,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<(A::Item, B::Item)> {
         if self.index < self.len {
             let i = self.index;
@@ -338,6 +342,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         let delta = cmp::min(n, self.len - self.index);
         let end = self.index + delta;
@@ -366,6 +372,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<(A::Item, B::Item)>
     where
         A: DoubleEndedIterator + ExactSizeIterator,

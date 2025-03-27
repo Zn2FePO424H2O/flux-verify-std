@@ -235,6 +235,8 @@ impl<T, const N: usize> Drop for Buffer<T, N> {
 }
 
 #[unstable(feature = "iter_map_windows", reason = "recently added", issue = "87155")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, F, R, const N: usize> Iterator for MapWindows<I, F, N>
 where
     I: Iterator,
@@ -242,6 +244,8 @@ where
 {
     type Item = R;
 
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         let window = self.inner.next_window()?;
         let out = (self.f)(window);

@@ -65,16 +65,22 @@ mod impls {
     use crate::marker::Tuple;
 
     #[stable(feature = "async_closure", since = "1.85.0")]
+    // flux_verify_impl: impl
+    #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> AsyncFn<A> for &F
     where
         F: AsyncFn<A>,
     {
+        // flux_verify_panic: bug caught
+        #[flux_attrs::trusted_impl]
         extern "rust-call" fn async_call(&self, args: A) -> Self::CallRefFuture<'_> {
             F::async_call(*self, args)
         }
     }
 
     #[stable(feature = "async_closure", since = "1.85.0")]
+    // flux_verify_impl: impl
+    #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> AsyncFnMut<A> for &F
     where
         F: AsyncFn<A>,
@@ -84,6 +90,8 @@ mod impls {
         where
             Self: 'a;
 
+        // flux_verify_panic: bug caught
+        #[flux_attrs::trusted_impl]
         extern "rust-call" fn async_call_mut(&mut self, args: A) -> Self::CallRefFuture<'_> {
             F::async_call(*self, args)
         }
@@ -103,6 +111,8 @@ mod impls {
     }
 
     #[stable(feature = "async_closure", since = "1.85.0")]
+    // flux_verify_impl: impl
+    #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> AsyncFnMut<A> for &mut F
     where
         F: AsyncFnMut<A>,
@@ -112,6 +122,8 @@ mod impls {
         where
             Self: 'a;
 
+        // flux_verify_panic: bug caught
+        #[flux_attrs::trusted_impl]
         extern "rust-call" fn async_call_mut(&mut self, args: A) -> Self::CallRefFuture<'_> {
             F::async_call_mut(*self, args)
         }

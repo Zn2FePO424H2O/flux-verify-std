@@ -105,6 +105,8 @@ where
     LaneCount<N>: SupportedLaneCount,
     T: SimdElement;
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Simd<T, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -554,6 +556,8 @@ where
     #[must_use]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub unsafe fn gather_select_unchecked(
         slice: &[T],
         enable: Mask<isize, N>,
@@ -781,6 +785,8 @@ where
     /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub unsafe fn scatter_select_unchecked(
         self,
         slice: &mut [T],
@@ -1203,6 +1209,8 @@ where
 }
 
 #[inline]
+// flux_verify_unknown: type parameter out of range
+#[flux_attrs::trusted]
 fn mask_up_to<M, const N: usize>(len: usize) -> Mask<M, N>
 where
     LaneCount<N>: SupportedLaneCount,

@@ -8,6 +8,7 @@ use crate::slice::sort::stable::merge::merge;
 use crate::slice::sort::stable::quicksort::quicksort;
 use crate::{cmp, intrinsics};
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -67,7 +68,7 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool>(
             next_run =
                 create_run(&mut v[scan_idx..], scratch, min_good_run_len, eager_sort, is_less);
             let prev_run_len = prev_run.len();
-            // flux_verify: complex
+            // flux_verify_error: complex
             flux_assume(scan_idx >= prev_run_len);
             desired_depth = merge_tree_depth(
                 scan_idx - prev_run_len,

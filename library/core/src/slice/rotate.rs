@@ -1,6 +1,7 @@
 use crate::mem::{self, MaybeUninit, SizedTypeProperties};
 use crate::{cmp, ptr};
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -70,7 +71,7 @@ pub(super) unsafe fn ptr_rotate<T>(mut left: usize, mut mid: *mut T, mut right: 
         return;
     }
     let mem_size_of_t = mem::size_of::<T>();
-    // flux_verify: ZST
+    // flux_verify_error: ZST
     flux_assume(mem_size_of_t!=0);
     loop {
         // N.B. the below algorithms can fail if these cases are not checked

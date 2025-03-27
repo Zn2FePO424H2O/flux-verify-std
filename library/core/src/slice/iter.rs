@@ -452,6 +452,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -459,6 +461,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -491,11 +495,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -516,11 +524,15 @@ where
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a [T]> {
         if self.finished {
             None
@@ -596,6 +608,8 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for SplitInclusive<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -603,6 +617,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -632,11 +648,15 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for SplitInclusive<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -701,11 +721,15 @@ where
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             None
@@ -717,6 +741,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -724,6 +750,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -757,11 +785,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -835,6 +867,8 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for SplitInclusiveMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -842,6 +876,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -876,11 +912,15 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for SplitInclusiveMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -970,6 +1010,8 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -977,6 +1019,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         self.inner.next_back()
     }
@@ -988,22 +1032,30 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         self.inner.next()
     }
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a [T]> {
         self.inner.finish()
     }
@@ -1056,17 +1108,23 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a mut [T]> {
         self.inner.finish()
     }
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -1074,6 +1132,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a mut [T]> {
         self.inner.next_back()
     }
@@ -1085,11 +1145,15 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
         self.inner.next()
     }
@@ -3314,6 +3378,8 @@ impl<'a, T: 'a, P> ChunkBy<'a, T, P> {
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> Iterator for ChunkBy<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
@@ -3321,6 +3387,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None
@@ -3342,17 +3410,23 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn last(mut self) -> Option<Self::Item> {
         self.next_back()
     }
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> DoubleEndedIterator for ChunkBy<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None
@@ -3401,6 +3475,8 @@ impl<'a, T: 'a, P> ChunkByMut<'a, T, P> {
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> Iterator for ChunkByMut<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
@@ -3408,6 +3484,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None
@@ -3430,17 +3508,23 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn last(mut self) -> Option<Self::Item> {
         self.next_back()
     }
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> DoubleEndedIterator for ChunkByMut<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None

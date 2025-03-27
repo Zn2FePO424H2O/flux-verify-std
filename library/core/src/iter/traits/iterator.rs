@@ -2042,6 +2042,8 @@ pub trait Iterator {
     /// [`collect`]: Iterator::collect
     #[inline]
     #[unstable(feature = "iterator_try_collect", issue = "94047")]
+    // flux_verify_unknown: Unimplemented
+    #[flux_attrs::trusted]
     fn try_collect<B>(&mut self) -> ChangeOutputType<Self::Item, B>
     where
         Self: Sized,
@@ -2208,6 +2210,8 @@ pub trait Iterator {
     /// assert!(a[i..].iter().all(|&n| n % 2 == 1)); // odds
     /// ```
     #[unstable(feature = "iter_partition_in_place", reason = "new API", issue = "62543")]
+    // flux_verify_panic: unknown
+    #[flux_attrs::trusted]
     fn partition_in_place<'a, T: 'a, P>(mut self, ref mut predicate: P) -> usize
     where
         Self: Sized + DoubleEndedIterator<Item = &'a mut T>,
@@ -2219,7 +2223,6 @@ pub trait Iterator {
         // These closure "factory" functions exist to avoid genericity in `Self`.
 
         #[inline]
-        #[flux_attrs::trusted]
         fn is_false<'a, T>(
             predicate: &'a mut impl FnMut(&T) -> bool,
             true_count: &'a mut usize,
@@ -2232,7 +2235,6 @@ pub trait Iterator {
         }
 
         #[inline]
-        #[flux_attrs::trusted]
         fn is_true<T>(predicate: &mut impl FnMut(&T) -> bool) -> impl FnMut(&&mut T) -> bool + '_ {
             move |x| predicate(&**x)
         }
@@ -2646,6 +2648,8 @@ pub trait Iterator {
     /// ```
     #[inline]
     #[unstable(feature = "iterator_try_reduce", reason = "new API", issue = "87053")]
+    // flux_verify_panic: unknown
+    #[flux_attrs::trusted]
     fn try_reduce<R>(
         &mut self,
         f: impl FnMut(Self::Item, Self::Item) -> R,
@@ -2998,6 +3002,7 @@ pub trait Iterator {
         P: FnMut(Self::Item) -> bool,
     {
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn check<'a, T>(
             mut predicate: impl FnMut(T) -> bool + 'a,

@@ -41,10 +41,5 @@ const fn flux_const_len<T, const N: usize>(_: &[T; N]) -> usize {
 fn flux_arr_len<T> (arr:&[T]) -> usize {arr.len()}
 
 ## Eror types
-bit map
-bit shift
-type cast
-vector length
-complex
-ZST
-panic
+// flux_verify: [type]
+#[flux_attrs::trusted]

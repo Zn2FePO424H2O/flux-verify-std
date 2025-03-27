@@ -11,6 +11,7 @@ use crate::{intrinsics, ptr};
 /// `limit` when initialized with `c*log(v.len())` for some c ensures we do not
 /// overflow the stack or go quadratic.
 #[inline(never)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn quicksort<T, F: FnMut(&T, &T) -> bool>(
     mut v: &mut [T],
@@ -86,6 +87,7 @@ pub fn quicksort<T, F: FnMut(&T, &T) -> bool>(
 ///
 /// If `is_less` is not a strict total order or panics, `scratch.len() < v.len()`,
 /// or `pivot_pos >= v.len()`, the result and `v`'s state is sound but unspecified.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn stable_partition<T, F: FnMut(&T, &T) -> bool>(
     v: &mut [T],
@@ -199,6 +201,7 @@ impl<T> PartitionState<T> {
     ///
     /// `scan` and `scratch` must point to valid disjoint buffers of length `len`. The
     /// scan buffer must be initialized.
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     unsafe fn new(scan: *const T, scratch: *mut T, len: usize) -> Self {
         // SAFETY: See function safety comment.

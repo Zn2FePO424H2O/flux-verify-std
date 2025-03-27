@@ -70,6 +70,7 @@ unsafe fn median3_rec<T, F: FnMut(&T, &T) -> bool>(
 ///
 /// SAFETY: a, b, c must be valid initialized elements.
 #[inline(always)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn median3<T, F: FnMut(&T, &T) -> bool>(a: &T, b: &T, c: &T, is_less: &mut F) -> *const T {
     // Compiler tends to make this branchless when sensible, and avoids the

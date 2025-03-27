@@ -92,6 +92,8 @@ struct InitializingSlice<'a, T> {
     initialized_len: usize,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> InitializingSlice<'a, T> {
     #[inline]
     fn from_fully_uninit(data: &'a mut [MaybeUninit<T>]) -> Self {
@@ -104,6 +106,8 @@ impl<'a, T> InitializingSlice<'a, T> {
     ///
     /// Panics if the slice is already fully initialized.
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn push(&mut self, value: T) {
         MaybeUninit::write(&mut self.data[self.initialized_len], value);
         self.initialized_len += 1;

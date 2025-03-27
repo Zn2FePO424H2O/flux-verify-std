@@ -94,6 +94,8 @@ pub struct Argument<'a> {
 }
 
 #[rustc_diagnostic_item = "ArgumentMethods"]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl Argument<'_> {
     #[inline]
     const fn new<'a, T>(x: &'a T, f: fn(&T, &mut Formatter<'_>) -> Result) -> Argument<'a> {
@@ -110,42 +112,62 @@ impl Argument<'_> {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_display<T: Display>(x: &T) -> Argument<'_> {
         Self::new(x, Display::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_debug<T: Debug>(x: &T) -> Argument<'_> {
         Self::new(x, Debug::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_debug_noop<T: Debug>(x: &T) -> Argument<'_> {
         Self::new(x, |_, _| Ok(()))
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_octal<T: Octal>(x: &T) -> Argument<'_> {
         Self::new(x, Octal::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_lower_hex<T: LowerHex>(x: &T) -> Argument<'_> {
         Self::new(x, LowerHex::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_upper_hex<T: UpperHex>(x: &T) -> Argument<'_> {
         Self::new(x, UpperHex::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_pointer<T: Pointer>(x: &T) -> Argument<'_> {
         Self::new(x, Pointer::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_binary<T: Binary>(x: &T) -> Argument<'_> {
         Self::new(x, Binary::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_lower_exp<T: LowerExp>(x: &T) -> Argument<'_> {
         Self::new(x, LowerExp::fmt)
     }
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn new_upper_exp<T: UpperExp>(x: &T) -> Argument<'_> {
         Self::new(x, UpperExp::fmt)
     }

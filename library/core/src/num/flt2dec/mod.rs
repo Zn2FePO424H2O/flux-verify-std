@@ -145,6 +145,7 @@ pub const MAX_SIG_DIGITS: usize = 17;
 /// When `d` contains decimal digits, increase the last digit and propagate carry.
 /// Returns a next digit when it causes the length to change.
 #[doc(hidden)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn round_up(d: &mut [u8]) -> Option<u8> {
     match d.iter().rposition(|&c| c != b'9') {
@@ -179,6 +180,7 @@ pub fn round_up(d: &mut [u8]) -> Option<u8> {
 /// it will be ignored and full digits will be printed. It is only used to print
 /// additional zeroes after rendered digits. Thus `frac_digits` of 0 means that
 /// it will only print given digits and nothing else.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn digits_to_dec_str<'a>(
     buf: &'a [u8],
@@ -258,6 +260,7 @@ fn digits_to_dec_str<'a>(
 /// it will be ignored and full digits will be printed. It is only used to print
 /// additional zeroes after rendered digits. Thus, `min_digits == 0` means that
 /// it will only print the given digits and nothing else.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn digits_to_exp_str<'a>(
     buf: &'a [u8],
@@ -348,6 +351,7 @@ fn determine_sign(sign: Sign, decoded: &FullDecoded, negative: bool) -> &'static
 /// The byte buffer should be at least `MAX_SIG_DIGITS` bytes long.
 /// There should be at least 4 parts available, due to the worst case like
 /// `[+][0.][0000][2][0000]` with `frac_digits = 10`.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn to_shortest_str<'a, T, F>(
     mut format_shortest: F,
@@ -423,6 +427,7 @@ where
 /// The byte buffer should be at least `MAX_SIG_DIGITS` bytes long.
 /// There should be at least 6 parts available, due to the worst case like
 /// `[+][1][.][2345][e][-][6]`.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn to_shortest_exp_str<'a, T, F>(
     mut format_shortest: F,
@@ -516,6 +521,7 @@ fn estimate_max_buf_len(exp: i16) -> usize {
 /// (The tipping point for `f64` is about 800, so 1000 bytes should be enough.)
 /// There should be at least 6 parts available, due to the worst case like
 /// `[+][1][.][2345][e][-][6]`.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn to_exact_exp_str<'a, T, F>(
     mut format_exact: F,
@@ -593,6 +599,7 @@ where
 /// (The tipping point for `f64` is about 800, and 1000 bytes should be enough.)
 /// There should be at least 4 parts available, due to the worst case like
 /// `[+][0.][0000][2][0000]` with `frac_digits = 10`.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn to_exact_fixed_str<'a, T, F>(
     mut format_exact: F,

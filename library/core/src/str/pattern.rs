@@ -557,10 +557,14 @@ impl<'a> DoubleEndedSearcher<'a> for CharSearcher<'a> {}
 /// ```
 /// assert_eq!("Hello world".find('o'), Some(4));
 /// ```
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl Pattern for char {
     type Searcher<'a> = CharSearcher<'a>;
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> Self::Searcher<'_> {
         let mut utf8_encoded = [0; 4];
         let utf8_size = self
@@ -580,6 +584,8 @@ impl Pattern for char {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn is_contained_in(self, haystack: &str) -> bool {
         if (self as u32) < 128 {
             haystack.as_bytes().contains(&(self as u8))
@@ -670,10 +676,14 @@ struct MultiCharEqSearcher<'a, C: MultiCharEq> {
     char_indices: super::CharIndices<'a>,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<C: MultiCharEq> Pattern for MultiCharEqPattern<C> {
     type Searcher<'a> = MultiCharEqSearcher<'a, C>;
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> MultiCharEqSearcher<'_, C> {
         MultiCharEqSearcher { haystack, char_eq: self.0, char_indices: haystack.char_indices() }
     }
@@ -903,10 +913,14 @@ pub struct CharPredicateSearcher<'a, F>(<MultiCharEqPattern<F> as Pattern>::Sear
 where
     F: FnMut(char) -> bool;
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<F> fmt::Debug for CharPredicateSearcher<'_, F>
 where
     F: FnMut(char) -> bool,
 {
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("CharPredicateSearcher")
             .field("haystack", &self.0.haystack)
@@ -968,10 +982,14 @@ impl<'b, 'c> Pattern for &'c &'b str {
 /// ```
 /// assert_eq!("Hello world".find("world"), Some(6));
 /// ```
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'b> Pattern for &'b str {
     type Searcher<'a> = StrSearcher<'a, 'b>;
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> StrSearcher<'_, 'b> {
         StrSearcher::new(haystack, self)
     }
@@ -1775,6 +1793,8 @@ impl TwoWayStrategy for RejectAndMatch {
 /// [0]: http://0x80.pl/articles/simd-strfind.html#sse-avx2
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
 #[inline]
+// flux_verify_unknown: expected array or slice type
+#[flux_attrs::trusted]
 fn simd_contains(needle: &str, haystack: &str) -> Option<bool> {
     let needle = needle.as_bytes();
     let haystack = haystack.as_bytes();
@@ -1907,6 +1927,8 @@ fn simd_contains(needle: &str, haystack: &str) -> Option<bool> {
 /// Both slices must have the same length.
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))] // only called on x86
 #[inline]
+// flux_verify_unknown: no primop rule
+#[flux_attrs::trusted]
 unsafe fn small_slice_eq(x: &[u8], y: &[u8]) -> bool {
     debug_assert_eq!(x.len(), y.len());
     // This function is adapted from

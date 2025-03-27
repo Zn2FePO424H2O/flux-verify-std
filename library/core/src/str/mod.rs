@@ -64,6 +64,8 @@ pub use validations::{next_code_point, utf8_char_width};
 #[track_caller]
 #[rustc_allow_const_fn_unstable(const_eval_select)]
 #[cfg(not(feature = "panic_immediate_abort"))]
+// flux_verify_unknown: incompatible base types
+#[flux_attrs::trusted]
 const fn slice_error_fail(s: &str, begin: usize, end: usize) -> ! {
     crate::intrinsics::const_eval_select((s, begin, end), slice_error_fail_ct, slice_error_fail_rt)
 }
@@ -114,6 +116,8 @@ fn slice_error_fail_rt(s: &str, begin: usize, end: usize) -> ! {
     );
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 #[cfg(not(test))]
 impl str {
     /// Returns the length of `self`.
@@ -2652,6 +2656,8 @@ impl str {
     #[must_use = "this returns the escaped string as an iterator, \
                   without modifying the original"]
     #[stable(feature = "str_escape", since = "1.34.0")]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn escape_debug(&self) -> EscapeDebug<'_> {
         let mut chars = self.chars();
         EscapeDebug {

@@ -87,6 +87,7 @@ pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
 #[rustc_nounwind]
 #[rustc_const_stable_indirect] // must follow stable const rules since it is exposed to stable
 #[rustc_allow_const_fn_unstable(const_eval_select)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub const fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>, force_no_backtrace: bool) -> ! {
     const_eval_select!(

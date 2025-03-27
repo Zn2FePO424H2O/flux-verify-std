@@ -168,6 +168,8 @@ pub mod alphabetic {
         10, 1, 17, 5, 3, 1, 5, 1, 17, 0, 26, 6, 26, 6, 26, 0, 0, 32, 0, 6, 222, 2, 0, 14, 0, 15, 0,
         0, 0, 0, 0, 5, 0, 0,
     ];
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn lookup(c: char) -> bool {
         super::skip_search(
             c as u32,
@@ -221,6 +223,8 @@ pub mod case_ignorable {
         4, 50, 8, 1, 14, 1, 22, 5, 1, 15, 0, 7, 1, 17, 2, 7, 1, 2, 1, 5, 5, 62, 33, 1, 160, 14, 0,
         1, 61, 4, 0, 5, 254, 2, 0, 7, 109, 8, 0, 5, 0, 1, 30, 96, 128, 240, 0,
     ];
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn lookup(c: char) -> bool {
         super::skip_search(
             c as u32,
@@ -251,6 +255,8 @@ pub mod cased {
         1, 1, 3, 7, 1, 0, 2, 25, 1, 25, 1, 31, 1, 25, 1, 31, 1, 25, 1, 31, 1, 25, 1, 31, 1, 25, 1,
         8, 0, 10, 1, 20, 6, 6, 0, 62, 0, 68, 0, 26, 6, 26, 6, 26, 0,
     ];
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn lookup(c: char) -> bool {
         super::skip_search(
             c as u32,
@@ -268,6 +274,8 @@ pub mod cc {
     static OFFSETS: [u8; 5] = [
         0, 32, 95, 33, 0,
     ];
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn lookup(c: char) -> bool {
         super::skip_search(
             c as u32,
@@ -316,9 +324,13 @@ pub mod grapheme_extend {
         5, 100, 1, 160, 7, 0, 1, 61, 4, 0, 4, 254, 2, 0, 7, 109, 7, 0, 96, 128, 240, 0,
     ];
     #[inline]
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn lookup(c: char) -> bool {
         (c as u32) >= 0x300 && lookup_slow(c)
     }
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     fn lookup_slow(c: char) -> bool {
         super::skip_search(
             c as u32,
@@ -423,6 +435,8 @@ pub mod lowercase {
         (5, 187), (6, 78), (7, 132),
     ];
 
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub const fn lookup(c: char) -> bool {
         super::bitset_search(
             c as u32,
@@ -458,6 +472,8 @@ pub mod n {
         86, 10, 134, 10, 1, 7, 0, 10, 0, 23, 0, 10, 0, 20, 12, 20, 108, 25, 0, 50, 0, 10, 0, 10, 0,
         10, 247, 10, 0, 9, 128, 10, 0, 59, 1, 3, 1, 4, 76, 45, 1, 15, 0, 13, 0, 10, 0,
     ];
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn lookup(c: char) -> bool {
         super::skip_search(
             c as u32,
@@ -547,6 +563,8 @@ pub mod uppercase {
         (2, 146), (2, 20), (3, 146), (3, 140), (3, 134), (4, 178), (4, 171),
     ];
 
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub const fn lookup(c: char) -> bool {
         super::bitset_search(
             c as u32,
@@ -572,6 +590,8 @@ pub mod white_space {
         0, 0, 0, 0, 0, 0, 0, 0, 0,
     ];
     #[inline]
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub const fn lookup(c: char) -> bool {
         match c as u32 >> 8 {
             0 => WHITESPACE_MAP[c as usize & 0xff] & 1 != 0,
@@ -587,6 +607,8 @@ pub mod white_space {
 pub mod conversions {
     const INDEX_MASK: u32 = 0x400000;
 
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn to_lower(c: char) -> [char; 3] {
         if c.is_ascii() {
             [(c as u8).to_ascii_lowercase() as char, '\0', '\0']
@@ -604,6 +626,8 @@ pub mod conversions {
         }
     }
 
+    // flux_verify_ice: invalid cast char to int
+    #[flux_attrs::trusted]
     pub fn to_upper(c: char) -> [char; 3] {
         if c.is_ascii() {
             [(c as u8).to_ascii_uppercase() as char, '\0', '\0']

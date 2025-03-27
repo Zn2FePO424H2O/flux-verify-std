@@ -67,6 +67,8 @@ fn inspect_try_fold<'a, T, Acc, R>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I: Iterator, F> Iterator for Inspect<I, F>
 where
     F: FnMut(&I::Item),
@@ -74,6 +76,8 @@ where
     type Item = I::Item;
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         let next = self.iter.next();
         self.do_inspect(next)
@@ -104,11 +108,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I: DoubleEndedIterator, F> DoubleEndedIterator for Inspect<I, F>
 where
     F: FnMut(&I::Item),
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<I::Item> {
         let next = self.iter.next_back();
         self.do_inspect(next)

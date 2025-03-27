@@ -441,8 +441,12 @@ step_integer_impls! {
 }
 
 #[unstable(feature = "step_trait", reason = "recently redesigned", issue = "42168")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl Step for char {
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn steps_between(&start: &char, &end: &char) -> (usize, Option<usize>) {
         let start = start as u32;
         let end = end as u32;
@@ -467,6 +471,8 @@ impl Step for char {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn forward_checked(start: char, count: usize) -> Option<char> {
         let start = start as u32;
         let mut res = Step::forward_checked(start, count)?;
@@ -483,6 +489,8 @@ impl Step for char {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn backward_checked(start: char, count: usize) -> Option<char> {
         let start = start as u32;
         let mut res = Step::backward_checked(start, count)?;
@@ -495,6 +503,8 @@ impl Step for char {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     unsafe fn forward_unchecked(start: char, count: usize) -> char {
         let start = start as u32;
         // SAFETY: the caller must guarantee that this doesn't overflow
@@ -511,6 +521,8 @@ impl Step for char {
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     unsafe fn backward_unchecked(start: char, count: usize) -> char {
         let start = start as u32;
         // SAFETY: the caller must guarantee that this doesn't overflow
@@ -758,8 +770,12 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn spec_next(&mut self) -> Option<T> {
         if self.start < self.end {
             let old = self.start;
@@ -772,6 +788,8 @@ impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn spec_nth(&mut self, n: usize) -> Option<T> {
         if let Some(plus_n) = Step::forward_checked(self.start, n) {
             if plus_n < self.end {
@@ -802,6 +820,8 @@ impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn spec_next_back(&mut self) -> Option<T> {
         if self.start < self.end {
             // SAFETY: just checked precondition
@@ -813,6 +833,8 @@ impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn spec_nth_back(&mut self, n: usize) -> Option<T> {
         if let Some(minus_n) = Step::backward_checked(self.end, n) {
             if minus_n > self.start {
@@ -1151,8 +1173,12 @@ impl<A: Step> RangeInclusiveIteratorImpl for ops::RangeInclusive<A> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T: TrustedStep> RangeInclusiveIteratorImpl for ops::RangeInclusive<T> {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn spec_next(&mut self) -> Option<T> {
         if self.is_empty() {
             return None;
@@ -1198,6 +1224,8 @@ impl<T: TrustedStep> RangeInclusiveIteratorImpl for ops::RangeInclusive<T> {
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn spec_next_back(&mut self) -> Option<T> {
         if self.is_empty() {
             return None;

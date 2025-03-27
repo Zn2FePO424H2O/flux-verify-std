@@ -38,6 +38,8 @@ pub struct Successors<T, F> {
 }
 
 #[stable(feature = "iter_successors", since = "1.34.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, F> Iterator for Successors<T, F>
 where
     F: FnMut(&T) -> Option<T>,
@@ -45,6 +47,8 @@ where
     type Item = T;
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         let item = self.next.take()?;
         self.next = (self.succ)(&item);

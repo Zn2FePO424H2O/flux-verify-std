@@ -100,6 +100,8 @@ enum Direction {
 }
 
 #[cfg(not(test))]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> [T] {
     /// Returns the number of elements in the slice.
     ///
@@ -175,6 +177,8 @@ impl<T> [T] {
     #[rustc_const_stable(feature = "const_slice_first_last", since = "1.83.0")]
     #[inline]
     #[must_use]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const fn first_mut(&mut self) -> Option<&mut T> {
         if let [first, ..] = self { Some(first) } else { None }
     }
@@ -301,6 +305,8 @@ impl<T> [T] {
     #[rustc_const_stable(feature = "const_slice_first_last", since = "1.83.0")]
     #[inline]
     #[must_use]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const fn last_mut(&mut self) -> Option<&mut T> {
         if let [.., last] = self { Some(last) } else { None }
     }
@@ -916,6 +922,8 @@ impl<T> [T] {
     #[rustc_const_stable(feature = "const_swap", since = "1.85.0")]
     #[inline]
     #[track_caller]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const fn swap(&mut self, a: usize, b: usize) {
         // FIXME: use swap_unchecked here (https://github.com/rust-lang/rust/pull/88540#issuecomment-944344343)
         // Can't take two mutable loans from one vector, so instead use raw pointers.
@@ -1012,6 +1020,7 @@ impl<T> [T] {
         revswap(front_half, back_half, half_len);
 
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         const fn revswap<T>(a: &mut [T], b: &mut [T], n: usize) {
             debug_assert!(a.len() == n);
@@ -4189,6 +4198,8 @@ impl<T> [T] {
     /// ```
     #[stable(feature = "is_sorted", since = "1.82.0")]
     #[must_use]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub fn is_sorted_by<'a, F>(&'a self, mut compare: F) -> bool
     where
         F: FnMut(&'a T, &'a T) -> bool,
@@ -4908,11 +4919,15 @@ trait CloneFromSpec<T> {
     fn spec_clone_from(&mut self, src: &[T]);
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> CloneFromSpec<T> for [T]
 where
     T: Clone,
 {
     #[track_caller]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     default fn spec_clone_from(&mut self, src: &[T]) {
         assert!(self.len() == src.len(), "destination and source slices have different lengths");
         // NOTE: We need to explicitly slice them to the same length

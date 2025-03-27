@@ -77,6 +77,7 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn enumerate<'a, T, Acc, R>(
             count: &'a mut usize,
@@ -99,6 +100,7 @@ where
         Fold: FnMut(Acc, Self::Item) -> Acc,
     {
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn enumerate<T, Acc>(
             mut count: usize,

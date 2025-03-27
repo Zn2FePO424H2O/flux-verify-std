@@ -36,6 +36,8 @@ fn check(x: u16, singletonuppers: &[(u8, u8)], singletonlowers: &[u8], normal: &
     current
 }
 
+// flux_verify_ice: invalid cast char to int
+#[flux_attrs::trusted]
 pub(crate) fn is_printable(x: char) -> bool {
     let x = x as u32;
     let lower = x as u16;

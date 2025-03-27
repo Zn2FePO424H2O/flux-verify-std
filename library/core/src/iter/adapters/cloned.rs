@@ -25,6 +25,7 @@ impl<I> Cloned<I> {
     }
 }
 
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn clone_try_fold<T: Clone, Acc, R>(mut f: impl FnMut(Acc, T) -> R) -> impl FnMut(Acc, &T) -> R {
     move |acc, elt| f(acc, elt.clone())
@@ -46,7 +47,7 @@ where
         self.it.size_hint()
     }
 
-    // flux_verify: panic
+    // flux_verify_panic: unknown
     #[flux_attrs::trusted]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -84,7 +85,7 @@ where
         self.it.next_back().cloned()
     }
 
-    // flux_verify: panic
+    // flux_verify_panic: unknown
     #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
     where

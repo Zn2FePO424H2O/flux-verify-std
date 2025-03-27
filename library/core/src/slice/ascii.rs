@@ -8,6 +8,8 @@ use crate::intrinsics::const_eval_select;
 use crate::{ascii, iter, ops};
 
 #[cfg(not(test))]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl [u8] {
     /// Checks if all bytes in this slice are within the ASCII range.
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
@@ -91,6 +93,8 @@ impl [u8] {
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_make_ascii", since = "1.84.0")]
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const fn make_ascii_uppercase(&mut self) {
         // FIXME(const-hack): We would like to simply iterate using `for` loops but this isn't currently allowed in constant expressions.
         let mut i = 0;
@@ -113,6 +117,8 @@ impl [u8] {
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_make_ascii", since = "1.84.0")]
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     pub const fn make_ascii_lowercase(&mut self) {
         // FIXME(const-hack): We would like to simply iterate using `for` loops but this isn't currently allowed in constant expressions.
         let mut i = 0;
@@ -279,7 +285,11 @@ impl<'a> iter::DoubleEndedIterator for EscapeAscii<'a> {
 #[stable(feature = "inherent_ascii_escape", since = "1.60.0")]
 impl<'a> iter::FusedIterator for EscapeAscii<'a> {}
 #[stable(feature = "inherent_ascii_escape", since = "1.60.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a> fmt::Display for EscapeAscii<'a> {
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // disassemble iterator, including front/back parts of flatmap in case it has been partially consumed
         let (front, slice, back) = self.clone().inner.into_parts();
@@ -337,6 +347,7 @@ impl<'a> fmt::Debug for EscapeAscii<'a> {
 #[unstable(feature = "str_internals", issue = "none")]
 #[doc(hidden)]
 #[inline]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub const fn is_ascii_simple(mut bytes: &[u8]) -> bool {
     while let [rest @ .., last] = bytes {
@@ -465,7 +476,7 @@ const fn is_ascii(s: &[u8]) -> bool {
 /// use SWAR techniques to test for ASCII in `usize`-sized chunks.
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
 #[inline]
-// flux_verify: vector length
+// flux_verify_unknown: vector length
 #[flux_attrs::trusted]
 const fn is_ascii(bytes: &[u8]) -> bool {
     // Process chunks of 32 bytes at a time in the fast path to enable

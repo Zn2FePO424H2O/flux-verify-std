@@ -26,6 +26,7 @@ static POW5TO256: [Digit; 19] = [
     0xf46eeddc, 0x5fdcefce, 0x553f7,
 ];
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -110,6 +111,7 @@ fn div_rem_upto_16<'a>(
 }
 
 /// The shortest mode implementation for Dragon.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn format_shortest<'a>(
     d: &Decoded,
@@ -271,6 +273,7 @@ pub fn format_shortest<'a>(
 }
 
 /// The exact and fixed mode implementation for Dragon.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn format_exact<'a>(
     d: &Decoded,

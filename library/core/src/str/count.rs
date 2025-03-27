@@ -24,6 +24,7 @@ const USIZE_SIZE: usize = core::mem::size_of::<usize>();
 const UNROLL_INNER: usize = 4;
 
 #[inline]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub(super) fn count_chars(s: &str) -> usize {
     if cfg!(feature = "optimize_for_size") || s.len() < USIZE_SIZE * UNROLL_INNER {
@@ -37,6 +38,7 @@ pub(super) fn count_chars(s: &str) -> usize {
     }
 }
 
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn do_count_chars(s: &str) -> usize {
     // For correctness, `CHUNK_SIZE` must be:

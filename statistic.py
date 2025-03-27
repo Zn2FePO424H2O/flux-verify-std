@@ -3,8 +3,9 @@ import re
 from collections import defaultdict
 
 def find_flux_verify_tags(root_dir):
-    pattern = re.compile(r'^\s*// flux_verify:\s*(\S+)')
+    pattern = re.compile(r'^\s*// flux_verify_([\w]+):\s*(.+)$')
     tag_counts = defaultdict(int)
+    tag_details = defaultdict(list)
     tag_locations = defaultdict(list)
 
     for dirpath, _, filenames in os.walk(root_dir):
@@ -15,17 +16,20 @@ def find_flux_verify_tags(root_dir):
                     for line_number, line in enumerate(file, start=1):
                         match = pattern.match(line)
                         if match:
-                            tag = match.group(1)
-                            tag_counts[tag] += 1
-                            tag_locations[tag].append((file_path, line_number))
+                            tag1, tag2 = match.groups()
+                            tag_counts[tag1] += 1
+                            tag_details[tag1].append(tag2)
+                            tag_locations[tag1].append((file_path, line_number))
             except (UnicodeDecodeError, IOError):
                 continue
 
-    return tag_counts, tag_locations
+    return tag_counts, tag_details, tag_locations
 
 if __name__ == "__main__":
-    search_directory = "./library/core/src"
-    tag_counts, _ = find_flux_verify_tags(search_directory)
+    search_directory = "./library"
+    tag_counts, tag_details, tag_locations = find_flux_verify_tags(search_directory)
 
-    for tag, count in sorted(tag_counts.items()):
-        print(f"{tag}: {count}")
+    for tag1 in sorted(tag_counts.keys()):
+        print(f"{tag1}: {tag_counts[tag1]}")
+        for tag2 in sorted(set(tag_details[tag1])):
+            print(f"  - {tag2}")

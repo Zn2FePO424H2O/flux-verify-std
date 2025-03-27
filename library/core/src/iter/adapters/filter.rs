@@ -87,7 +87,7 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify: panic
+// flux_verify_panic: unknown
 #[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where
@@ -96,13 +96,15 @@ where
     type Item = I::Item;
 
     #[inline]
-    // flux_verify: panic
-    #[flux_attrs::trusted]
+    // flux_verify_panic: unknown
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         self.iter.find(&mut self.predicate)
     }
 
     #[inline]
+    // flux_verify_panic: unknown
+    #[flux_attrs::trusted_impl]
     fn next_chunk<const N: usize>(
         &mut self,
     ) -> Result<[Self::Item; N], array::IntoIter<Self::Item, N>> {
@@ -165,11 +167,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I: DoubleEndedIterator, P> DoubleEndedIterator for Filter<I, P>
 where
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
+    // flux_verify_panic: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<I::Item> {
         self.iter.rfind(&mut self.predicate)
     }

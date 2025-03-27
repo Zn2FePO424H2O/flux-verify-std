@@ -81,6 +81,7 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], is_less
     }
 }
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -102,7 +103,7 @@ fn driftsort_main<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], i
     // small-sort always needs this much memory.
     const MAX_FULL_ALLOC_BYTES: usize = 8_000_000; // 8MB
     let mem_size_of_t = mem::size_of::<T>();
-    // flux_verify: complex
+    // flux_verify_error: complex
     flux_assume(mem_size_of_t != 0);
     let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem_size_of_t;
     let len = v.len();

@@ -30,6 +30,8 @@ pub struct Pending<T> {
 /// # }
 /// ```
 #[stable(feature = "future_readiness_fns", since = "1.48.0")]
+// flux_verify_ice: assertion `left == right` failed
+#[flux_attrs::trusted]
 pub fn pending<T>() -> Pending<T> {
     Pending { _data: marker::PhantomData }
 }

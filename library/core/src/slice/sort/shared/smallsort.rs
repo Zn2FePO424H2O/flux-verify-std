@@ -308,6 +308,7 @@ impl<T> Drop for CopyOnDrop<T> {
     }
 }
 
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 fn small_sort_network<T, F>(v: &mut [T], is_less: &mut F)
 where
@@ -540,6 +541,7 @@ where
 ///
 /// # Safety
 /// begin < tail and p must be valid and initialized for all begin <= p <= tail.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 unsafe fn insert_tail<T, F: FnMut(&T, &T) -> bool>(begin: *mut T, tail: *mut T, is_less: &mut F) {
     // SAFETY: see individual comments.
@@ -579,6 +581,7 @@ unsafe fn insert_tail<T, F: FnMut(&T, &T) -> bool>(begin: *mut T, tail: *mut T, 
 }
 
 /// Sort `v` assuming `v[..offset]` is already sorted.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn insertion_sort_shift_left<T, F: FnMut(&T, &T) -> bool>(
     v: &mut [T],
@@ -765,6 +768,7 @@ unsafe fn merge_down<T, F: FnMut(&T, &T) -> bool>(
 ///
 /// Note that T must be Freeze, the comparison function is evaluated on outdated
 /// temporary 'copies' that may not end up in the final array.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 unsafe fn bidirectional_merge<T: FreezeMarker, F: FnMut(&T, &T) -> bool>(
     v: &[T],

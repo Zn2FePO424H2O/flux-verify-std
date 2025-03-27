@@ -5,15 +5,20 @@ capture = False
 filtered_lines = []
 e0999_count = 0
 other_error_count = 0
+last_non_empty_line = ""
 
 with open("log.txt", "r", encoding="utf-8") as file:
     for line in file:
-        if line.startswith("error[E0999]:"):
-            error_counts[line.strip()] += 1
+        stripped_line = line.strip()
+        if stripped_line:
+            last_non_empty_line = stripped_line
+
+        if stripped_line.startswith("error[E0999]:"):
+            error_counts[stripped_line] += 1
             e0999_count += 1
             capture = True
-        elif line.startswith("error: ") and not line.startswith("error: could not compile"):
-            parts = line.strip().split(":")
+        elif stripped_line.startswith("error: ") and not stripped_line.startswith("error: could not compile"):
+            parts = stripped_line.split(":")
             error_counts[":".join(parts[:2] + parts[5:])] += 1
             other_error_count += 1
             capture = False
@@ -38,3 +43,6 @@ for error in sorted(error_counts):
 print(f"\nTotal error[E0999]: {e0999_count}\n")
 
 print("--end of errors--\n")
+
+if last_non_empty_line.startswith("error: could not compile") and "previous errors" in last_non_empty_line:
+    print("Warning: The compilation process was not completed successfully. Some errors may not be fully captured.\n")

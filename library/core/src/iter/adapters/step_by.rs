@@ -216,6 +216,8 @@ unsafe trait StepByBackImpl<I> {
         F: FnMut(Acc, Self::Item) -> Acc;
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
     type Item = I::Item;
 
@@ -293,13 +295,14 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
         }
     }
 
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     default fn spec_try_fold<Acc, F, R>(&mut self, mut acc: Acc, mut f: F) -> R
     where
         F: FnMut(Acc, Self::Item) -> R,
         R: Try<Output = Acc>,
     {
         #[inline]
-        #[flux_attrs::trusted]
         fn nth<I: Iterator>(
             iter: &mut I,
             step_minus_one: usize,
@@ -317,11 +320,14 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
         from_fn(nth(&mut self.iter, self.step_minus_one)).try_fold(acc, f)
     }
 
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     default fn spec_fold<Acc, F>(mut self, mut acc: Acc, mut f: F) -> Acc
     where
         F: FnMut(Acc, Self::Item) -> Acc,
     {
         #[inline]
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted]
         fn nth<I: Iterator>(
             iter: &mut I,
@@ -341,6 +347,8 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for StepBy<I> {
     type Item = I::Item;
 
@@ -359,12 +367,13 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         self.iter.nth_back(n)
     }
 
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     default fn spec_try_rfold<Acc, F, R>(&mut self, init: Acc, mut f: F) -> R
     where
         F: FnMut(Acc, Self::Item) -> R,
         R: Try<Output = Acc>,
     {
-        #[inline]
         #[flux_attrs::trusted]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
@@ -383,12 +392,13 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
     }
 
     #[inline]
+    // flux_verify_panic: bug caught
+    #[flux_attrs::trusted_impl]
     default fn spec_rfold<Acc, F>(mut self, init: Acc, mut f: F) -> Acc
     where
         Self: Sized,
         F: FnMut(Acc, I::Item) -> Acc,
     {
-        #[inline]
         #[flux_attrs::trusted]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,

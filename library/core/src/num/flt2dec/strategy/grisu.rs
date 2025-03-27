@@ -116,6 +116,7 @@ pub const CACHED_POW10_FIRST_E: i16 = -1087;
 #[doc(hidden)]
 pub const CACHED_POW10_LAST_E: i16 = 1039;
 
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -126,6 +127,7 @@ fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
 }
 
 #[doc(hidden)]
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn cached_power(alpha: i16, gamma: i16) -> (i16, Fp) {
     let offset = CACHED_POW10_FIRST_E as i32;
@@ -175,6 +177,7 @@ pub fn max_pow10_no_more_than(x: u32) -> (u8, u32) {
 /// The shortest mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn format_shortest_opt<'a>(
     d: &Decoded,
@@ -485,6 +488,7 @@ pub fn format_shortest<'a>(
 /// The exact and fixed mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
+// flux_verify_unknown: unknown
 #[flux_attrs::trusted]
 pub fn format_exact_opt<'a>(
     d: &Decoded,
@@ -663,6 +667,7 @@ pub fn format_exact_opt<'a>(
     // - `ulp = 2^-e * k`
     //
     // SAFETY: the first `len` bytes of `buf` must be initialized.
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     unsafe fn possibly_round(
         buf: &mut [MaybeUninit<u8>],

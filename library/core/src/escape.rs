@@ -125,6 +125,8 @@ const fn escape_ascii<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>)
 /// Escapes a character `\u{NNNN}` representation.
 ///
 /// Returns a buffer and the length of the escaped representation.
+// flux_verify_ice: invalid cast char to int
+#[flux_attrs::trusted]
 const fn escape_unicode<const N: usize>(c: char) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 10 && N < u8::MAX as usize) };
 
