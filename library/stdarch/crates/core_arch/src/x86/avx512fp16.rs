@@ -765,6 +765,8 @@ pub unsafe fn _mm512_mask_cmp_ph_mask<const IMM5: i32>(
 #[target_feature(enable = "avx512fp16")]
 #[rustc_legacy_const_generics(2, 3)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm512_cmp_round_ph_mask<const IMM5: i32, const SAE: i32>(
     a: __m512h,
     b: __m512h,

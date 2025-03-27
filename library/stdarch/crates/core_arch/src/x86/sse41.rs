@@ -1075,6 +1075,8 @@ pub unsafe fn _mm_test_mix_ones_zeros(a: __m128i, mask: __m128i) -> i32 {
 #[target_feature(enable = "sse4.1")]
 #[cfg_attr(test, assert_instr(movntdqa))]
 #[stable(feature = "simd_x86_updates", since = "1.82.0")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_load_si128(mem_addr: *const __m128i) -> __m128i {
     let dst: __m128i;
     crate::arch::asm!(

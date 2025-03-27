@@ -1006,12 +1006,16 @@ where
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> AsMut<[T]> for Simd<T, N>
 where
     LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn as_mut(&mut self) -> &mut [T] {
         self.as_mut_array()
     }

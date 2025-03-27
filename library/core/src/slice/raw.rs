@@ -205,6 +205,8 @@ pub const fn from_ref<T>(s: &T) -> &[T] {
 #[stable(feature = "from_ref", since = "1.28.0")]
 #[rustc_const_stable(feature = "const_slice_from_ref", since = "1.83.0")]
 #[must_use]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 pub const fn from_mut<T>(s: &mut T) -> &mut [T] {
     array::from_mut(s)
 }

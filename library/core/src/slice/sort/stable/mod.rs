@@ -145,11 +145,15 @@ struct AlignedStorage<T, const N: usize> {
     storage: [MaybeUninit<u8>; N],
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> AlignedStorage<T, N> {
     fn new() -> Self {
         Self { _align: [], storage: [const { MaybeUninit::uninit() }; N] }
     }
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn as_uninit_slice_mut(&mut self) -> &mut [MaybeUninit<T>] {
         let len = N / mem::size_of::<T>();
 

@@ -25,6 +25,8 @@ impl_general_format! { f32 f64 }
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
 #[inline(never)]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 fn float_to_decimal_common_exact<T>(
     fmt: &mut Formatter<'_>,
     num: &T,
@@ -51,6 +53,8 @@ where
 // Don't inline this so callers that call both this and the above won't wind
 // up using the combined stack space of both functions in some cases.
 #[inline(never)]
+// flux_verify_ice: refinement type error
+#[flux_attrs::trusted]
 fn float_to_decimal_common_shortest<T>(
     fmt: &mut Formatter<'_>,
     num: &T,
@@ -97,6 +101,8 @@ where
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
 #[inline(never)]
+// flux_verify_ice: refinement type error
+#[flux_attrs::trusted]
 fn float_to_exponential_common_exact<T>(
     fmt: &mut Formatter<'_>,
     num: &T,
@@ -125,6 +131,8 @@ where
 // Don't inline this so callers that call both this and the above won't wind
 // up using the combined stack space of both functions in some cases.
 #[inline(never)]
+// flux_verify_ice: refinement type error
+#[flux_attrs::trusted]
 fn float_to_exponential_common_shortest<T>(
     fmt: &mut Formatter<'_>,
     num: &T,

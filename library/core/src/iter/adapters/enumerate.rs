@@ -26,6 +26,8 @@ impl<I> Enumerate<I> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I> Iterator for Enumerate<I>
 where
     I: Iterator,
@@ -43,6 +45,8 @@ where
     /// Might panic if the index of the element overflows a `usize`.
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<(usize, <I as Iterator>::Item)> {
         let a = self.iter.next()?;
         let i = self.count;
@@ -57,6 +61,8 @@ where
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<(usize, I::Item)> {
         let a = self.iter.nth(n)?;
         let i = self.count + n;
@@ -77,6 +83,8 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
+        // flux_verify_ice: unsupported
+        #[flux_attrs::trusted_impl]
         fn enumerate<'a, T, Acc, R>(
             count: &'a mut usize,
             mut fold: impl FnMut(Acc, (usize, T)) -> R + 'a,
@@ -98,6 +106,8 @@ where
         Fold: FnMut(Acc, Self::Item) -> Acc,
     {
         #[inline]
+        // flux_verify_ice: unsupported
+        #[flux_attrs::trusted_impl]
         fn enumerate<T, Acc>(
             mut count: usize,
             mut fold: impl FnMut(Acc, (usize, T)) -> Acc,
@@ -115,6 +125,8 @@ where
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let remaining = self.iter.advance_by(n);
         let advanced = match remaining {
@@ -127,6 +139,8 @@ where
 
     #[rustc_inherit_overflow_checks]
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> <Self as Iterator>::Item
     where
         Self: TrustedRandomAccessNoCoerce,

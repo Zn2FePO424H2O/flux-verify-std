@@ -1990,6 +1990,8 @@ extern "C" {
 #[cfg_attr(test, assert_instr(movntps))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 #[allow(clippy::cast_ptr_alignment)]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_ps(mem_addr: *mut f32, a: __m128) {
     crate::arch::asm!(
         vps!("movntps", ",{a}"),

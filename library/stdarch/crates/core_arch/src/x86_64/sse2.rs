@@ -77,6 +77,8 @@ pub unsafe fn _mm_cvttsd_si64x(a: __m128d) -> i64 {
 #[target_feature(enable = "sse2")]
 #[cfg_attr(test, assert_instr(movnti))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_si64(mem_addr: *mut i64, a: i64) {
     crate::arch::asm!(
         vps!("movnti", ",{a}"),

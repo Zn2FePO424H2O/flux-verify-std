@@ -30,6 +30,8 @@ impl<I: Iterator> Peekable<I> {
 // It ensures that `.peek(); .peek();` or `.peek(); .next();` only advances the
 // underlying iterator at most once. This does not by itself make the iterator
 // fused.
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 #[stable(feature = "rust1", since = "1.0.0")]
 impl<I: Iterator> Iterator for Peekable<I> {
     type Item = I::Item;
@@ -44,6 +46,8 @@ impl<I: Iterator> Iterator for Peekable<I> {
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn count(mut self) -> usize {
         match self.peeked.take() {
             Some(None) => 0,

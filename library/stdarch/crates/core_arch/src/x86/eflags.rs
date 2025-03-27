@@ -30,6 +30,8 @@ pub unsafe fn __readeflags() -> u32 {
     note = "See issue #51810 - use inline assembly instead"
 )]
 #[doc(hidden)]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn __readeflags() -> u64 {
     let eflags: u64;
     asm!("pushfq", "pop {}", out(reg) eflags, options(nomem, att_syntax));
@@ -62,6 +64,8 @@ pub unsafe fn __writeeflags(eflags: u32) {
     note = "See issue #51810 - use inline assembly instead"
 )]
 #[doc(hidden)]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn __writeeflags(eflags: u64) {
     asm!("push {}", "popfq", in(reg) eflags, options(nomem, att_syntax));
 }

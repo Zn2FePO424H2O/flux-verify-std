@@ -824,6 +824,8 @@ pub trait FromStr: Sized {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl FromStr for bool {
     type Err = ParseBoolError;
 
@@ -850,6 +852,8 @@ impl FromStr for bool {
     /// assert!("not even a boolean".parse::<bool>().is_err());
     /// ```
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn from_str(s: &str) -> Result<bool, ParseBoolError> {
         match s {
             "true" => Ok(true),

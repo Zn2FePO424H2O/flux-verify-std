@@ -26,6 +26,8 @@ impl<I> Take<I> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I> Iterator for Take<I>
 where
     I: Iterator,
@@ -115,6 +117,8 @@ where
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let min = self.n.min(n);
         let rem = match self.iter.advance_by(min) {
@@ -148,6 +152,8 @@ unsafe impl<I: InPlaceIterable> InPlaceIterable for Take<I> {
 }
 
 #[stable(feature = "double_ended_take_iterator", since = "1.38.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I> DoubleEndedIterator for Take<I>
 where
     I: DoubleEndedIterator + ExactSizeIterator,
@@ -217,6 +223,8 @@ where
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         // The amount by which the inner iterator needs to be shortened for it to be
         // at most as long as the take() amount.

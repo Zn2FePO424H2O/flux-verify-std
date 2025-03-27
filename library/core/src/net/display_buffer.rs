@@ -24,7 +24,11 @@ impl<const SIZE: usize> DisplayBuffer<SIZE> {
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<const SIZE: usize> fmt::Write for DisplayBuffer<SIZE> {
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         let bytes = s.as_bytes();
 

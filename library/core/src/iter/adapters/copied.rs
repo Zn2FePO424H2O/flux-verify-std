@@ -209,10 +209,14 @@ where
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, const N: usize, T: 'a> SpecNextChunk<'a, N, T> for crate::slice::Iter<'a, T>
 where
     T: Copy,
 {
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn spec_next_chunk(&mut self) -> Result<[T; N], array::IntoIter<T, N>> {
         let mut raw_array = [const { MaybeUninit::uninit() }; N];
 

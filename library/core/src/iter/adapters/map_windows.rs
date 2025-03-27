@@ -104,6 +104,8 @@ impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Buffer<T, N> {
     fn try_from_iter(iter: &mut impl Iterator<Item = T>) -> Option<Self> {
         let first_half = crate::array::iter_next_chunk(iter).ok()?;
@@ -118,6 +120,8 @@ impl<T, const N: usize> Buffer<T, N> {
     }
 
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn buffer_mut_ptr(&mut self) -> *mut MaybeUninit<T> {
         self.buffer.as_mut_ptr().cast()
     }

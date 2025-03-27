@@ -72,6 +72,8 @@ impl<T, const N: usize> IntoIterator for [T; N] {
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> IntoIter<T, N> {
     /// Creates a new iterator over the given `array`.
     #[stable(feature = "array_value_iter", since = "1.51.0")]
@@ -220,6 +222,8 @@ impl<T, const N: usize> IntoIter<T, N> {
 
     /// Returns a mutable slice of all elements that have not been yielded yet.
     #[stable(feature = "array_value_iter", since = "1.51.0")]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     pub fn as_mut_slice(&mut self) -> &mut [T] {
         // SAFETY: We know that all elements within `alive` are properly initialized.
         unsafe {

@@ -29,12 +29,16 @@ impl<I, P> Filter<I, P> {
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I, P> Filter<I, P>
 where
     I: Iterator,
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn next_chunk_dropless<const N: usize>(
         &mut self,
     ) -> Result<[I::Item; N], array::IntoIter<I::Item, N>> {

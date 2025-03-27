@@ -264,10 +264,14 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> FnMut<A> for &F
     where
         F: Fn<A>,
     {
+        // flux_verify_ice: refinement type error
+        #[flux_attrs::trusted_impl]
         extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
             (**self).call(args)
         }
@@ -286,10 +290,14 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> FnMut<A> for &mut F
     where
         F: FnMut<A>,
     {
+        // flux_verify_ice: refinement type error
+        #[flux_attrs::trusted_impl]
         extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
             (*self).call_mut(args)
         }

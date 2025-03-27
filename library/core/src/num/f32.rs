@@ -387,6 +387,8 @@ pub mod consts {
 }
 
 #[cfg(not(test))]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl f32 {
     /// The radix or base of the internal representation of `f32`.
     #[stable(feature = "assoc_int_consts", since = "1.43.0")]
@@ -996,6 +998,8 @@ impl f32 {
     #[inline]
     #[stable(feature = "num_midpoint", since = "1.85.0")]
     #[rustc_const_stable(feature = "num_midpoint", since = "1.85.0")]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     pub const fn midpoint(self, other: f32) -> f32 {
         cfg_if! {
             // Allow faster implementation that have known good 64-bit float

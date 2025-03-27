@@ -1308,6 +1308,8 @@ pub unsafe fn _mm_storel_epi64(mem_addr: *mut __m128i, a: __m128i) {
 #[target_feature(enable = "sse2")]
 #[cfg_attr(test, assert_instr(movntdq))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_si128(mem_addr: *mut __m128i, a: __m128i) {
     crate::arch::asm!(
         vps!("movntdq",  ",{a}"),
@@ -1335,6 +1337,8 @@ pub unsafe fn _mm_stream_si128(mem_addr: *mut __m128i, a: __m128i) {
 #[target_feature(enable = "sse2")]
 #[cfg_attr(test, assert_instr(movnti))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_si32(mem_addr: *mut i32, a: i32) {
     crate::arch::asm!(
         vps!("movnti", ",{a:e}"), // `:e` for 32bit value
@@ -2537,6 +2541,8 @@ pub unsafe fn _mm_loadl_pd(a: __m128d, mem_addr: *const f64) -> __m128d {
 #[cfg_attr(test, assert_instr(movntpd))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 #[allow(clippy::cast_ptr_alignment)]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_pd(mem_addr: *mut f64, a: __m128d) {
     crate::arch::asm!(
         vps!("movntpd", ",{a}"),

@@ -291,30 +291,42 @@ impl<'a> CharIndices<'a> {
 pub struct Bytes<'a>(pub(super) Copied<slice::Iter<'a, u8>>);
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl Iterator for Bytes<'_> {
     type Item = u8;
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<u8> {
         self.0.next()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.0.size_hint()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn count(self) -> usize {
         self.0.count()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         self.0.last()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         self.0.nth(n)
     }
@@ -360,6 +372,8 @@ impl Iterator for Bytes<'_> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> u8 {
         // SAFETY: the caller must uphold the safety contract
         // for `Iterator::__iterator_get_unchecked`.
@@ -368,8 +382,12 @@ impl Iterator for Bytes<'_> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl DoubleEndedIterator for Bytes<'_> {
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<u8> {
         self.0.next_back()
     }
@@ -389,13 +407,19 @@ impl DoubleEndedIterator for Bytes<'_> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl ExactSizeIterator for Bytes<'_> {
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn len(&self) -> usize {
         self.0.len()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
@@ -1169,15 +1193,21 @@ generate_pattern_iterators! {
 pub struct Lines<'a>(pub(super) Map<SplitInclusive<'a, char>, LinesMap>);
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> Iterator for Lines<'a> {
     type Item = &'a str;
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a str> {
         self.0.next()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.0.size_hint()
     }
@@ -1189,8 +1219,12 @@ impl<'a> Iterator for Lines<'a> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> DoubleEndedIterator for Lines<'a> {
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a str> {
         self.0.next_back()
     }
@@ -1359,15 +1393,21 @@ impl<'a> SplitWhitespace<'a> {
 }
 
 #[stable(feature = "split_ascii_whitespace", since = "1.34.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> Iterator for SplitAsciiWhitespace<'a> {
     type Item = &'a str;
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a str> {
         self.inner.next()
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.inner.size_hint()
     }
@@ -1379,8 +1419,12 @@ impl<'a> Iterator for SplitAsciiWhitespace<'a> {
 }
 
 #[stable(feature = "split_ascii_whitespace", since = "1.34.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> DoubleEndedIterator for SplitAsciiWhitespace<'a> {
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a str> {
         self.inner.next_back()
     }
@@ -1503,10 +1547,14 @@ impl fmt::Debug for EncodeUtf16<'_> {
 }
 
 #[stable(feature = "encode_utf16", since = "1.8.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> Iterator for EncodeUtf16<'a> {
     type Item = u16;
 
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn next(&mut self) -> Option<u16> {
         if self.extra != 0 {
             let tmp = self.extra;

@@ -124,6 +124,8 @@ where
 /// ```
 #[inline]
 #[unstable(feature = "array_try_from_fn", issue = "89379")]
+// flux_verify_ice: refinement type error
+#[flux_attrs::trusted]
 pub fn try_from_fn<R, const N: usize, F>(cb: F) -> ChangeOutputType<R, [R::Output; N]>
 where
     F: FnMut(usize) -> R,
@@ -209,7 +211,11 @@ impl<T, const N: usize> Borrow<[T]> for [T; N] {
 }
 
 #[stable(feature = "array_borrow", since = "1.4.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> BorrowMut<[T]> for [T; N] {
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn borrow_mut(&mut self) -> &mut [T] {
         self
     }
@@ -345,10 +351,14 @@ impl<'a, T, const N: usize> IntoIterator for &'a [T; N] {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T, const N: usize> IntoIterator for &'a mut [T; N] {
     type Item = &'a mut T;
     type IntoIter = IterMut<'a, T>;
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn into_iter(self) -> IterMut<'a, T> {
         self.iter_mut()
     }
@@ -368,11 +378,15 @@ where
 }
 
 #[stable(feature = "index_trait_on_arrays", since = "1.50.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, I, const N: usize> IndexMut<I> for [T; N]
 where
     [T]: IndexMut<I>,
 {
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn index_mut(&mut self, index: I) -> &mut Self::Output {
         IndexMut::index_mut(self as &mut [T], index)
     }
@@ -416,6 +430,8 @@ impl<T: Ord, const N: usize> Ord for [T; N] {
 impl<T: Copy, const N: usize> Copy for [T; N] {}
 
 #[stable(feature = "copy_clone_array_lib", since = "1.58.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T: Clone, const N: usize> Clone for [T; N] {
     #[inline]
     fn clone(&self) -> Self {
@@ -423,6 +439,8 @@ impl<T: Clone, const N: usize> Clone for [T; N] {
     }
 
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn clone_from(&mut self, other: &Self) {
         self.clone_from_slice(other);
     }
@@ -936,6 +954,8 @@ impl<T> Drop for Guard<'_, T> {
 ///
 /// Used for [`Iterator::next_chunk`].
 #[inline]
+// flux_verify_ice: refinement type error
+#[flux_attrs::trusted]
 pub(crate) fn iter_next_chunk<T, const N: usize>(
     iter: &mut impl Iterator<Item = T>,
 ) -> Result<[T; N], IntoIter<T, N>> {

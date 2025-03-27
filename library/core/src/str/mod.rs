@@ -2807,9 +2807,13 @@ impl Default for &str {
 }
 
 #[stable(feature = "default_mut_str", since = "1.28.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl Default for &mut str {
     /// Creates an empty mutable str
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn default() -> Self {
         // SAFETY: The empty string is valid UTF-8.
         unsafe { from_utf8_unchecked_mut(&mut []) }

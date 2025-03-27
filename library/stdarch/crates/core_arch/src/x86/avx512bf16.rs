@@ -489,6 +489,8 @@ pub unsafe fn _mm_cvtsbh_ss(a: bf16) -> f32 {
 #[target_feature(enable = "avx512bf16,avx512vl")]
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_cvtneps_pbh(a: __m128) -> __m128bh {
     let mut dst: __m128bh;
     asm!(
@@ -509,6 +511,8 @@ pub unsafe fn _mm_cvtneps_pbh(a: __m128) -> __m128bh {
 #[target_feature(enable = "avx512bf16,avx512vl")]
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_mask_cvtneps_pbh(src: __m128bh, k: __mmask8, a: __m128) -> __m128bh {
     let mut dst = src;
     asm!(
@@ -530,6 +534,8 @@ pub unsafe fn _mm_mask_cvtneps_pbh(src: __m128bh, k: __mmask8, a: __m128) -> __m
 #[target_feature(enable = "avx512bf16,avx512vl")]
 #[cfg_attr(test, assert_instr("vcvtneps2bf16"))]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_maskz_cvtneps_pbh(k: __mmask8, a: __m128) -> __m128bh {
     let mut dst: __m128bh;
     asm!(

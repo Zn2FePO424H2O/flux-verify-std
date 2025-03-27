@@ -1370,6 +1370,8 @@ impl<T> SizedTypeProperties for T {}
 /// ```
 #[stable(feature = "offset_of", since = "1.77.0")]
 #[allow_internal_unstable(builtin_syntax)]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub macro offset_of($Container:ty, $($fields:expr)+ $(,)?) {
     // The `{}` is for better error messages
     {builtin # offset_of($Container, $($fields)+)}

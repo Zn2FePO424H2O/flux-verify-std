@@ -660,8 +660,12 @@ impl<const N: usize> MultiCharEq for &[char; N] {
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl MultiCharEq for &[char] {
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn matches(&mut self, c: char) -> bool {
         self.iter().any(|&m| m == c)
     }

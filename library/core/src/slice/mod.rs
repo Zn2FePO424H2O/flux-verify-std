@@ -4948,8 +4948,12 @@ impl<T> Default for &[T] {
 }
 
 #[stable(feature = "mut_slice_default", since = "1.5.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T> Default for &mut [T] {
     /// Creates a mutable empty slice.
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn default() -> Self {
         &mut []
     }

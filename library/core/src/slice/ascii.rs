@@ -341,6 +341,8 @@ impl<'a> fmt::Debug for EscapeAscii<'a> {
 #[unstable(feature = "str_internals", issue = "none")]
 #[doc(hidden)]
 #[inline]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub const fn is_ascii_simple(mut bytes: &[u8]) -> bool {
     while let [rest @ .., last] = bytes {
         if !last.is_ascii() {

@@ -218,6 +218,8 @@ pub trait Iterator {
     /// ```
     #[inline]
     #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted]
     fn count(self) -> usize
     where
         Self: Sized,
@@ -3002,6 +3004,8 @@ pub trait Iterator {
         P: FnMut(Self::Item) -> bool,
     {
         #[inline]
+        // flux_verify_ice: unsupported
+        #[flux_attrs::trusted]
         fn check<'a, T>(
             mut predicate: impl FnMut(T) -> bool + 'a,
             acc: &'a mut usize,
@@ -4026,18 +4030,26 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I: Iterator + ?Sized> Iterator for &mut I {
     type Item = I::Item;
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         (**self).next()
     }
     fn size_hint(&self) -> (usize, Option<usize>) {
         (**self).size_hint()
     }
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         (**self).advance_by(n)
     }
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         (**self).nth(n)
     }
@@ -4047,6 +4059,8 @@ impl<I: Iterator + ?Sized> Iterator for &mut I {
     {
         self.spec_fold(init, f)
     }
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
         F: FnMut(B, Self::Item) -> R,
@@ -4068,6 +4082,8 @@ trait IteratorRefSpec: Iterator {
         R: Try<Output = B>;
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I: Iterator + ?Sized> IteratorRefSpec for &mut I {
     default fn spec_fold<B, F>(self, init: B, mut f: F) -> B
     where
@@ -4080,6 +4096,8 @@ impl<I: Iterator + ?Sized> IteratorRefSpec for &mut I {
         accum
     }
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     default fn spec_try_fold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where
         F: FnMut(B, Self::Item) -> R,
@@ -4093,9 +4111,13 @@ impl<I: Iterator + ?Sized> IteratorRefSpec for &mut I {
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I: Iterator> IteratorRefSpec for &mut I {
     impl_fold_via_try_fold! { spec_fold -> spec_try_fold }
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn spec_try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
         F: FnMut(B, Self::Item) -> R,

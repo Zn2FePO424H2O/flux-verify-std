@@ -17,8 +17,12 @@ pub(crate) trait ByteSlice {
     fn parse_digits(&self, func: impl FnMut(u8)) -> &Self;
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl ByteSlice for [u8] {
     #[inline(always)] // inlining this is crucial to remove bound checks
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn read_u64(&self) -> u64 {
         let mut tmp = [0; 8];
         tmp.copy_from_slice(&self[..8]);

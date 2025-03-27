@@ -727,11 +727,15 @@ where
 
 // AsMut lifts over &mut
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T: ?Sized, U: ?Sized> AsMut<U> for &mut T
 where
     T: AsMut<U>,
 {
     #[inline]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn as_mut(&mut self) -> &mut U {
         (*self).as_mut()
     }

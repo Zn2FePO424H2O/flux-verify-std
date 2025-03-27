@@ -243,7 +243,11 @@ impl<'a> Default for &'a ByteStr {
 }
 
 #[unstable(feature = "bstr", issue = "134915")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> Default for &'a mut ByteStr {
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn default() -> Self {
         ByteStr::from_bytes_mut(&mut [])
     }

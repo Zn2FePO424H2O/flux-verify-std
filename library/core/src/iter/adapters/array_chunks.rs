@@ -113,6 +113,8 @@ where
 }
 
 #[unstable(feature = "iter_array_chunks", reason = "recently added", issue = "100450")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I, const N: usize> DoubleEndedIterator for ArrayChunks<I, N>
 where
     I: DoubleEndedIterator + ExactSizeIterator,
@@ -122,6 +124,8 @@ where
         self.try_rfold((), |(), x| ControlFlow::Break(x)).break_value()
     }
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where
         Self: Sized,

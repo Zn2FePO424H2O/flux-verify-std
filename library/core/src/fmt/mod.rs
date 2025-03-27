@@ -186,6 +186,8 @@ pub trait Write {
     /// # std::fmt::Result::Ok(())
     /// ```
     #[stable(feature = "fmt_write_char", since = "1.1.0")]
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn write_char(&mut self, c: char) -> Result {
         self.write_str(c.encode_utf8(&mut [0; 4]))
     }
@@ -249,15 +251,23 @@ pub trait Write {
 }
 
 #[stable(feature = "fmt_write_blanket_impl", since = "1.4.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<W: Write + ?Sized> Write for &mut W {
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn write_str(&mut self, s: &str) -> Result {
         (**self).write_str(s)
     }
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn write_char(&mut self, c: char) -> Result {
         (**self).write_char(c)
     }
 
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted_impl]
     fn write_fmt(&mut self, args: Arguments<'_>) -> Result {
         (**self).write_fmt(args)
     }
@@ -2771,7 +2781,11 @@ impl Debug for char {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl Display for char {
+    // flux_verify_ice: refinement type error
+    #[flux_attrs::trusted]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if f.options.width.is_none() && f.options.precision.is_none() {
             f.write_char(*self)

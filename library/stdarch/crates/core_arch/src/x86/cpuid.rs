@@ -51,6 +51,8 @@ pub struct CpuidResult {
 #[inline]
 #[cfg_attr(test, assert_instr(cpuid))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn __cpuid_count(leaf: u32, sub_leaf: u32) -> CpuidResult {
     let eax;
     let ebx;
