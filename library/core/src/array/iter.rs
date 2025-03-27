@@ -230,6 +230,8 @@ impl<T, const N: usize> IntoIter<T, N> {
 }
 
 #[stable(feature = "array_value_iter_impls", since = "1.40.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Iterator for IntoIter<T, N> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
@@ -276,6 +278,8 @@ impl<T, const N: usize> Iterator for IntoIter<T, N> {
         self.next_back()
     }
 
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         // This also moves the start, which marks them as conceptually "dropped",
         // so if anything goes bad then our drop impl won't double-free them.
@@ -299,6 +303,8 @@ impl<T, const N: usize> Iterator for IntoIter<T, N> {
 }
 
 #[stable(feature = "array_value_iter_impls", since = "1.40.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> DoubleEndedIterator for IntoIter<T, N> {
     fn next_back(&mut self) -> Option<Self::Item> {
         // Get the next index from the back.
@@ -331,6 +337,8 @@ impl<T, const N: usize> DoubleEndedIterator for IntoIter<T, N> {
         })
     }
 
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         // This also moves the end, which marks them as conceptually "dropped",
         // so if anything goes bad then our drop impl won't double-free them.

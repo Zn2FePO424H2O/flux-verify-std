@@ -188,6 +188,8 @@ where
 impl<I> ExactSizeIterator for Skip<I> where I: ExactSizeIterator {}
 
 #[stable(feature = "double_ended_skip_iterator", since = "1.9.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I> DoubleEndedIterator for Skip<I>
 where
     I: DoubleEndedIterator + ExactSizeIterator,
@@ -234,6 +236,8 @@ where
     impl_fold_via_try_fold! { rfold -> try_rfold }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let min = crate::cmp::min(self.len(), n);
         let rem = self.iter.advance_back_by(min);

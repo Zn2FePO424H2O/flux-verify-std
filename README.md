@@ -43,3 +43,8 @@ fn flux_arr_len<T> (arr:&[T]) -> usize {arr.len()}
 ## Eror types
 // flux_verify: [type]
 #[flux_attrs::trusted]
+error: errors that can be fixed
+ice: catched errors
+panic: uncached errors
+unknown: need more information
+assume/impl: functional

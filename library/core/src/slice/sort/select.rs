@@ -13,7 +13,7 @@ use crate::slice::sort::shared::smallsort::insertion_sort_shift_left;
 use crate::slice::sort::unstable::quicksort::partition;
 
 /// Reorders the slice such that the element at `index` is at its final sorted position.
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 pub(crate) fn partition_at_index<T, F>(
     v: &mut [T],
@@ -63,7 +63,7 @@ where
 const INSERTION_SORT_THRESHOLD: usize = 16;
 
 #[cfg(not(feature = "optimize_for_size"))]
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 fn partition_at_index_loop<'a, T, F>(
     mut v: &'a mut [T],
@@ -261,7 +261,7 @@ fn median_of_ninthers<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F)
 /// Moves around the 9 elements at the indices a..i, such that
 /// `v[d]` contains the median of the 9 elements and the other
 /// elements are partitioned around it.
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 fn ninther<T, F: FnMut(&T, &T) -> bool>(
     v: &mut [T],

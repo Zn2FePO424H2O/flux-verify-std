@@ -174,8 +174,6 @@ where
     /// let res: Result<i32, _> = v.iter().map(f).sum();
     /// assert_eq!(res, Err("Negative element found"));
     /// ```
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn sum<I>(iter: I) -> Result<T, E>
     where
         I: Iterator<Item = Result<U, E>>,
@@ -208,8 +206,6 @@ where
     /// let total: Result<usize, _> = nums.iter().map(|w| w.parse::<usize>()).product();
     /// assert!(total.is_err());
     /// ```
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn product<I>(iter: I) -> Result<T, E>
     where
         I: Iterator<Item = Result<U, E>>,
@@ -242,8 +238,6 @@ where
     /// let total: Option<usize> = words.iter().map(|w| w.find('a')).sum();
     /// assert_eq!(total, None);
     /// ```
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn sum<I>(iter: I) -> Option<T>
     where
         I: Iterator<Item = Option<U>>,
@@ -276,8 +270,6 @@ where
     /// let total: Option<usize> = nums.iter().map(|w| w.parse::<usize>().ok()).product();
     /// assert_eq!(total, None);
     /// ```
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn product<I>(iter: I) -> Option<T>
     where
         I: Iterator<Item = Option<U>>,

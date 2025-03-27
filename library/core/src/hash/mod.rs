@@ -756,8 +756,6 @@ impl<H> BuildHasherDefault<H> {
     /// Creates a new BuildHasherDefault for Hasher `H`.
     #[stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
     #[rustc_const_stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn new() -> Self {
         BuildHasherDefault(marker::PhantomData)
     }
@@ -783,8 +781,6 @@ impl<H: Default + Hasher> BuildHasher for BuildHasherDefault<H> {
 // flux_verify_impl: impl
 #[flux_attrs::trusted]
 impl<H> Clone for BuildHasherDefault<H> {
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn clone(&self) -> BuildHasherDefault<H> {
         BuildHasherDefault(marker::PhantomData)
     }
@@ -858,12 +854,8 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    // flux_verify_impl: impl
-    #[flux_attrs::trusted]
     impl Hash for char {
         #[inline]
-        // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
         fn hash<H: Hasher>(&self, state: &mut H) {
             state.write_u32(*self as u32)
         }
@@ -878,8 +870,12 @@ mod impls {
     }
 
     #[stable(feature = "never_hash", since = "1.29.0")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
     impl Hash for ! {
         #[inline]
+        // flux_verify_ice: incompatible base types
+        #[flux_attrs::trusted_impl]
         fn hash<H: Hasher>(&self, _: &mut H) {
             *self
         }

@@ -72,6 +72,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<A, B> Iterator for Chain<A, B>
 where
     A: Iterator,
@@ -129,6 +131,8 @@ where
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, mut n: usize) -> Result<(), NonZero<usize>> {
         if let Some(ref mut a) = self.a {
             n = match a.advance_by(n) {
@@ -204,6 +208,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<A, B> DoubleEndedIterator for Chain<A, B>
 where
     A: DoubleEndedIterator,
@@ -215,6 +221,8 @@ where
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_back_by(&mut self, mut n: usize) -> Result<(), NonZero<usize>> {
         if let Some(ref mut b) = self.b {
             n = match b.advance_back_by(n) {

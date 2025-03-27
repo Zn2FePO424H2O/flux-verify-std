@@ -202,8 +202,6 @@ pub fn parse_number(s: &[u8]) -> Option<Number> {
 }
 
 /// Try to parse a special, non-finite float.
-// flux_verify_unknown: unknown
-#[flux_attrs::trusted]
 pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> {
     // Since a valid string has at most the length 8, we can load
     // all relevant characters into a u64 and work from there.

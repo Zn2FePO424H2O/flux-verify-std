@@ -84,14 +84,14 @@ where
     type Mask = Mask<isize, N>;
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_ice: cannot infer substitution
     #[flux_attrs::trusted_impl]
     fn simd_eq(self, other: Self) -> Self::Mask {
         self.addr().simd_eq(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_ne(self, other: Self) -> Self::Mask {
         self.addr().simd_ne(other.addr())
@@ -107,14 +107,14 @@ where
     type Mask = Mask<isize, N>;
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_ice: cannot infer substitution
     #[flux_attrs::trusted_impl]
     fn simd_eq(self, other: Self) -> Self::Mask {
         self.addr().simd_eq(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_ne(self, other: Self) -> Self::Mask {
         self.addr().simd_ne(other.addr())

@@ -192,6 +192,8 @@ mod private {
 impl Error for ! {}
 
 // Copied from `any.rs`.
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl dyn Error + 'static {
     /// Returns `true` if the inner type is the same as `T`.
     #[stable(feature = "error_downcast", since = "1.3.0")]
@@ -211,6 +213,8 @@ impl dyn Error + 'static {
     /// `None` if it isn't.
     #[stable(feature = "error_downcast", since = "1.3.0")]
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     pub fn downcast_ref<T: Error + 'static>(&self) -> Option<&T> {
         if self.is::<T>() {
             // SAFETY: `is` ensures this type cast is correct
@@ -224,6 +228,8 @@ impl dyn Error + 'static {
     /// `None` if it isn't.
     #[stable(feature = "error_downcast", since = "1.3.0")]
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     pub fn downcast_mut<T: Error + 'static>(&mut self) -> Option<&mut T> {
         if self.is::<T>() {
             // SAFETY: `is` ensures this type cast is correct
@@ -932,7 +938,11 @@ pub(crate) mod tags {
 #[repr(transparent)]
 pub(crate) struct TaggedOption<'a, I: tags::Type<'a>>(pub Option<I::Reified>);
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, I: tags::Type<'a>> Tagged<TaggedOption<'a, I>> {
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     pub(crate) fn as_request(&mut self) -> &mut Request<'a> {
         let erased = self as &mut Tagged<dyn Erased<'a> + 'a>;
         // SAFETY: transmuting `&mut Tagged<dyn Erased<'a> + 'a>` to `&mut Request<'a>` is safe since
@@ -953,10 +963,14 @@ struct Tagged<E: ?Sized> {
     value: E,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a> Tagged<dyn Erased<'a> + 'a> {
     /// Returns some reference to the dynamic value if it is tagged with `I`,
     /// or `None` otherwise.
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn downcast<I>(&self) -> Option<&TaggedOption<'a, I>>
     where
         I: tags::Type<'a>,
@@ -972,6 +986,8 @@ impl<'a> Tagged<dyn Erased<'a> + 'a> {
     /// Returns some mutable reference to the dynamic value if it is tagged with `I`,
     /// or `None` otherwise.
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn downcast_mut<I>(&mut self) -> Option<&mut TaggedOption<'a, I>>
     where
         I: tags::Type<'a>,

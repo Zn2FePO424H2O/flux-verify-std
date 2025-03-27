@@ -149,7 +149,7 @@ pub(crate) struct GenericShunt<'a, I, R> {
 /// Process the given iterator as if it yielded the item's `Try::Output`
 /// type instead. Any `Try::Residual`s encountered will stop the inner iterator
 /// and be propagated back to the overall result.
-// flux_verify_unknown: unknown
+// flux_verify_ice: Unimplemented
 #[flux_attrs::trusted]
 pub(crate) fn try_process<I, T, R, F, U>(iter: I, mut f: F) -> ChangeOutputType<I::Item, U>
 where
@@ -166,12 +166,16 @@ where
     }
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I, R> Iterator for GenericShunt<'_, I, R>
 where
     I: Iterator<Item: Try<Residual = R>>,
 {
     type Item = <I::Item as Try>::Output;
 
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         self.try_for_each(ControlFlow::Break).break_value()
     }

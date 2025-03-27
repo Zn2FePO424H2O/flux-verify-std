@@ -32,6 +32,8 @@ pub struct Chars<'a> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a> Iterator for Chars<'a> {
     type Item = char;
 
@@ -48,6 +50,8 @@ impl<'a> Iterator for Chars<'a> {
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, mut remainder: usize) -> Result<(), NonZero<usize>> {
         const CHUNK_SIZE: usize = 32;
 

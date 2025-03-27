@@ -90,14 +90,14 @@ where
     type Mask = Mask<isize, N>;
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn is_null(self) -> Self::Mask {
         Simd::splat(core::ptr::null()).simd_eq(self)
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn cast<U>(self) -> Self::CastPtr<U> {
         // SimdElement currently requires zero-sized metadata, so this should never fail.
@@ -111,7 +111,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn cast_mut(self) -> Self::MutPtr {
         // Safety: pointers can be cast
@@ -119,7 +119,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn addr(self) -> Self::Usize {
         // FIXME(strict_provenance_magic): I am magic and should be a compiler intrinsic.
@@ -129,7 +129,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn with_addr(self, addr: Self::Usize) -> Self {
         // FIXME(strict_provenance_magic): I am magic and should be a compiler intrinsic.
@@ -143,7 +143,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn expose_provenance(self) -> Self::Usize {
         // Safety: `self` is a pointer vector
@@ -151,7 +151,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn with_exposed_provenance(addr: Self::Usize) -> Self {
         // Safety: `self` is a pointer vector
@@ -159,7 +159,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn wrapping_offset(self, count: Self::Isize) -> Self {
         // Safety: simd_arith_offset takes a vector of pointers and a vector of offsets
@@ -167,14 +167,14 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn wrapping_add(self, count: Self::Usize) -> Self {
         self.wrapping_offset(count.cast())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn wrapping_sub(self, count: Self::Usize) -> Self {
         self.wrapping_offset(-count.cast::<isize>())

@@ -781,7 +781,11 @@ impl<T> From<T> for T {
 #[allow(unused_attributes)] // FIXME(#58633): do a principled fix instead.
 #[rustc_reservation_impl = "permitting this impl would forbid us from adding \
                             `impl<T> From<!> for T` later; see rust-lang/rust#64715 for details"]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> From<!> for T {
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     fn from(t: !) -> T {
         t
     }
@@ -958,8 +962,12 @@ impl Ord for Infallible {
 }
 
 #[stable(feature = "convert_infallible", since = "1.34.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl From<!> for Infallible {
     #[inline]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     fn from(x: !) -> Self {
         x
     }

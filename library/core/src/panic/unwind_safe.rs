@@ -293,8 +293,6 @@ impl<T: Default> Default for AssertUnwindSafe<T> {
 impl<F: Future> Future for AssertUnwindSafe<F> {
     type Output = F::Output;
 
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         // SAFETY: pin projection. AssertUnwindSafe follows structural pinning.
         let pinned_field = unsafe { Pin::map_unchecked_mut(self, |x| &mut x.0) };
@@ -308,8 +306,6 @@ impl<F: Future> Future for AssertUnwindSafe<F> {
 impl<S: AsyncIterator> AsyncIterator for AssertUnwindSafe<S> {
     type Item = S::Item;
 
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<S::Item>> {
         // SAFETY: pin projection. AssertUnwindSafe follows structural pinning.
         unsafe { self.map_unchecked_mut(|x| &mut x.0) }.poll_next(cx)

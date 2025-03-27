@@ -33,8 +33,6 @@ pub const fn memchr(x: u8, text: &[u8]) -> Option<usize> {
 }
 
 #[inline]
-// flux_verify_unknown: complex
-#[flux_attrs::trusted]
 const fn memchr_naive(x: u8, text: &[u8]) -> Option<usize> {
     let mut i = 0;
 

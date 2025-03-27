@@ -148,13 +148,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<B, I: DoubleEndedIterator, F> DoubleEndedIterator for FilterMap<I, F>
 where
     F: FnMut(I::Item) -> Option<B>,
 {
     #[inline]
-    // flux_verify_unknown: unknown
-    #[flux_attrs::trusted]
+    // flux_verify_ice: unexpected escaping region BoundRegion
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<B> {
         #[inline]
         fn find<T, B>(

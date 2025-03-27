@@ -112,7 +112,7 @@ where
     /// When satisfying the above obligations (if any), the caller must *not*
     /// assume that this trait provides any inherent guarantee of layout
     /// [portability](#portability) or [stability](#stability).
-    // flux_verify_unknown: invalid field projection
+    // flux_verify_ice: invalid field projection
     #[flux_attrs::trusted]
     unsafe fn transmute(src: Src) -> Self
     where

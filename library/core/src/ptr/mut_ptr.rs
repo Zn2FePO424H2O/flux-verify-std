@@ -2092,6 +2092,8 @@ impl<T, const N: usize> *mut [T; N] {
     /// ```
     #[inline]
     #[unstable(feature = "array_ptr_get", issue = "119834")]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted]
     pub const fn as_mut_slice(self) -> *mut [T] {
         self
     }

@@ -46,8 +46,6 @@ where
     // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
-        // flux_verify_unknown: unknown
-        #[flux_attrs::trusted]
         fn check<'a, T>(
             flag: &'a mut bool,
             pred: &'a mut impl FnMut(&T) -> bool,

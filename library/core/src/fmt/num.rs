@@ -549,8 +549,6 @@ mod imp {
 impl_Exp!(i128, u128 as u128 via to_u128 named exp_u128);
 
 /// Helper function for writing a u64 into `buf` going from last to first, with `curr`.
-// flux_verify_unknown: unknown
-#[flux_attrs::trusted]
 fn parse_u64_into<const N: usize>(mut n: u64, buf: &mut [MaybeUninit<u8>; N], curr: &mut usize) {
     let buf_ptr = MaybeUninit::slice_as_mut_ptr(buf);
     let lut_ptr = DEC_DIGITS_LUT.as_ptr();
@@ -662,8 +660,6 @@ impl fmt::Display for i128 {
 /// into at most 2 u64s, and then chunks by 10e16, 10e8, 10e4, 10e2, and then 10e1.
 /// It also has to handle 1 last item, as 10^40 > 2^128 > 10^39, whereas
 /// 10^20 > 2^64 > 10^19.
-// flux_verify_unknown: unknown
-#[flux_attrs::trusted]
 fn fmt_u128(n: u128, is_nonnegative: bool, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     // 2^128 is about 3*10^38, so 39 gives an extra byte of space
     let mut buf = [MaybeUninit::<u8>::uninit(); 39];
@@ -715,7 +711,7 @@ fn fmt_u128(n: u128, is_nonnegative: bool, f: &mut fmt::Formatter<'_>) -> fmt::R
     f.pad_integral(is_nonnegative, "", buf_slice)
 }
 
-// flux_verify_unknown: unknown
+// flux_verify_assume: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

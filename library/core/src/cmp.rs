@@ -1780,8 +1780,12 @@ mod impls {
     ord_impl! { char usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
 
     #[unstable(feature = "never_type", issue = "35121")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
     impl PartialEq for ! {
         #[inline]
+        // flux_verify_ice: incompatible base types
+        #[flux_attrs::trusted_impl]
         fn eq(&self, _: &!) -> bool {
             *self
         }
@@ -1791,16 +1795,24 @@ mod impls {
     impl Eq for ! {}
 
     #[unstable(feature = "never_type", issue = "35121")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
     impl PartialOrd for ! {
         #[inline]
+        // flux_verify_ice: incompatible base types
+        #[flux_attrs::trusted_impl]
         fn partial_cmp(&self, _: &!) -> Option<Ordering> {
             *self
         }
     }
 
     #[unstable(feature = "never_type", issue = "35121")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
     impl Ord for ! {
         #[inline]
+        // flux_verify_ice: incompatible base types
+        #[flux_attrs::trusted_impl]
         fn cmp(&self, _: &!) -> Ordering {
             *self
         }

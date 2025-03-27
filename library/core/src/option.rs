@@ -2466,8 +2466,6 @@ impl<A, V: FromIterator<A>> FromIterator<Option<A>> for Option<V> {
     /// Since the third element caused an underflow, no further elements were taken,
     /// so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn from_iter<I: IntoIterator<Item = Option<A>>>(iter: I) -> Option<V> {
         // FIXME(#11084): This could be replaced with Iterator::scan when this
         // performance bug is closed.
@@ -2580,8 +2578,6 @@ impl<T, const N: usize> [Option<T>; N] {
     /// ```
     #[inline]
     #[unstable(feature = "option_array_transpose", issue = "130828")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub fn transpose(self) -> Option<[T; N]> {
         self.try_map(core::convert::identity)
     }

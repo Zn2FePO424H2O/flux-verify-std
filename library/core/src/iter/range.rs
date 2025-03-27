@@ -445,8 +445,6 @@ step_integer_impls! {
 #[flux_attrs::trusted]
 impl Step for char {
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn steps_between(&start: &char, &end: &char) -> (usize, Option<usize>) {
         let start = start as u32;
         let end = end as u32;
@@ -471,8 +469,6 @@ impl Step for char {
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn forward_checked(start: char, count: usize) -> Option<char> {
         let start = start as u32;
         let mut res = Step::forward_checked(start, count)?;
@@ -489,8 +485,6 @@ impl Step for char {
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn backward_checked(start: char, count: usize) -> Option<char> {
         let start = start as u32;
         let mut res = Step::backward_checked(start, count)?;
@@ -503,8 +497,6 @@ impl Step for char {
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     unsafe fn forward_unchecked(start: char, count: usize) -> char {
         let start = start as u32;
         // SAFETY: the caller must guarantee that this doesn't overflow
@@ -521,8 +513,6 @@ impl Step for char {
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     unsafe fn backward_unchecked(start: char, count: usize) -> char {
         let start = start as u32;
         // SAFETY: the caller must guarantee that this doesn't overflow
@@ -690,6 +680,8 @@ trait RangeIteratorImpl {
     fn spec_advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>>;
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     type Item = A;
 
@@ -719,6 +711,8 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     default fn spec_advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let steps = Step::steps_between(&self.start, &self.end);
         let available = steps.1.unwrap_or(steps.0);
@@ -757,6 +751,8 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     default fn spec_advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let steps = Step::steps_between(&self.start, &self.end);
         let available = steps.1.unwrap_or(steps.0);

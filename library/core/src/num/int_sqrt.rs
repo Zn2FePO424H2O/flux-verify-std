@@ -37,8 +37,6 @@ const U8_ISQRT_WITH_REMAINDER: [(u8, u8); 256] = {
 #[must_use = "this returns the result of the operation, \
               without modifying the original"]
 #[inline]
-// flux_verify_unknown: unknown
-#[flux_attrs::trusted]
 pub(super) const fn u8(n: u8) -> u8 {
     U8_ISQRT_WITH_REMAINDER[n as usize].0
 }

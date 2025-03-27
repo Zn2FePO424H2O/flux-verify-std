@@ -3814,6 +3814,8 @@ where
 /// markes as `#[inline]`.
 ///
 /// See [`const_eval_select()`] for the rules and requirements around that intrinsic.
+// flux_verify_ice: incompatible base types
+#[flux_attrs::trusted]
 pub(crate) macro const_eval_select {
     (
         @capture$([$($binders:tt)*])? { $($arg:ident : $ty:ty = $val:expr),* $(,)? } $( -> $ret:ty )? :

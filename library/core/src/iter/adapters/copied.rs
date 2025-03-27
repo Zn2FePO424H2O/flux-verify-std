@@ -26,13 +26,13 @@ impl<I> Copied<I> {
     }
 }
 
-// flux_verify_unknown: unknown
+// flux_verify_panic: escaping bound vars
 #[flux_attrs::trusted]
 fn copy_fold<T: Copy, Acc>(mut f: impl FnMut(Acc, T) -> Acc) -> impl FnMut(Acc, &T) -> Acc {
     move |acc, &elt| f(acc, elt)
 }
 
-// flux_verify_unknown: unknown
+// flux_verify_panic: escaping bound vars
 #[flux_attrs::trusted]
 fn copy_try_fold<T: Copy, Acc, R>(mut f: impl FnMut(Acc, T) -> R) -> impl FnMut(Acc, &T) -> R {
     move |acc, &elt| f(acc, elt)
@@ -63,7 +63,7 @@ where
         self.it.size_hint()
     }
 
-    // flux_verify_panic: unknown
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -74,7 +74,7 @@ where
         self.it.try_fold(init, copy_try_fold(f))
     }
 
-    // flux_verify_panic: unknown
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     fn fold<Acc, F>(self, init: Acc, f: F) -> Acc
     where
@@ -120,7 +120,7 @@ where
         self.it.next_back().copied()
     }
 
-    // flux_verify_panic: unknown
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -131,7 +131,7 @@ where
         self.it.try_rfold(init, copy_try_fold(f))
     }
 
-    // flux_verify_panic: unknown
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted]
     fn rfold<Acc, F>(self, init: Acc, f: F) -> Acc
     where
@@ -204,8 +204,6 @@ where
     I: Iterator<Item = &'a T>,
     T: Copy,
 {
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     default fn spec_next_chunk(&mut self) -> Result<[T; N], array::IntoIter<T, N>> {
         array::iter_next_chunk(&mut self.copied())
     }

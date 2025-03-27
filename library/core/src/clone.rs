@@ -349,8 +349,12 @@ mod impls {
     }
 
     #[unstable(feature = "never_type", issue = "35121")]
+    // flux_verify_impl: impl
+    #[flux_attrs::trusted]
     impl Clone for ! {
         #[inline]
+        // flux_verify_ice: incompatible base types
+        #[flux_attrs::trusted_impl]
         fn clone(&self) -> Self {
             *self
         }

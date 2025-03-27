@@ -1676,6 +1676,8 @@ impl<T, const N: usize> *const [T; N] {
     /// ```
     #[inline]
     #[unstable(feature = "array_ptr_get", issue = "119834")]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted]
     pub const fn as_slice(self) -> *const [T] {
         self
     }

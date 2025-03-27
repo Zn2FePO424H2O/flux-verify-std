@@ -98,7 +98,7 @@ const unsafe fn get_mut_noubcheck<T>(ptr: *mut [T], index: usize) -> *mut T {
 }
 
 #[inline(always)]
-// flux_verify_unknown: unknown
+// flux_verify_ice: cannot infer substitution
 #[flux_attrs::trusted]
 const unsafe fn get_offset_len_noubcheck<T>(
     ptr: *const [T],
@@ -111,7 +111,7 @@ const unsafe fn get_offset_len_noubcheck<T>(
 }
 
 #[inline(always)]
-// flux_verify_unknown: unknown
+// flux_verify_ice: cannot infer substitution
 #[flux_attrs::trusted]
 const unsafe fn get_offset_len_mut_noubcheck<T>(
     ptr: *mut [T],
@@ -281,8 +281,6 @@ unsafe impl<T> SliceIndex<[T]> for usize {
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn index_mut(self, slice: &mut [T]) -> &mut T {
         // N.B., use intrinsic indexing
         &mut (*slice)[self]

@@ -114,6 +114,8 @@ impl IndexRange {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl Iterator for IndexRange {
     type Item = usize;
 
@@ -134,12 +136,16 @@ impl Iterator for IndexRange {
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let taken = self.take_prefix(n);
         NonZero::new(n - taken.len()).map_or(Ok(()), Err)
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl DoubleEndedIterator for IndexRange {
     #[inline]
     fn next_back(&mut self) -> Option<usize> {
@@ -152,6 +158,8 @@ impl DoubleEndedIterator for IndexRange {
     }
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let taken = self.take_suffix(n);
         NonZero::new(n - taken.len()).map_or(Ok(()), Err)

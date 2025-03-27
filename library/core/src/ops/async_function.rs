@@ -71,7 +71,7 @@ mod impls {
     where
         F: AsyncFn<A>,
     {
-        // flux_verify_panic: bug caught
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted_impl]
         extern "rust-call" fn async_call(&self, args: A) -> Self::CallRefFuture<'_> {
             F::async_call(*self, args)
@@ -90,7 +90,7 @@ mod impls {
         where
             Self: 'a;
 
-        // flux_verify_panic: bug caught
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted_impl]
         extern "rust-call" fn async_call_mut(&mut self, args: A) -> Self::CallRefFuture<'_> {
             F::async_call(*self, args)
@@ -122,7 +122,7 @@ mod impls {
         where
             Self: 'a;
 
-        // flux_verify_panic: bug caught
+        // flux_verify_unknown: unknown
         #[flux_attrs::trusted_impl]
         extern "rust-call" fn async_call_mut(&mut self, args: A) -> Self::CallRefFuture<'_> {
             F::async_call_mut(*self, args)

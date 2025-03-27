@@ -84,7 +84,7 @@ pub fn repeat<T: Clone, const N: usize>(val: T) -> [T; N] {
 /// ```
 #[inline]
 #[stable(feature = "array_from_fn", since = "1.63.0")]
-// flux_verify_unknown: unknown
+// flux_verify_ice: Unimplemented
 #[flux_attrs::trusted]
 pub fn from_fn<T, const N: usize, F>(cb: F) -> [T; N]
 where
@@ -124,8 +124,6 @@ where
 /// ```
 #[inline]
 #[unstable(feature = "array_try_from_fn", issue = "89379")]
-// flux_verify_unknown: unknown
-#[flux_attrs::trusted]
 pub fn try_from_fn<R, const N: usize, F>(cb: F) -> ChangeOutputType<R, [R::Output; N]>
 where
     F: FnMut(usize) -> R,
@@ -517,8 +515,6 @@ impl<T, const N: usize> [T; N] {
     /// assert_eq!(y, [6, 9, 3, 3]);
     /// ```
     #[stable(feature = "array_map", since = "1.55.0")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub fn map<F, U>(self, f: F) -> [U; N]
     where
         F: FnMut(T) -> U,
@@ -557,8 +553,6 @@ impl<T, const N: usize> [T; N] {
     /// assert_eq!(c, Some(a));
     /// ```
     #[unstable(feature = "array_try_map", issue = "79711")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub fn try_map<R>(self, f: impl FnMut(T) -> R) -> ChangeOutputType<R, [R::Output; N]>
     where
         R: Try<Residual: Residual<[R::Output; N]>>,
@@ -819,14 +813,14 @@ impl<T, const N: usize> [T; N] {
 /// By depending on `TrustedLen`, however, we can do that check up-front (where
 /// it easily optimizes away) so it doesn't impact the loop that fills the array.
 #[inline]
-// flux_verify_unknown: unknown
+// flux_verify_ice: generics_of called
 #[flux_attrs::trusted]
 fn from_trusted_iterator<T, const N: usize>(iter: impl UncheckedIterator<Item = T>) -> [T; N] {
     try_from_trusted_iterator(iter.map(NeverShortCircuit)).0
 }
 
 #[inline]
-// flux_verify_unknown: unknown
+// flux_verify_ice: Unimplemented
 #[flux_attrs::trusted]
 fn try_from_trusted_iterator<T, R, const N: usize>(
     iter: impl UncheckedIterator<Item = R>,
@@ -942,8 +936,6 @@ impl<T> Drop for Guard<'_, T> {
 ///
 /// Used for [`Iterator::next_chunk`].
 #[inline]
-// flux_verify_unknown: unknown
-#[flux_attrs::trusted]
 pub(crate) fn iter_next_chunk<T, const N: usize>(
     iter: &mut impl Iterator<Item = T>,
 ) -> Result<[T; N], IntoIter<T, N>> {

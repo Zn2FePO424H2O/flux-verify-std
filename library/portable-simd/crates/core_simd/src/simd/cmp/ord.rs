@@ -225,28 +225,28 @@ where
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_lt(self, other: Self) -> Self::Mask {
         self.addr().simd_lt(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_le(self, other: Self) -> Self::Mask {
         self.addr().simd_le(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_gt(self, other: Self) -> Self::Mask {
         self.addr().simd_gt(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_ge(self, other: Self) -> Self::Mask {
         self.addr().simd_ge(other.addr())
@@ -271,7 +271,7 @@ where
 
     #[inline]
     #[track_caller]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_clamp(self, min: Self, max: Self) -> Self {
         assert!(
@@ -289,28 +289,28 @@ where
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_lt(self, other: Self) -> Self::Mask {
         self.addr().simd_lt(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_le(self, other: Self) -> Self::Mask {
         self.addr().simd_le(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_gt(self, other: Self) -> Self::Mask {
         self.addr().simd_gt(other.addr())
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_ge(self, other: Self) -> Self::Mask {
         self.addr().simd_ge(other.addr())
@@ -335,7 +335,7 @@ where
 
     #[inline]
     #[track_caller]
-    // flux_verify_panic: bug caught
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     fn simd_clamp(self, min: Self, max: Self) -> Self {
         assert!(

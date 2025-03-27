@@ -531,8 +531,6 @@ impl AsciiChar {
     /// Gets this ASCII character as a `char` Unicode Scalar Value.
     #[unstable(feature = "ascii_char", issue = "110998")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn to_char(self) -> char {
         self as u8 as char
     }

@@ -100,8 +100,6 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         self.inner.last()
     }
@@ -438,15 +436,11 @@ where
     /// Folds over the inner iterators, not over their elements. Is used by the `fold`, `count`,
     /// and `last` methods.
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn iter_fold<Acc, Fold>(self, mut acc: Acc, mut fold: Fold) -> Acc
     where
         Fold: FnMut(Acc, U) -> Acc,
     {
         #[inline]
-        // flux_verify_unknown: unknown
-        #[flux_attrs::trusted]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
         ) -> impl FnMut(Acc, T) -> Acc + '_ {
@@ -472,8 +466,6 @@ where
     /// Folds over the inner iterators, not over their elements. Is used by the `try_fold` and
     /// `advance_by` methods.
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn iter_try_fold<Acc, Fold, R>(&mut self, mut acc: Acc, mut fold: Fold) -> R
     where
         Fold: FnMut(Acc, &mut U) -> R,
@@ -515,8 +507,6 @@ where
     ///
     /// Folds over the inner iterators, not over their elements. Is used by the `rfold` method.
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn iter_rfold<Acc, Fold>(self, mut acc: Acc, mut fold: Fold) -> Acc
     where
         Fold: FnMut(Acc, U) -> Acc,
@@ -553,8 +543,6 @@ where
         R: Try<Output = Acc>,
     {
         #[inline]
-        // flux_verify_unknown: unknown
-        #[flux_attrs::trusted]
         fn flatten<'a, T: IntoIterator, Acc, R: Try>(
             backiter: &'a mut Option<T::IntoIter>,
             fold: &'a mut impl FnMut(Acc, &mut T::IntoIter) -> R,
@@ -625,7 +613,7 @@ where
     }
 
     #[inline]
-    // flux_verify_panic: unknown
+    // flux_verify_unknown: unknown
     #[flux_attrs::trusted_impl]
     default fn try_fold<Acc, Fold, R>(&mut self, init: Acc, fold: Fold) -> R
     where
@@ -680,8 +668,6 @@ where
     default fn count(self) -> usize {
         #[inline]
         #[rustc_inherit_overflow_checks]
-        // flux_verify_unknown: unknown
-        #[flux_attrs::trusted]
         fn count<U: Iterator>(acc: usize, iter: U) -> usize {
             acc + iter.count()
         }

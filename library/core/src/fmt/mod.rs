@@ -2662,16 +2662,24 @@ macro_rules! fmt_refs {
 fmt_refs! { Debug, Display, Octal, Binary, LowerHex, UpperHex, LowerExp, UpperExp }
 
 #[unstable(feature = "never_type", issue = "35121")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl Debug for ! {
     #[inline]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     fn fmt(&self, _: &mut Formatter<'_>) -> Result {
         *self
     }
 }
 
 #[unstable(feature = "never_type", issue = "35121")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl Display for ! {
     #[inline]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     fn fmt(&self, _: &mut Formatter<'_>) -> Result {
         *self
     }

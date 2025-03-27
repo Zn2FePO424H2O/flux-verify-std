@@ -49,8 +49,6 @@ impl From<char> for u32 {
     /// assert!(4 == mem::size_of_val(&u))
     /// ```
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn from(c: char) -> Self {
         c as u32
     }
@@ -72,8 +70,6 @@ impl From<char> for u64 {
     /// assert!(8 == mem::size_of_val(&u))
     /// ```
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn from(c: char) -> Self {
         // The char is casted to the value of the code point, then zero-extended to 64 bit.
         // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
@@ -97,8 +93,6 @@ impl From<char> for u128 {
     /// assert!(16 == mem::size_of_val(&u))
     /// ```
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn from(c: char) -> Self {
         // The char is casted to the value of the code point, then zero-extended to 128 bit.
         // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
@@ -188,8 +182,6 @@ impl From<u8> for char {
     /// assert!(4 == mem::size_of_val(&c))
     /// ```
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn from(i: u8) -> Self {
         i as char
     }
@@ -295,7 +287,7 @@ impl fmt::Display for CharTryFromError {
 /// Converts a digit in the given radix to a `char`. See [`char::from_digit`].
 #[inline]
 #[must_use]
-// flux_verify_unknown: unknown
+// flux_verify_ice: invalid cast char to int
 #[flux_attrs::trusted]
 pub(super) const fn from_digit(num: u32, radix: u32) -> Option<char> {
     if radix > 36 {

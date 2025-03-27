@@ -111,7 +111,7 @@ fn div_rem_upto_16<'a>(
 }
 
 /// The shortest mode implementation for Dragon.
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 pub fn format_shortest<'a>(
     d: &Decoded,
@@ -273,7 +273,7 @@ pub fn format_shortest<'a>(
 }
 
 /// The exact and fixed mode implementation for Dragon.
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 pub fn format_exact<'a>(
     d: &Decoded,

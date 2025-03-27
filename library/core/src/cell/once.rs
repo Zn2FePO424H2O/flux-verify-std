@@ -34,6 +34,8 @@ pub struct OnceCell<T> {
     inner: UnsafeCell<Option<T>>,
 }
 
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T> OnceCell<T> {
     /// Creates a new empty cell.
     #[inline]
@@ -154,6 +156,8 @@ impl<T> OnceCell<T> {
     /// ```
     #[inline]
     #[stable(feature = "once_cell", since = "1.70.0")]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     pub fn get_or_init<F>(&self, f: F) -> &T
     where
         F: FnOnce() -> T,
@@ -190,6 +194,8 @@ impl<T> OnceCell<T> {
     /// ```
     #[inline]
     #[unstable(feature = "once_cell_get_mut", issue = "121641")]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     pub fn get_mut_or_init<F>(&mut self, f: F) -> &mut T
     where
         F: FnOnce() -> T,

@@ -1747,6 +1747,8 @@ impl<'a, T: 'a> ChunksMut<'a, T> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for ChunksMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -1782,6 +1784,8 @@ impl<'a, T> Iterator for ChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<&'a mut [T]> {
         let (start, overflow) = n.overflowing_mul(self.chunk_size);
         if start >= self.v.len() || overflow {
@@ -1829,6 +1833,8 @@ impl<'a, T> Iterator for ChunksMut<'a, T> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_impl:impl
+    #[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for ChunksMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -1847,6 +1853,8 @@ impl<'a, T> DoubleEndedIterator for ChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -2126,6 +2134,8 @@ impl<'a, T> ChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "chunks_exact", since = "1.31.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for ChunksExactMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -2149,6 +2159,8 @@ impl<'a, T> Iterator for ChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn count(self) -> usize {
         self.len()
     }
@@ -2180,6 +2192,8 @@ impl<'a, T> Iterator for ChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "chunks_exact", since = "1.31.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for ChunksExactMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -2195,6 +2209,8 @@ impl<'a, T> DoubleEndedIterator for ChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -2829,6 +2845,8 @@ impl<'a, T: 'a> RChunksMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunksMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -2869,6 +2887,8 @@ impl<'a, T> Iterator for RChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<&'a mut [T]> {
         let (end, overflow) = n.overflowing_mul(self.chunk_size);
         if end >= self.v.len() || overflow {
@@ -2918,6 +2938,8 @@ impl<'a, T> Iterator for RChunksMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunksMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -2935,6 +2957,8 @@ impl<'a, T> DoubleEndedIterator for RChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -3214,6 +3238,8 @@ impl<'a, T> RChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunksExactMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -3243,6 +3269,8 @@ impl<'a, T> Iterator for RChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<&'a mut [T]> {
         let (end, overflow) = n.overflowing_mul(self.chunk_size);
         if end >= self.v.len() || overflow {
@@ -3271,6 +3299,8 @@ impl<'a, T> Iterator for RChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunksExactMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -3286,6 +3316,8 @@ impl<'a, T> DoubleEndedIterator for RChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {

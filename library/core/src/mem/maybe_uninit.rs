@@ -650,8 +650,6 @@ impl<T> MaybeUninit<T> {
     #[inline(always)]
     #[rustc_diagnostic_item = "assume_init"]
     #[track_caller]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const unsafe fn assume_init(self) -> T {
         // SAFETY: the caller must guarantee that `self` is initialized.
         // This also means that `self` must be a `value` variant.
@@ -1397,8 +1395,6 @@ impl<T> [MaybeUninit<T>] {
     ///
     /// [`write_copy_of_slice`]: slice::write_copy_of_slice
     #[unstable(feature = "maybe_uninit_write_slice", issue = "79995")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub fn write_clone_of_slice(&mut self, src: &[T]) -> &mut [T]
     where
         T: Clone,

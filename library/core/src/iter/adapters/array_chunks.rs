@@ -55,6 +55,8 @@ where
 }
 
 #[unstable(feature = "iter_array_chunks", reason = "recently added", issue = "100450")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I, const N: usize> Iterator for ArrayChunks<I, N>
 where
     I: Iterator,
@@ -62,6 +64,8 @@ where
     type Item = [I::Item; N];
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         self.try_for_each(ControlFlow::Break).break_value()
     }

@@ -169,6 +169,8 @@ impl fmt::Debug for dyn Any + Send + Sync {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl dyn Any {
     /// Returns `true` if the inner type is the same as `T`.
     ///
@@ -291,6 +293,8 @@ impl dyn Any {
     /// with the incorrect type is *undefined behavior*.
     #[unstable(feature = "downcast_unchecked", issue = "90850")]
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     pub unsafe fn downcast_ref_unchecked<T: Any>(&self) -> &T {
         debug_assert!(self.is::<T>());
         // SAFETY: caller guarantees that T is the correct type
@@ -321,6 +325,8 @@ impl dyn Any {
     /// with the incorrect type is *undefined behavior*.
     #[unstable(feature = "downcast_unchecked", issue = "90850")]
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     pub unsafe fn downcast_mut_unchecked<T: Any>(&mut self) -> &mut T {
         debug_assert!(self.is::<T>());
         // SAFETY: caller guarantees that T is the correct type

@@ -106,8 +106,6 @@ impl<'a, T> InitializingSlice<'a, T> {
     ///
     /// Panics if the slice is already fully initialized.
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn push(&mut self, value: T) {
         MaybeUninit::write(&mut self.data[self.initialized_len], value);
         self.initialized_len += 1;

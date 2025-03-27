@@ -389,8 +389,6 @@ impl char {
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn to_digit(self, radix: u32) -> Option<u32> {
         assert!(
             radix >= 2 && radix <= 36,
@@ -634,8 +632,6 @@ impl char {
     #[rustc_const_stable(feature = "const_char_len_utf", since = "1.52.0")]
     #[inline]
     #[must_use]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn len_utf8(self) -> usize {
         len_utf8(self as u32)
     }
@@ -668,8 +664,6 @@ impl char {
     #[rustc_const_stable(feature = "const_char_len_utf", since = "1.52.0")]
     #[inline]
     #[must_use]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn len_utf16(self) -> usize {
         len_utf16(self as u32)
     }
@@ -707,8 +701,6 @@ impl char {
     #[stable(feature = "unicode_encode_char", since = "1.15.0")]
     #[rustc_const_stable(feature = "const_char_encode_utf8", since = "1.83.0")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn encode_utf8(self, dst: &mut [u8]) -> &mut str {
         // SAFETY: `char` is not a surrogate, so this is valid UTF-8.
         unsafe { from_utf8_unchecked_mut(encode_utf8_raw(self as u32, dst)) }
@@ -745,8 +737,6 @@ impl char {
     #[stable(feature = "unicode_encode_char", since = "1.15.0")]
     #[rustc_const_stable(feature = "const_char_encode_utf16", since = "1.84.0")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn encode_utf16(self, dst: &mut [u16]) -> &mut [u16] {
         encode_utf16_raw(self as u32, dst)
     }
@@ -1181,8 +1171,6 @@ impl char {
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_char_is_ascii", since = "1.32.0")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn is_ascii(&self) -> bool {
         *self as u32 <= 0x7F
     }
@@ -1196,8 +1184,6 @@ impl char {
     #[must_use]
     #[unstable(feature = "ascii_char", issue = "110998")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn as_ascii(&self) -> Option<ascii::Char> {
         if self.is_ascii() {
             // SAFETY: Just checked that this is ASCII.
@@ -1233,8 +1219,6 @@ impl char {
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn to_ascii_uppercase(&self) -> char {
         if self.is_ascii_lowercase() {
             (*self as u8).ascii_change_case_unchecked() as char
@@ -1269,8 +1253,6 @@ impl char {
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[rustc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn to_ascii_lowercase(&self) -> char {
         if self.is_ascii_uppercase() {
             (*self as u8).ascii_change_case_unchecked() as char
@@ -1813,7 +1795,7 @@ const fn len_utf16(code: u32) -> usize {
 #[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
 #[doc(hidden)]
 #[inline]
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 pub const fn encode_utf8_raw(code: u32, dst: &mut [u8]) -> &mut [u8] {
     let len = len_utf8(code);
@@ -1863,7 +1845,7 @@ pub const fn encode_utf8_raw(code: u32, dst: &mut [u8]) -> &mut [u8] {
 #[unstable(feature = "char_internals", reason = "exposed only for libstd", issue = "none")]
 #[doc(hidden)]
 #[inline]
-// flux_verify_unknown: unknown
+// flux_verify_ice: expected array or slice type
 #[flux_attrs::trusted]
 pub const fn encode_utf16_raw(mut code: u32, dst: &mut [u16]) -> &mut [u16] {
     let len = len_utf16(code);

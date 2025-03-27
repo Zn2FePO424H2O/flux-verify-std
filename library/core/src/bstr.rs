@@ -118,8 +118,6 @@ unsafe impl DerefPure for ByteStr {}
 // flux_verify_impl: impl
 #[flux_attrs::trusted]
 impl fmt::Debug for ByteStr {
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "\"")?;
         for chunk in self.utf8_chunks() {
@@ -380,8 +378,6 @@ impl Index<RangeToInclusive<usize>> for ByteStr {
 #[flux_attrs::trusted]
 impl IndexMut<usize> for ByteStr {
     #[inline]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     fn index_mut(&mut self, idx: usize) -> &mut u8 {
         &mut self.0[idx]
     }

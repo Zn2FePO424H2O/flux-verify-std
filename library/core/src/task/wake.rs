@@ -320,8 +320,6 @@ impl<'a> ContextBuilder<'a> {
     /// Creates a ContextBuilder from a Waker.
     #[inline]
     #[unstable(feature = "local_waker", issue = "118959")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn from_waker(waker: &'a Waker) -> Self {
         // SAFETY: LocalWaker is just Waker without thread safety
         let local_waker = unsafe { transmute(waker) };
@@ -337,8 +335,6 @@ impl<'a> ContextBuilder<'a> {
     /// Creates a ContextBuilder from an existing Context.
     #[inline]
     #[unstable(feature = "context_ext", issue = "123392")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn from(cx: &'a mut Context<'_>) -> Self {
         let ext = match &mut cx.ext.0 {
             ExtData::Some(ext) => ExtData::Some(*ext),
@@ -377,8 +373,6 @@ impl<'a> ContextBuilder<'a> {
     /// Builds the `Context`.
     #[inline]
     #[unstable(feature = "local_waker", issue = "118959")]
-    // flux_verify_panic: bug caught
-    #[flux_attrs::trusted_impl]
     pub const fn build(self) -> Context<'a> {
         let ContextBuilder { waker, local_waker, ext, _marker, _marker2 } = self;
         Context { waker, local_waker, ext: AssertUnwindSafe(ext), _marker, _marker2 }

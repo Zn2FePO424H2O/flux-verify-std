@@ -230,11 +230,15 @@ impl<T> From<T> for Poll<T> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, E> ops::Try for Poll<Result<T, E>> {
     type Output = Poll<T>;
     type Residual = Result<convert::Infallible, E>;
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn from_output(c: Self::Output) -> Self {
         c.map(Ok)
     }
@@ -260,11 +264,15 @@ impl<T, E, F: From<E>> ops::FromResidual<Result<convert::Infallible, E>> for Pol
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<T, E> ops::Try for Poll<Option<Result<T, E>>> {
     type Output = Poll<Option<T>>;
     type Residual = Result<convert::Infallible, E>;
 
     #[inline]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn from_output(c: Self::Output) -> Self {
         c.map(|x| x.map(Ok))
     }

@@ -24,6 +24,8 @@ impl<I: Clone> Cycle<I> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl:impl
+#[flux_attrs::trusted]
 impl<I> Iterator for Cycle<I>
 where
     I: Clone + Iterator,
@@ -83,6 +85,8 @@ where
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         let mut n = match self.iter.advance_by(n) {
             Ok(()) => return Ok(()),
