@@ -670,6 +670,8 @@ macro_rules! cmp_asm { // FIXME: use LLVM intrinsics
 #[target_feature(enable = "avx512fp16,avx512vl")]
 #[rustc_legacy_const_generics(2)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_cmp_ph_mask<const IMM5: i32>(a: __m128h, b: __m128h) -> __mmask8 {
     static_assert_uimm_bits!(IMM5, 5);
     cmp_asm!(__mmask8, xmm_reg, a, b)
@@ -684,6 +686,8 @@ pub unsafe fn _mm_cmp_ph_mask<const IMM5: i32>(a: __m128h, b: __m128h) -> __mmas
 #[target_feature(enable = "avx512fp16,avx512vl")]
 #[rustc_legacy_const_generics(3)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_mask_cmp_ph_mask<const IMM5: i32>(
     k1: __mmask8,
     a: __m128h,
@@ -701,6 +705,8 @@ pub unsafe fn _mm_mask_cmp_ph_mask<const IMM5: i32>(
 #[target_feature(enable = "avx512fp16,avx512vl")]
 #[rustc_legacy_const_generics(2)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm256_cmp_ph_mask<const IMM5: i32>(a: __m256h, b: __m256h) -> __mmask16 {
     static_assert_uimm_bits!(IMM5, 5);
     cmp_asm!(__mmask16, ymm_reg, a, b)
@@ -715,6 +721,8 @@ pub unsafe fn _mm256_cmp_ph_mask<const IMM5: i32>(a: __m256h, b: __m256h) -> __m
 #[target_feature(enable = "avx512fp16,avx512vl")]
 #[rustc_legacy_const_generics(3)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm256_mask_cmp_ph_mask<const IMM5: i32>(
     k1: __mmask16,
     a: __m256h,
@@ -732,6 +740,8 @@ pub unsafe fn _mm256_mask_cmp_ph_mask<const IMM5: i32>(
 #[target_feature(enable = "avx512fp16")]
 #[rustc_legacy_const_generics(2)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm512_cmp_ph_mask<const IMM5: i32>(a: __m512h, b: __m512h) -> __mmask32 {
     static_assert_uimm_bits!(IMM5, 5);
     cmp_asm!(__mmask32, zmm_reg, a, b)
@@ -746,6 +756,8 @@ pub unsafe fn _mm512_cmp_ph_mask<const IMM5: i32>(a: __m512h, b: __m512h) -> __m
 #[target_feature(enable = "avx512fp16")]
 #[rustc_legacy_const_generics(3)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm512_mask_cmp_ph_mask<const IMM5: i32>(
     k1: __mmask32,
     a: __m512h,
@@ -800,6 +812,8 @@ pub unsafe fn _mm512_cmp_round_ph_mask<const IMM5: i32, const SAE: i32>(
 #[target_feature(enable = "avx512fp16")]
 #[rustc_legacy_const_generics(3, 4)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm512_mask_cmp_round_ph_mask<const IMM5: i32, const SAE: i32>(
     k1: __mmask32,
     a: __m512h,
@@ -1102,6 +1116,8 @@ pub unsafe fn _mm_load_sh(mem_addr: *const f16) -> __m128h {
 #[inline]
 #[target_feature(enable = "avx512fp16")]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_mask_load_sh(src: __m128h, k: __mmask8, mem_addr: *const f16) -> __m128h {
     let mut dst = src;
     asm!(
@@ -1121,6 +1137,8 @@ pub unsafe fn _mm_mask_load_sh(src: __m128h, k: __mmask8, mem_addr: *const f16) 
 #[inline]
 #[target_feature(enable = "avx512fp16")]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_maskz_load_sh(k: __mmask8, mem_addr: *const f16) -> __m128h {
     let mut dst: __m128h;
     asm!(
@@ -1259,6 +1277,8 @@ pub unsafe fn _mm_store_sh(mem_addr: *mut f16, a: __m128h) {
 #[inline]
 #[target_feature(enable = "avx512fp16")]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_mask_store_sh(mem_addr: *mut f16, k: __mmask8, a: __m128h) {
     asm!(
         vps!("vmovdqu16", "{{{k}}}, {src}"),
@@ -11055,6 +11075,8 @@ macro_rules! fpclass_asm { // FIXME: use LLVM intrinsics
 #[cfg_attr(test, assert_instr(vfpclassph, IMM8 = 0))]
 #[rustc_legacy_const_generics(1)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_fpclass_ph_mask<const IMM8: i32>(a: __m128h) -> __mmask8 {
     static_assert_uimm_bits!(IMM8, 8);
     fpclass_asm!(__mmask8, xmm_reg, a)
@@ -11080,6 +11102,8 @@ pub unsafe fn _mm_fpclass_ph_mask<const IMM8: i32>(a: __m128h) -> __mmask8 {
 #[cfg_attr(test, assert_instr(vfpclassph, IMM8 = 0))]
 #[rustc_legacy_const_generics(2)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm_mask_fpclass_ph_mask<const IMM8: i32>(k1: __mmask8, a: __m128h) -> __mmask8 {
     static_assert_uimm_bits!(IMM8, 8);
     fpclass_asm!(__mmask8, k1, xmm_reg, a)
@@ -11104,6 +11128,8 @@ pub unsafe fn _mm_mask_fpclass_ph_mask<const IMM8: i32>(k1: __mmask8, a: __m128h
 #[cfg_attr(test, assert_instr(vfpclassph, IMM8 = 0))]
 #[rustc_legacy_const_generics(1)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm256_fpclass_ph_mask<const IMM8: i32>(a: __m256h) -> __mmask16 {
     static_assert_uimm_bits!(IMM8, 8);
     fpclass_asm!(__mmask16, ymm_reg, a)
@@ -11129,6 +11155,8 @@ pub unsafe fn _mm256_fpclass_ph_mask<const IMM8: i32>(a: __m256h) -> __mmask16 {
 #[cfg_attr(test, assert_instr(vfpclassph, IMM8 = 0))]
 #[rustc_legacy_const_generics(2)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm256_mask_fpclass_ph_mask<const IMM8: i32>(k1: __mmask16, a: __m256h) -> __mmask16 {
     static_assert_uimm_bits!(IMM8, 8);
     fpclass_asm!(__mmask16, k1, ymm_reg, a)
@@ -11153,6 +11181,8 @@ pub unsafe fn _mm256_mask_fpclass_ph_mask<const IMM8: i32>(k1: __mmask16, a: __m
 #[cfg_attr(test, assert_instr(vfpclassph, IMM8 = 0))]
 #[rustc_legacy_const_generics(1)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm512_fpclass_ph_mask<const IMM8: i32>(a: __m512h) -> __mmask32 {
     static_assert_uimm_bits!(IMM8, 8);
     fpclass_asm!(__mmask32, zmm_reg, a)
@@ -11178,6 +11208,8 @@ pub unsafe fn _mm512_fpclass_ph_mask<const IMM8: i32>(a: __m512h) -> __mmask32 {
 #[cfg_attr(test, assert_instr(vfpclassph, IMM8 = 0))]
 #[rustc_legacy_const_generics(2)]
 #[unstable(feature = "stdarch_x86_avx512_f16", issue = "127213")]
+// flux_verify_ice: unsupported
+#[flux_attrs::trusted]
 pub unsafe fn _mm512_mask_fpclass_ph_mask<const IMM8: i32>(k1: __mmask32, a: __m512h) -> __mmask32 {
     static_assert_uimm_bits!(IMM8, 8);
     fpclass_asm!(__mmask32, k1, zmm_reg, a)

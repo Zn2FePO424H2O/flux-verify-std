@@ -98,7 +98,7 @@ const unsafe fn get_mut_noubcheck<T>(ptr: *mut [T], index: usize) -> *mut T {
 }
 
 #[inline(always)]
-// flux_verify_ice: cannot infer substitution
+// flux_verify_panic: cannot infer substitution
 #[flux_attrs::trusted]
 const unsafe fn get_offset_len_noubcheck<T>(
     ptr: *const [T],
@@ -111,7 +111,7 @@ const unsafe fn get_offset_len_noubcheck<T>(
 }
 
 #[inline(always)]
-// flux_verify_ice: cannot infer substitution
+// flux_verify_panic: cannot infer substitution
 #[flux_attrs::trusted]
 const unsafe fn get_offset_len_mut_noubcheck<T>(
     ptr: *mut [T],

@@ -25,17 +25,22 @@ const fn bitset_search<
     };
     let idx = bitset_chunk_idx[chunk_idx as usize][chunk_piece] as usize;
     // FIXME(const-hack): Revert to `slice::get` when slice indexing becomes possible in const.
-    let word = if idx < bitset_canonical.len() {
+    // flux_verify_error: vector length
+    let bitset_canonical_len = bitset_canonical.len();
+    let word = if idx < bitset_canonical_len {
         bitset_canonical[idx]
     } else {
-        let (real_idx, mapping) = bitset_canonicalized[idx - bitset_canonical.len()];
+        let (real_idx, mapping) = bitset_canonicalized[idx - bitset_canonical_len];
         let mut word = bitset_canonical[real_idx as usize];
         let should_invert = mapping & (1 << 6) != 0;
         if should_invert {
             word = !word;
         }
         // Lower 6 bits
-        let quantity = mapping & ((1 << 6) - 1);
+        let one_shift_six = 1 << 6;
+        // flux_verify_error: bit shift
+        flux_assume_const(one_shift_six > 1);
+        let quantity = mapping & (one_shift_six - 1);
         if mapping & (1 << 7) != 0 {
             // shift
             word >>= quantity as u64;
@@ -47,6 +52,13 @@ const fn bitset_search<
     (word & (1 << (needle % 64) as u64)) != 0
 }
 
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume_const(_:bool) {}
+
+// flux_verify_error: bit shift
+#[flux_attrs::trusted]
 fn decode_prefix_sum(short_offset_run_header: u32) -> u32 {
     short_offset_run_header & ((1 << 21) - 1)
 }
@@ -76,15 +88,25 @@ fn skip_search<const SOR: usize, const OFFSETS: usize>(
 
     let mut offset_idx = decode_length(short_offset_runs[last_idx]);
     let length = if let Some(next) = short_offset_runs.get(last_idx + 1) {
-        decode_length(*next) - offset_idx
+        let decode_length_next = decode_length(*next);
+        // flux_verify_error: complex
+        flux_assume(decode_length_next >= offset_idx);
+        decode_length_next - offset_idx
     } else {
-        offsets.len() - offset_idx
+        let offsets_len = offsets.len();
+        // flux_verify_error: complex
+        flux_assume(offsets_len >= offset_idx);
+        offsets_len - offset_idx
     };
     let prev =
         last_idx.checked_sub(1).map(|prev| decode_prefix_sum(short_offset_runs[prev])).unwrap_or(0);
 
+    // flux_verify_error: complex
+    flux_assume(needle >= prev);
     let total = needle - prev;
     let mut prefix_sum = 0;
+    // flux_verify_error: complex
+    flux_assume(length >= 1);
     for _ in 0..(length - 1) {
         let offset = offsets[offset_idx];
         prefix_sum += offset as u32;
@@ -95,6 +117,11 @@ fn skip_search<const SOR: usize, const OFFSETS: usize>(
     }
     offset_idx % 2 == 1
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 pub const UNICODE_VERSION: (u8, u8, u8) = (16, 0, 0);
 

@@ -1737,6 +1737,8 @@ impl<T: ?Sized> *mut T {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> *mut [T] {
     /// Returns the length of a raw slice.
     ///
@@ -1878,6 +1880,8 @@ impl<T> *mut [T] {
     /// ```
     #[inline(always)]
     #[unstable(feature = "raw_slice_split", issue = "95595")]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     pub unsafe fn split_at_mut_unchecked(self, mid: usize) -> (*mut [T], *mut [T]) {
         let len = self.len();
         let ptr = self.as_mut_ptr();

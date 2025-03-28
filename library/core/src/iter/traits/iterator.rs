@@ -2212,7 +2212,7 @@ pub trait Iterator {
     /// assert!(a[i..].iter().all(|&n| n % 2 == 1)); // odds
     /// ```
     #[unstable(feature = "iter_partition_in_place", reason = "new API", issue = "62543")]
-    // flux_verify_unknown: unknown
+    // flux_verify_ice: unexpected escaping region BoundRegion
     #[flux_attrs::trusted]
     fn partition_in_place<'a, T: 'a, P>(mut self, ref mut predicate: P) -> usize
     where
@@ -2650,7 +2650,7 @@ pub trait Iterator {
     /// ```
     #[inline]
     #[unstable(feature = "iterator_try_reduce", reason = "new API", issue = "87053")]
-    // flux_verify_unknown: unknown
+    // flux_verify_ice: Unimplemented
     #[flux_attrs::trusted]
     fn try_reduce<R>(
         &mut self,

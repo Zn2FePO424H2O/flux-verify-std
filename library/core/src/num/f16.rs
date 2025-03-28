@@ -134,6 +134,8 @@ pub mod consts {
 }
 
 #[cfg(not(test))]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl f16 {
     // FIXME(f16_f128): almost all methods in this `impl` are missing examples and a const
     // implementation. Add these once we can run code on all platforms and have f16/f128 in CTFE.
@@ -517,6 +519,8 @@ impl f16 {
     #[inline]
     #[doc(alias = "nextUp")]
     #[unstable(feature = "f16", issue = "116909")]
+    // flux_verify_error: bit operation
+    #[flux_attrs::trusted_impl]
     pub const fn next_up(self) -> Self {
         // Some targets violate Rust's assumption of IEEE semantics, e.g. by flushing
         // denormals to zero. This is in general unsound and unsupported, but here

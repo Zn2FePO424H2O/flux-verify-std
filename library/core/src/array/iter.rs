@@ -282,7 +282,7 @@ impl<T, const N: usize> Iterator for IntoIter<T, N> {
         self.next_back()
     }
 
-    // flux_verify_ice: generics_of called
+    // flux_verify_ice: assertion `left == right` failed
     #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         // This also moves the start, which marks them as conceptually "dropped",

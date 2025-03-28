@@ -91,7 +91,7 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_unknown: unknown
+// flux_verify_ice: region parameter out of range
 #[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where
@@ -100,14 +100,14 @@ where
     type Item = I::Item;
 
     #[inline]
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         self.iter.find(&mut self.predicate)
     }
 
     #[inline]
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted_impl]
     fn next_chunk<const N: usize>(
         &mut self,
@@ -178,7 +178,7 @@ where
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<I::Item> {
         self.iter.rfind(&mut self.predicate)

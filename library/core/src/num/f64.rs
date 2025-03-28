@@ -387,6 +387,8 @@ pub mod consts {
 }
 
 #[cfg(not(test))]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl f64 {
     /// The radix or base of the internal representation of `f64`.
     #[stable(feature = "assoc_int_consts", since = "1.43.0")]
@@ -760,6 +762,8 @@ impl f64 {
     #[doc(alias = "nextUp")]
     #[stable(feature = "float_next_up_down", since = "CURRENT_RUSTC_VERSION")]
     #[rustc_const_stable(feature = "float_next_up_down", since = "CURRENT_RUSTC_VERSION")]
+    // flux_verify_error: bit operation
+    #[flux_attrs::trusted_impl]
     pub const fn next_up(self) -> Self {
         // Some targets violate Rust's assumption of IEEE semantics, e.g. by flushing
         // denormals to zero. This is in general unsound and unsupported, but here

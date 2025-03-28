@@ -390,7 +390,12 @@ pub struct CharSearcher<'a> {
     utf8_encoded: [u8; 4],
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl CharSearcher<'_> {
+    // flux_verify_sig: sig
+    #[flux_attrs::trusted_impl]
+    #[flux_attrs::sig(fn (_) -> usize{x: x>=1})]
     fn utf8_size(&self) -> usize {
         self.utf8_size.into()
     }
@@ -485,7 +490,10 @@ unsafe impl<'a> ReverseSearcher<'a> for CharSearcher<'a> {
         if let Some(ch) = iter.next_back() {
             // subtract byte offset of current character
             // without re-encoding as utf-8
-            self.finger_back -= old_len - iter.iter.len();
+            let iter_iter_len = iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(old_len >= iter_iter_len);
+            self.finger_back -= old_len - iter_iter_len;
             if ch == self.needle {
                 SearchStep::Match(self.finger_back, old_finger)
             } else {
@@ -563,7 +571,7 @@ impl Pattern for char {
     type Searcher<'a> = CharSearcher<'a>;
 
     #[inline]
-    // flux_verify_unknown: unknown
+    // flux_verify_ice: region parameter out of range
     #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> Self::Searcher<'_> {
         let mut utf8_encoded = [0; 4];
@@ -584,8 +592,6 @@ impl Pattern for char {
     }
 
     #[inline]
-    // flux_verify_unknown: unknown
-    #[flux_attrs::trusted_impl]
     fn is_contained_in(self, haystack: &str) -> bool {
         if (self as u32) < 128 {
             haystack.as_bytes().contains(&(self as u8))
@@ -686,7 +692,7 @@ impl<C: MultiCharEq> Pattern for MultiCharEqPattern<C> {
     type Searcher<'a> = MultiCharEqSearcher<'a, C>;
 
     #[inline]
-    // flux_verify_unknown: unknown
+    // flux_verify_ice: region parameter out of range
     #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> MultiCharEqSearcher<'_, C> {
         MultiCharEqSearcher { haystack, char_eq: self.0, char_indices: haystack.char_indices() }
@@ -707,6 +713,8 @@ unsafe impl<'a, C: MultiCharEq> Searcher<'a> for MultiCharEqSearcher<'a, C> {
         let pre_len = s.iter.iter.len();
         if let Some((i, c)) = s.next() {
             let len = s.iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(pre_len >= len);
             let char_len = pre_len - len;
             if self.char_eq.matches(c) {
                 return SearchStep::Match(i, i + char_len);
@@ -727,6 +735,8 @@ unsafe impl<'a, C: MultiCharEq> ReverseSearcher<'a> for MultiCharEqSearcher<'a, 
         let pre_len = s.iter.iter.len();
         if let Some((i, c)) = s.next_back() {
             let len = s.iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(pre_len >= len);
             let char_len = pre_len - len;
             if self.char_eq.matches(c) {
                 return SearchStep::Match(i, i + char_len);
@@ -737,6 +747,11 @@ unsafe impl<'a, C: MultiCharEq> ReverseSearcher<'a> for MultiCharEqSearcher<'a, 
         SearchStep::Done
     }
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 impl<'a, C: MultiCharEq> DoubleEndedSearcher<'a> for MultiCharEqSearcher<'a, C> {}
 
@@ -990,7 +1005,7 @@ impl<'b> Pattern for &'b str {
     type Searcher<'a> = StrSearcher<'a, 'b>;
 
     #[inline]
-    // flux_verify_unknown: unknown
+    // flux_verify_ice: region parameter out of range
     #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> StrSearcher<'_, 'b> {
         StrSearcher::new(haystack, self)
@@ -1389,6 +1404,8 @@ struct TwoWaySearcher {
     for reverse search, chosen instead so that |v'| < period(x).
 
 */
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl TwoWaySearcher {
     fn new(needle: &[u8], end: usize) -> TwoWaySearcher {
         let (crit_pos_false, period_false) = TwoWaySearcher::maximal_suffix(needle, false);
@@ -1474,6 +1491,8 @@ impl TwoWaySearcher {
     // How far we can jump when we encounter a mismatch is all based on the fact
     // that (u, v) is a critical factorization for the needle.
     #[inline]
+    // flux_verify_error: sub vector length
+    #[flux_attrs::trusted_impl]
     fn next<S>(&mut self, haystack: &[u8], needle: &[u8], long_period: bool) -> S::Output
     where
         S: TwoWayStrategy,
@@ -1557,6 +1576,8 @@ impl TwoWaySearcher {
     // To search in reverse through the haystack, we search forward through
     // a reversed haystack with a reversed needle, matching first u' and then v'.
     #[inline]
+    // flux_verify_error: sub vector length
+    #[flux_attrs::trusted_impl]
     fn next_back<S>(&mut self, haystack: &[u8], needle: &[u8], long_period: bool) -> S::Output
     where
         S: TwoWayStrategy,

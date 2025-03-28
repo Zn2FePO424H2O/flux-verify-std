@@ -613,8 +613,6 @@ where
     }
 
     #[inline]
-    // flux_verify_unknown: unknown
-    #[flux_attrs::trusted_impl]
     default fn try_fold<Acc, Fold, R>(&mut self, init: Acc, fold: Fold) -> R
     where
         Self: Sized,

@@ -693,10 +693,18 @@ impl Duration {
     pub const fn checked_sub(self, rhs: Duration) -> Option<Duration> {
         if let Some(mut secs) = self.secs.checked_sub(rhs.secs) {
             let nanos = if self.nanos.as_inner() >= rhs.nanos.as_inner() {
-                self.nanos.as_inner() - rhs.nanos.as_inner()
+                let self_nanos_as_inner = self.nanos.as_inner();
+                let rhs_nanos_as_inner = rhs.nanos.as_inner();
+                // flux_verify_error: complex
+                flux_assume_const(self_nanos_as_inner >= rhs_nanos_as_inner);
+                self_nanos_as_inner - rhs_nanos_as_inner
             } else if let Some(sub_secs) = secs.checked_sub(1) {
                 secs = sub_secs;
-                self.nanos.as_inner() + NANOS_PER_SEC - rhs.nanos.as_inner()
+                let self_nanos_as_inner = self.nanos.as_inner();
+                let rhs_nanos_as_inner = rhs.nanos.as_inner();
+                // flux_verify_error: complex
+                flux_assume_const(self_nanos_as_inner + NANOS_PER_SEC >= rhs_nanos_as_inner);
+                self_nanos_as_inner + NANOS_PER_SEC - rhs_nanos_as_inner
             } else {
                 return None;
             };
@@ -1099,6 +1107,11 @@ impl Duration {
     }
 }
 
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume_const(_:bool) {}
+
 #[stable(feature = "duration", since = "1.3.0")]
 impl Add for Duration {
     type Output = Duration;
@@ -1492,7 +1505,10 @@ macro_rules! try_from_secs {
             let nanos_tmp = u128::from(NANOS_PER_SEC) * u128::from(t);
             let nanos = (nanos_tmp >> nanos_offset) as u32;
 
-            let rem_mask = (1 << nanos_offset) - 1;
+            let nanos_offset_shift_2 = (1 << nanos_offset);
+            // flux_verify_error: bit shift
+            flux_assume(nanos_offset_shift_2 >= 1);
+            let rem_mask = nanos_offset_shift_2 - 1;
             let rem_msb_mask = 1 << (nanos_offset - 1);
             let rem = nanos_tmp & rem_mask;
             let is_tie = rem == rem_msb_mask;
@@ -1511,7 +1527,10 @@ macro_rules! try_from_secs {
             let nanos_tmp = <$double_ty>::from(NANOS_PER_SEC) * t;
             let nanos = (nanos_tmp >> nanos_offset) as u32;
 
-            let rem_mask = (1 << nanos_offset) - 1;
+            let nanos_offset_shift_2 = (1 << nanos_offset);
+            // flux_verify_error: bit shift
+            flux_assume(nanos_offset_shift_2 >= 1);
+            let rem_mask = nanos_offset_shift_2 - 1;
             let rem_msb_mask = 1 << (nanos_offset - 1);
             let rem = nanos_tmp & rem_mask;
             let is_tie = rem == rem_msb_mask;
@@ -1540,6 +1559,10 @@ macro_rules! try_from_secs {
         Ok(Duration::new(secs, nanos))
     }};
 }
+
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 impl Duration {
     /// The checked version of [`from_secs_f32`].

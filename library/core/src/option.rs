@@ -584,6 +584,8 @@ pub enum Option<T> {
 // Type implementation
 /////////////////////////////////////////////////////////////////////////////
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T> Option<T> {
     /////////////////////////////////////////////////////////////////////////
     // Querying the contained values
@@ -803,6 +805,8 @@ impl<T> Option<T> {
     #[must_use]
     #[stable(feature = "option_as_slice", since = "1.75.0")]
     #[rustc_const_stable(feature = "const_option_ext", since = "1.84.0")]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     pub const fn as_slice(&self) -> &[T] {
         // SAFETY: When the `Option` is `Some`, we're using the actual pointer
         // to the payload, with a length of 1, so this is equivalent to
@@ -858,6 +862,8 @@ impl<T> Option<T> {
     #[must_use]
     #[stable(feature = "option_as_slice", since = "1.75.0")]
     #[rustc_const_stable(feature = "const_option_ext", since = "1.84.0")]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     pub const fn as_mut_slice(&mut self) -> &mut [T] {
         // SAFETY: When the `Option` is `Some`, we're using the actual pointer
         // to the payload, with a length of 1, so this is equivalent to

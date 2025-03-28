@@ -63,7 +63,7 @@ where
         self.it.size_hint()
     }
 
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -74,7 +74,7 @@ where
         self.it.try_fold(init, copy_try_fold(f))
     }
 
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted]
     fn fold<Acc, F>(self, init: Acc, f: F) -> Acc
     where
@@ -120,7 +120,7 @@ where
         self.it.next_back().copied()
     }
 
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -131,7 +131,7 @@ where
         self.it.try_rfold(init, copy_try_fold(f))
     }
 
-    // flux_verify_unknown: unknown
+    // flux_verify_panic: escaping bound vars
     #[flux_attrs::trusted]
     fn rfold<Acc, F>(self, init: Acc, f: F) -> Acc
     where

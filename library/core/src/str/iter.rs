@@ -193,6 +193,8 @@ impl<'a> Iterator for CharIndices<'a> {
             Some(ch) => {
                 let index = self.front_offset;
                 let len = self.iter.iter.len();
+                // flux_verify_assume: sub vector length
+                flux_assume(pre_len >= len);
                 self.front_offset += pre_len - len;
                 Some((index, ch))
             }
@@ -674,6 +676,8 @@ impl<'a, P: Pattern> SplitInternal<'a, P> {
         if !self.finished {
             self.finished = true;
 
+            // flux_verify_error: type constrain
+            flux_assume(self.end >= self.start);
             if self.allow_trailing_empty || self.end - self.start > 0 {
                 // SAFETY: `self.start` and `self.end` always lie on unicode boundaries.
                 let string = unsafe { self.matcher.haystack().get_unchecked(self.start..self.end) };
@@ -975,6 +979,8 @@ impl<'a, P: Pattern> SplitNInternal<'a, P> {
                 self.iter.get_end()
             }
             _ => {
+                // flux_verify_error: condition matching
+                flux_assume(self.count > 1);
                 self.count -= 1;
                 self.iter.next()
             }
@@ -993,6 +999,8 @@ impl<'a, P: Pattern> SplitNInternal<'a, P> {
                 self.iter.get_end()
             }
             _ => {
+                // flux_verify_error: condition matching
+                flux_assume(self.count > 1);
                 self.count -= 1;
                 self.iter.next_back()
             }
@@ -1660,3 +1668,8 @@ macro_rules! escape_types_impls {
 }
 
 escape_types_impls!(EscapeDebug, EscapeDefault, EscapeUnicode);
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}

@@ -5,7 +5,7 @@ from collections import defaultdict
 def find_flux_verify_tags(root_dir):
     pattern = re.compile(r'^\s*// flux_verify_([\w]+):\s*(.+)$')
     tag_counts = defaultdict(int)
-    tag_details = defaultdict(list)
+    tag_details = defaultdict(lambda: defaultdict(int))
     tag_locations = defaultdict(list)
 
     for dirpath, _, filenames in os.walk(root_dir):
@@ -18,7 +18,7 @@ def find_flux_verify_tags(root_dir):
                         if match:
                             tag1, tag2 = match.groups()
                             tag_counts[tag1] += 1
-                            tag_details[tag1].append(tag2)
+                            tag_details[tag1][tag2] += 1
                             tag_locations[tag1].append((file_path, line_number))
             except (UnicodeDecodeError, IOError):
                 continue
@@ -31,5 +31,5 @@ if __name__ == "__main__":
 
     for tag1 in sorted(tag_counts.keys()):
         print(f"{tag1}: {tag_counts[tag1]}")
-        for tag2 in sorted(set(tag_details[tag1])):
-            print(f"  - {tag2}")
+        for tag2, count in sorted(tag_details[tag1].items()):
+            print(f"  - {tag2}: {count}")

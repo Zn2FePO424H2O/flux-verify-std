@@ -29,6 +29,11 @@ impl Default for Decimal {
     }
 }
 
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 impl Decimal {
     /// The maximum number of digits required to unambiguously round a float.
     ///
@@ -79,6 +84,8 @@ impl Decimal {
         // Trim is only called in `right_shift` and `left_shift`.
         debug_assert!(self.num_digits <= Self::MAX_DIGITS);
         while self.num_digits != 0 && self.digits[self.num_digits - 1] == 0 {
+            // flux_verify_error: condition matching
+            flux_assume(self.num_digits >= 1);
             self.num_digits -= 1;
         }
     }
@@ -200,11 +207,6 @@ impl Decimal {
         self.trim();
     }
 }
-
-// flux_verify_assume: assume
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
 
 /// Parse a big integer representation of the float as a decimal.
 pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {

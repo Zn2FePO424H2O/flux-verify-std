@@ -4,6 +4,8 @@ use crate::intrinsics::const_eval_select;
 use crate::mem::SizedTypeProperties;
 use crate::slice::{self, SliceIndex};
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T: ?Sized> *const T {
     /// Returns `true` if the pointer is null.
     ///
@@ -1475,6 +1477,8 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline]
     #[unstable(feature = "pointer_is_aligned_to", issue = "96284")]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     pub fn is_aligned_to(self, align: usize) -> bool {
         if !align.is_power_of_two() {
             panic!("is_aligned_to: align is not a power-of-two");

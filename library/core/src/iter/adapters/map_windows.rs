@@ -248,7 +248,7 @@ where
 {
     type Item = R;
 
-    // flux_verify_unknown: unknown
+    // flux_verify_ice: impossible case reached
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         let window = self.inner.next_window()?;

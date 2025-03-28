@@ -164,6 +164,8 @@ pub(crate) struct EscapeIterInner<const N: usize> {
     alive: Range<u8>,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<const N: usize> EscapeIterInner<N> {
     pub(crate) const fn backslash(c: ascii::Char) -> Self {
         let (data, range) = backslash(c);
@@ -199,6 +201,8 @@ impl<const N: usize> EscapeIterInner<N> {
     }
 
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     pub(crate) fn len(&self) -> usize {
         usize::from(self.alive.end - self.alive.start)
     }

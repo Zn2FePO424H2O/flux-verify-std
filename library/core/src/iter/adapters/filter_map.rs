@@ -53,6 +53,8 @@ fn filter_map_try_fold<'a, T, B, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<B, I: Iterator, F> Iterator for FilterMap<I, F>
 where
     F: FnMut(I::Item) -> Option<B>,
@@ -65,6 +67,8 @@ where
     }
 
     #[inline]
+    // flux_verify_ice: unsupported
+    #[flux_attrs::trusted_impl]
     fn next_chunk<const N: usize>(
         &mut self,
     ) -> Result<[Self::Item; N], array::IntoIter<Self::Item, N>> {
