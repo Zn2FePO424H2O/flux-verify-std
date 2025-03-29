@@ -519,7 +519,7 @@ impl f16 {
     #[inline]
     #[doc(alias = "nextUp")]
     #[unstable(feature = "f16", issue = "116909")]
-    // flux_verify_error: bit operation
+    // flux_verify_error: bit mask
     #[flux_attrs::trusted_impl]
     pub const fn next_up(self) -> Self {
         // Some targets violate Rust's assumption of IEEE semantics, e.g. by flushing

@@ -1242,7 +1242,7 @@ unsafe impl<'a, 'b> Searcher<'a> for StrSearcher<'a, 'b> {
 #[flux_attrs::trusted]
 unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
     #[inline]
-    // flux_verify_error: type constrain
+    // flux_verify_error: logic constrain
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         match self.searcher {
