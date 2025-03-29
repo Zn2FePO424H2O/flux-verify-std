@@ -199,7 +199,7 @@ pub unsafe fn _mm256_cvtneoph_ps(a: *const __m256h) -> __m256 {
     assert_instr(vcvtneps2bf16)
 )]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_cvtneps_avx_pbh(a: __m128) -> __m128bh {
     let mut dst: __m128bh;
@@ -223,7 +223,7 @@ pub unsafe fn _mm_cvtneps_avx_pbh(a: __m128) -> __m128bh {
     assert_instr(vcvtneps2bf16)
 )]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm256_cvtneps_avx_pbh(a: __m256) -> __m128bh {
     let mut dst: __m128bh;

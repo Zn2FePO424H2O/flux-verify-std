@@ -34,6 +34,8 @@ impl Default for Decimal {
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl Decimal {
     /// The maximum number of digits required to unambiguously round a float.
     ///
@@ -74,6 +76,8 @@ impl Decimal {
     }
 
     /// Trim trailing zeros from the buffer.
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     pub(super) fn trim(&mut self) {
         // All of the following calls to `Decimal::trim` can't panic because:
         //
@@ -84,8 +88,6 @@ impl Decimal {
         // Trim is only called in `right_shift` and `left_shift`.
         debug_assert!(self.num_digits <= Self::MAX_DIGITS);
         while self.num_digits != 0 && self.digits[self.num_digits - 1] == 0 {
-            // flux_verify_error: condition matching
-            flux_assume(self.num_digits >= 1);
             self.num_digits -= 1;
         }
     }
@@ -128,6 +130,8 @@ impl Decimal {
         let mut n = 0_u64;
         while read_index != 0 {
             read_index -= 1;
+            // flux_verify_error: condition matching
+            flux_assume(write_index >= 1);
             write_index -= 1;
             n += (self.digits[read_index] as u64) << shift;
             let quotient = n / 10;
@@ -140,6 +144,8 @@ impl Decimal {
             n = quotient;
         }
         while n > 0 {
+            // flux_verify_error: condition matching
+            flux_assume(write_index >= 1);
             write_index -= 1;
             let quotient = n / 10;
             let remainder = n - (10 * quotient);
@@ -185,7 +191,10 @@ impl Decimal {
             self.truncated = false;
             return;
         }
-        let mask = (1_u64 << shift) - 1;
+        let shift_1_u64 = 1_u64 << shift;
+        // flux_verify_error: bit shift
+        flux_assume(shift_1_u64 >= 1);
+        let mask = shift_1_u64 - 1;
         while read_index < self.num_digits {
             let new_digit = (n >> shift) as u8;
             n = (10 * (n & mask)) + self.digits[read_index] as u64;

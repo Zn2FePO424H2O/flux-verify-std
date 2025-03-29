@@ -805,7 +805,7 @@ impl<T> Option<T> {
     #[must_use]
     #[stable(feature = "option_as_slice", since = "1.75.0")]
     #[rustc_const_stable(feature = "const_option_ext", since = "1.84.0")]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     pub const fn as_slice(&self) -> &[T] {
         // SAFETY: When the `Option` is `Some`, we're using the actual pointer
@@ -862,7 +862,7 @@ impl<T> Option<T> {
     #[must_use]
     #[stable(feature = "option_as_slice", since = "1.75.0")]
     #[rustc_const_stable(feature = "const_option_ext", since = "1.84.0")]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     pub const fn as_mut_slice(&mut self) -> &mut [T] {
         // SAFETY: When the `Option` is `Some`, we're using the actual pointer

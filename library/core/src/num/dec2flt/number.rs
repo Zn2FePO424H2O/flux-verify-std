@@ -71,7 +71,10 @@ impl Number {
             } else {
                 // disguised fast path
                 let shift = self.exponent - F::MAX_EXPONENT_FAST_PATH;
-                let mantissa = self.mantissa.checked_mul(INT_POW10[shift as usize])?;
+                let shift_as_usize = shift as usize;
+                // flux_verify_error: type cast
+                flux_assume(shift_as_usize < 16);
+                let mantissa = self.mantissa.checked_mul(INT_POW10[shift_as_usize])?;
                 if mantissa > F::MAX_MANTISSA_FAST_PATH {
                     return None;
                 }
@@ -86,3 +89,8 @@ impl Number {
         }
     }
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}

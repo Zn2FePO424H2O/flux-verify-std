@@ -1733,6 +1733,8 @@ impl<T: ?Sized> *mut T {
             panic!("is_aligned_to: align is not a power-of-two");
         }
 
+        // flux_verify_error: conditional matching
+        flux_assume(align >= 1); 
         self.addr() & (align - 1) == 0
     }
 }

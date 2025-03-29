@@ -60,7 +60,7 @@ where
         self.it.try_fold(init, clone_try_fold(f))
     }
 
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     //#[flux_attrs::trusted_impl]
     fn fold<Acc, F>(self, init: Acc, f: F) -> Acc
     where
@@ -100,7 +100,7 @@ where
         self.it.try_rfold(init, clone_try_fold(f))
     }
 
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn rfold<Acc, F>(self, init: Acc, f: F) -> Acc
     where

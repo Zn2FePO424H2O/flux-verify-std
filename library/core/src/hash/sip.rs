@@ -243,6 +243,8 @@ impl super::Hasher for SipHasher13 {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<S: Sip> super::Hasher for Hasher<S> {
     // Note: no integer hashing methods (`write_u*`, `write_i*`) are defined
     // for this type. We could add them, copy the `short_write` implementation
@@ -252,6 +254,8 @@ impl<S: Sip> super::Hasher for Hasher<S> {
     // slightly slowing down compile speeds on some benchmarks. See #69152 for
     // details.
     #[inline]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     fn write(&mut self, msg: &[u8]) {
         let length = msg.len();
         self.length += length;
@@ -278,6 +282,8 @@ impl<S: Sip> super::Hasher for Hasher<S> {
         let left = len & 0x7; // len % 8
 
         let mut i = needed;
+        // flux_verify_error: bit mask
+        flux_assume(len >= left);
         while i < len - left {
             // SAFETY: because `len - left` is the biggest multiple of 8 under
             // `len`, and because `i` starts at `needed` where `len` is `length - needed`,
@@ -322,6 +328,11 @@ impl<S: Sip> super::Hasher for Hasher<S> {
         state.v0 ^ state.v1 ^ state.v2 ^ state.v3
     }
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 impl<S: Sip> Clone for Hasher<S> {
     #[inline]

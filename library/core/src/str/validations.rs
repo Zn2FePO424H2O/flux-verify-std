@@ -124,6 +124,8 @@ const fn contains_nonascii(x: usize) -> bool {
 /// returning `Ok(())` in that case, or, if it is invalid, `Err(err)`.
 #[inline(always)]
 #[rustc_allow_const_fn_unstable(const_eval_select)] // fallback impl has same behavior
+// flux_verify_error: complex
+#[flux_attrs::trusted]
 pub(super) const fn run_utf8_validation(v: &[u8]) -> Result<(), Utf8Error> {
     let mut index = 0;
     let len = v.len();
@@ -276,9 +278,16 @@ const UTF8_CHAR_WIDTH: &[u8; 256] = &[
 #[unstable(feature = "str_internals", issue = "none")]
 #[must_use]
 #[inline]
+// flux_verify_error: full table
+#[flux_attrs::trusted]
 pub const fn utf8_char_width(b: u8) -> usize {
     UTF8_CHAR_WIDTH[b as usize] as usize
 }
 
 /// Mask of the value bits of a continuation byte.
 const CONT_MASK: u8 = 0b0011_1111;
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}

@@ -1235,6 +1235,8 @@ impl<'a> Sum<&'a Duration> for Duration {
 }
 
 #[stable(feature = "duration_debug_impl", since = "1.27.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl fmt::Debug for Duration {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         /// Formats a floating point number in decimal notation.
@@ -1250,6 +1252,8 @@ impl fmt::Debug for Duration {
         ///
         /// A prefix and postfix may be added. The whole thing is padded
         /// to the formatter's `width`, if specified.
+        // flux_verify_error: complex
+        #[flux_attrs::trusted_impl]
         fn fmt_decimal(
             f: &mut fmt::Formatter<'_>,
             integer_part: u64,

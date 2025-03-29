@@ -423,7 +423,10 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
         if let Some(ch) = iter.next() {
             // add byte offset of current character
             // without re-encoding as utf-8
-            self.finger += old_len - iter.iter.len();
+            let iter_iter_len = iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(old_len >= iter_iter_len);
+            self.finger += old_len - iter_iter_len;
             if ch == self.needle {
                 SearchStep::Match(old_finger, self.finger)
             } else {
@@ -461,7 +464,11 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
                 // to a UTF8 boundary.
                 self.finger += index + 1;
                 if self.finger >= self.utf8_size() {
-                    let found_char = self.finger - self.utf8_size();
+                    let self_utf8_size = self.utf8_size();
+                    let self_finger = self.finger;
+                    // flux_verify_error: condition matching
+                    flux_assume(self_finger >= self_utf8_size);
+                    let found_char = self_finger - self_utf8_size;
                     if let Some(slice) = self.haystack.as_bytes().get(found_char..self.finger) {
                         if slice == &self.utf8_encoded[0..self.utf8_size()] {
                             return Some((found_char, self.finger));
@@ -479,8 +486,12 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
     // let next_reject use the default implementation from the Searcher trait
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 unsafe impl<'a> ReverseSearcher<'a> for CharSearcher<'a> {
     #[inline]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         let old_finger = self.finger_back;
         // SAFETY: see the comment for next() above
@@ -490,10 +501,7 @@ unsafe impl<'a> ReverseSearcher<'a> for CharSearcher<'a> {
         if let Some(ch) = iter.next_back() {
             // subtract byte offset of current character
             // without re-encoding as utf-8
-            let iter_iter_len = iter.iter.len();
-            // flux_verify_error: sub vector length
-            flux_assume(old_len >= iter_iter_len);
-            self.finger_back -= old_len - iter_iter_len;
+            self.finger_back -= old_len - iter.iter.len();
             if ch == self.needle {
                 SearchStep::Match(self.finger_back, old_finger)
             } else {
@@ -670,7 +678,7 @@ impl<const N: usize> MultiCharEq for &[char; N] {
 #[flux_attrs::trusted]
 impl MultiCharEq for &[char] {
     #[inline]
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn matches(&mut self, c: char) -> bool {
         self.iter().any(|&m| m == c)
@@ -1230,8 +1238,12 @@ unsafe impl<'a, 'b> Searcher<'a> for StrSearcher<'a, 'b> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         match self.searcher {
             StrSearcherImpl::Empty(ref mut searcher) => {
@@ -1266,6 +1278,8 @@ unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
                     SearchStep::Reject(mut a, b) => {
                         // skip to next char boundary
                         while !self.haystack.is_char_boundary(a) {
+                            // flux_verify_error: complex
+                            flux_assume(a >= 1);
                             a -= 1;
                         }
                         searcher.end = cmp::min(a, searcher.end);

@@ -50,10 +50,14 @@ trait SlicePartialEq<B> {
 }
 
 // Generic slice equality
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<A, B> SlicePartialEq<B> for [A]
 where
     A: PartialEq<B>,
 {
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     default fn equal(&self, other: &[B]) -> bool {
         if self.len() != other.len() {
             return false;
@@ -99,7 +103,11 @@ trait SlicePartialOrd: Sized {
     fn partial_compare(left: &[Self], right: &[Self]) -> Option<Ordering>;
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<A: PartialOrd> SlicePartialOrd for A {
+    // flux_verify_error: vector length
+    #[flux_attrs::trusted_impl]
     default fn partial_compare(left: &[A], right: &[A]) -> Option<Ordering> {
         let l = cmp::min(left.len(), right.len());
 
@@ -163,6 +171,8 @@ trait SliceOrd: Sized {
     fn compare(left: &[Self], right: &[Self]) -> Ordering;
 }
 
+// flux_verify_error: vector length
+#[flux_attrs::trusted]
 impl<A: Ord> SliceOrd for A {
     default fn compare(left: &[Self], right: &[Self]) -> Ordering {
         let l = cmp::min(left.len(), right.len());

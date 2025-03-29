@@ -46,7 +46,7 @@ impl<I: Iterator> Iterator for Peekable<I> {
 
     #[inline]
     #[rustc_inherit_overflow_checks]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn count(mut self) -> usize {
         match self.peeked.take() {

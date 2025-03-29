@@ -100,6 +100,8 @@ pub trait RawFloat:
     fn integer_decode(self) -> (u64, i16, i8);
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl RawFloat for f32 {
     const INFINITY: Self = f32::INFINITY;
     const NEG_INFINITY: Self = f32::NEG_INFINITY;
@@ -129,6 +131,8 @@ impl RawFloat for f32 {
         f32::from_bits((v & 0xFFFFFFFF) as u32)
     }
 
+    // flux_verify_error: bit mask
+    #[flux_attrs::trusted_impl]
     fn pow10_fast_path(exponent: usize) -> Self {
         #[allow(clippy::use_self)]
         const TABLE: [f32; 16] =
@@ -153,6 +157,8 @@ impl RawFloat for f32 {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl RawFloat for f64 {
     const INFINITY: Self = f64::INFINITY;
     const NEG_INFINITY: Self = f64::NEG_INFINITY;
@@ -182,6 +188,8 @@ impl RawFloat for f64 {
         f64::from_bits(v)
     }
 
+    // flux_verify_error: bit mask
+    #[flux_attrs::trusted_impl]
     fn pow10_fast_path(exponent: usize) -> Self {
         const TABLE: [f64; 32] = [
             1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14, 1e15,

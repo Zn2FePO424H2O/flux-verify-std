@@ -186,6 +186,8 @@ pub trait Swizzle<const N: usize> {
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Simd<T, N>
 where
     T: SimdElement,
@@ -279,6 +281,8 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn interleave(self, other: Self) -> (Self, Self) {
+        // flux_verify_error: complex
+        #[flux_attrs::trusted_impl]
         const fn interleave<const N: usize>(high: bool) -> [usize; N] {
             let mut idx = [0; N];
             let mut i = 0;
@@ -330,6 +334,8 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn deinterleave(self, other: Self) -> (Self, Self) {
+        // flux_verify_error: complex
+        #[flux_attrs::trusted_impl]
         const fn deinterleave<const N: usize>(second: bool) -> [usize; N] {
             let mut idx = [0; N];
             let mut i = 0;

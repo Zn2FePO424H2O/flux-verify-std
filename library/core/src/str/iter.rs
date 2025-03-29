@@ -299,35 +299,35 @@ impl Iterator for Bytes<'_> {
     type Item = u8;
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<u8> {
         self.0.next()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.0.size_hint()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn count(self) -> usize {
         self.0.count()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         self.0.last()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         self.0.nth(n)
@@ -374,7 +374,7 @@ impl Iterator for Bytes<'_> {
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> u8 {
         // SAFETY: the caller must uphold the safety contract
@@ -388,7 +388,7 @@ impl Iterator for Bytes<'_> {
 #[flux_attrs::trusted]
 impl DoubleEndedIterator for Bytes<'_> {
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<u8> {
         self.0.next_back()
@@ -413,14 +413,14 @@ impl DoubleEndedIterator for Bytes<'_> {
 #[flux_attrs::trusted]
 impl ExactSizeIterator for Bytes<'_> {
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn len(&self) -> usize {
         self.0.len()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn is_empty(&self) -> bool {
         self.0.is_empty()
@@ -670,14 +670,16 @@ where
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitInternal<'a, P> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     fn get_end(&mut self) -> Option<&'a str> {
         if !self.finished {
             self.finished = true;
 
-            // flux_verify_error: type constrain
-            flux_assume(self.end >= self.start);
             if self.allow_trailing_empty || self.end - self.start > 0 {
                 // SAFETY: `self.start` and `self.end` always lie on unicode boundaries.
                 let string = unsafe { self.matcher.haystack().get_unchecked(self.start..self.end) };
@@ -969,8 +971,12 @@ where
     }
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitNInternal<'a, P> {
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a str> {
         match self.count {
             0 => None,
@@ -979,8 +985,6 @@ impl<'a, P: Pattern> SplitNInternal<'a, P> {
                 self.iter.get_end()
             }
             _ => {
-                // flux_verify_error: condition matching
-                flux_assume(self.count > 1);
                 self.count -= 1;
                 self.iter.next()
             }
@@ -988,6 +992,8 @@ impl<'a, P: Pattern> SplitNInternal<'a, P> {
     }
 
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a str>
     where
         P::Searcher<'a>: ReverseSearcher<'a>,
@@ -999,8 +1005,6 @@ impl<'a, P: Pattern> SplitNInternal<'a, P> {
                 self.iter.get_end()
             }
             _ => {
-                // flux_verify_error: condition matching
-                flux_assume(self.count > 1);
                 self.count -= 1;
                 self.iter.next_back()
             }
@@ -1207,14 +1211,14 @@ impl<'a> Iterator for Lines<'a> {
     type Item = &'a str;
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a str> {
         self.0.next()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.0.size_hint()
@@ -1231,7 +1235,7 @@ impl<'a> Iterator for Lines<'a> {
 #[flux_attrs::trusted]
 impl<'a> DoubleEndedIterator for Lines<'a> {
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a str> {
         self.0.next_back()
@@ -1407,14 +1411,14 @@ impl<'a> Iterator for SplitAsciiWhitespace<'a> {
     type Item = &'a str;
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a str> {
         self.inner.next()
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.inner.size_hint()
@@ -1431,7 +1435,7 @@ impl<'a> Iterator for SplitAsciiWhitespace<'a> {
 #[flux_attrs::trusted]
 impl<'a> DoubleEndedIterator for SplitAsciiWhitespace<'a> {
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a str> {
         self.inner.next_back()
@@ -1561,7 +1565,7 @@ impl<'a> Iterator for EncodeUtf16<'a> {
     type Item = u16;
 
     #[inline]
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted]
     fn next(&mut self) -> Option<u16> {
         if self.extra != 0 {

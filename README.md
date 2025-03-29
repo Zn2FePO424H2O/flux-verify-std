@@ -52,3 +52,9 @@ assume/impl: functional
 
 
 type constrain : show have refinement on the type defn
+
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
+
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]

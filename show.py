@@ -1,7 +1,7 @@
 import re
 
 def extract_error_lines(log_file):
-    pattern = re.compile(r'^error\[E0999\]: arithmetic')
+    pattern = re.compile(r'^error\[E0999\]: assignment might be unsafe')
     error_lines = []
 
     try:

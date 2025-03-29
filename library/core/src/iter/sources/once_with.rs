@@ -104,7 +104,7 @@ impl<A, F: FnOnce() -> A> Iterator for OnceWith<F> {
 // flux_verify_impl:impl
 #[flux_attrs::trusted]
 impl<A, F: FnOnce() -> A> DoubleEndedIterator for OnceWith<F> {
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<A> {
         self.next()

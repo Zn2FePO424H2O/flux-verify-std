@@ -37,7 +37,7 @@ where
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted]
     fn next_chunk_dropless<const N: usize>(
         &mut self,
@@ -91,7 +91,7 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_ice: region parameter out of range
+// flux_verify_impl: impl
 #[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where

@@ -1171,22 +1171,22 @@ struct GenericSplitN<I> {
     count: usize,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<T, I: SplitIter<Item = T>> Iterator for GenericSplitN<I> {
     type Item = T;
 
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<T> {
         match self.count {
             0 => None,
             1 => {
-                // flux_verify_error: condition matching
-                flux_assume(self.count == 1);
                 self.count -= 1;
                 self.iter.finish()
             }
             _ => {
-                // flux_verify_error: condition matching
-                flux_assume(self.count > 1);
                 self.count -= 1;
                 self.iter.next()
             }
@@ -1562,13 +1562,16 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for Windows<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
+#[flux_attrs::refined_by()]
 pub struct Chunks<'a, T: 'a> {
     v: &'a [T],
+    #[field(usize{v: v > 0})]
     chunk_size: usize,
 }
 
 impl<'a, T: 'a> Chunks<'a, T> {
     #[inline]
+    #[flux_attrs::sig(fn (_,usize{x:x>0}) -> _)]
     pub(super) fn new(slice: &'a [T], size: usize) -> Self {
         Self { v: slice, chunk_size: size }
     }
@@ -1640,7 +1643,7 @@ impl<'a, T> Iterator for Chunks<'a, T> {
             let self_v_len = self.v.len();
             // flux_verify_error: ZST
             flux_assume(self_v_len >= 1);
-            let start = (self.v.len() - 1) / self.chunk_size * self.chunk_size;
+            let start = (self_v_len - 1) / self.chunk_size * self.chunk_size;
             Some(&self.v[start..])
         }
     }
@@ -1951,20 +1954,26 @@ unsafe impl<T> Sync for ChunksMut<'_, T> where T: Sync {}
 #[derive(Debug)]
 #[stable(feature = "chunks_exact", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
+#[flux_attrs::refined_by()]
 pub struct ChunksExact<'a, T: 'a> {
     v: &'a [T],
     rem: &'a [T],
+    #[field(usize{v: v > 0})]
     chunk_size: usize,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> ChunksExact<'a, T> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         let slice_len = slice.len();
         // flux_verify_error: type constrain
         flux_assume(slice_len >= rem);
-        let fst_len = slice.len() - rem;
+        let fst_len = slice_len - rem;
         // SAFETY: 0 <= fst_len <= slice.len() by construction above
         let (fst, snd) = unsafe { slice.split_at_unchecked(fst_len) };
         Self { v: fst, rem: snd, chunk_size }
@@ -2061,9 +2070,10 @@ impl<'a, T> DoubleEndedIterator for ChunksExact<'a, T> {
             None
         } else {
             let self_v_len = self.v.len();
+            let self_chunk_size = self.chunk_size;
             // flux_verify_error: type constrain
-            flux_assume (self_v_len >= self.chunk_size);
-            let (fst, snd) = self.v.split_at(self.v.len() - self.chunk_size);
+            flux_assume (self_v_len >= self_chunk_size);
+            let (fst, snd) = self.v.split_at(self_v_len - self_chunk_size);
             self.v = fst;
             Some(snd)
         }
@@ -2143,8 +2153,12 @@ pub struct ChunksExactMut<'a, T: 'a> {
     _marker: PhantomData<&'a mut T>,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> ChunksExactMut<'a, T> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         let slice_len = slice.len();
@@ -2321,8 +2335,12 @@ pub struct ArrayWindows<'a, T: 'a, const N: usize> {
     marker: PhantomData<&'a [T; N]>,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, const N: usize> ArrayWindows<'a, T, N> {
     #[inline]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T]) -> Self {
         let num_windows = slice.len().saturating_sub(N - 1);
         Self { slice_head: slice.as_ptr(), num: num_windows, marker: PhantomData }
@@ -2330,10 +2348,14 @@ impl<'a, T: 'a, const N: usize> ArrayWindows<'a, T, N> {
 }
 
 #[unstable(feature = "array_windows", issue = "75027")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
     type Item = &'a [T; N];
 
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.num == 0 {
             return None;
@@ -2360,6 +2382,8 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
     }
 
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         if self.num <= n {
             self.num = 0;
@@ -2382,8 +2406,12 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
 }
 
 #[unstable(feature = "array_windows", issue = "75027")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T, const N: usize> DoubleEndedIterator for ArrayWindows<'a, T, N> {
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T; N]> {
         if self.num == 0 {
             return None;
@@ -2395,14 +2423,14 @@ impl<'a, T, const N: usize> DoubleEndedIterator for ArrayWindows<'a, T, N> {
     }
 
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<&'a [T; N]> {
         if self.num <= n {
             self.num = 0;
             return None;
         }
         // SAFETY: Guaranteed that there are n items remaining, n-1 for 0-indexing.
-        // flux_verify_error: condition matching
-        flux_assume (self.num >= n + 1);
         let ret = unsafe { &*self.slice_head.add(self.num - (n + 1)).cast::<[T; N]>() };
         self.num -= n + 1;
         Some(ret)
@@ -2708,6 +2736,8 @@ impl<T> Clone for RChunks<'_, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunks<'a, T> {
     type Item = &'a [T];
 
@@ -2723,6 +2753,8 @@ impl<'a, T> Iterator for RChunks<'a, T> {
             // chunksz` overflows. This could only happen if `chunksz > len`,
             // which is impossible as we initialize it as the `min` of `len` and
             // `self.chunk_size`.
+            // flux_verify_error: cmp::min
+            flux_assume(len >= chunksz);
             let (fst, snd) = unsafe { self.v.split_at_unchecked(len - chunksz) };
             self.v = fst;
             Some(snd)
@@ -2769,6 +2801,8 @@ impl<'a, T> Iterator for RChunks<'a, T> {
     }
 
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         if self.v.is_empty() {
             None
@@ -2781,9 +2815,10 @@ impl<'a, T> Iterator for RChunks<'a, T> {
 
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
         let self_v_len = self.v.len();
+        let idx_self_chunk_size = idx * self.chunk_size;
         // flux_verify: type constrain
-        flux_assume(self_v_len >= idx * self.chunk_size);
-        let end = self_v_len - idx * self.chunk_size;
+        flux_assume(self_v_len >= idx_self_chunk_size);
+        let end = self_v_len - idx_self_chunk_size;
         let start = match end.checked_sub(self.chunk_size) {
             None => 0,
             Some(start) => start,
@@ -2796,8 +2831,12 @@ impl<'a, T> Iterator for RChunks<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunks<'a, T> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.v.is_empty() {
             None
@@ -3082,8 +3121,12 @@ pub struct RChunksExact<'a, T: 'a> {
     chunk_size: usize,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> RChunksExact<'a, T> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         // SAFETY: 0 <= rem <= slice.len() by construction above
@@ -3124,18 +3167,19 @@ impl<'a, T> Clone for RChunksExact<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunksExact<'a, T> {
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.v.len() < self.chunk_size {
             None
         } else {
-            let self_v_len = self.v.len();
-            // flux_verify: condition matching
-            flux_assume(self_v_len >= self.chunk_size);
-            let (fst, snd) = self.v.split_at(self_v_len - self.chunk_size);
+            let (fst, snd) = self.v.split_at(self.v.len() - self.chunk_size);
             self.v = fst;
             Some(snd)
         }
@@ -3173,13 +3217,10 @@ impl<'a, T> Iterator for RChunksExact<'a, T> {
         self.next_back()
     }
 
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
-        let self_v_len = self.v.len();
-        // flux_verify: type constrain
-        flux_assume(self_v_len >= idx * self.chunk_size);
-        let end = self_v_len - idx * self.chunk_size;
-        // flux_verify: type constrain
-        flux_assume(end >= self.chunk_size);
+        let end = self.v.len() - idx * self.chunk_size;
         let start = end - self.chunk_size;
         // SAFETY: mostly identical to `Chunks::__iterator_get_unchecked`.
         unsafe { from_raw_parts(self.v.as_ptr().add(start), self.chunk_size) }
@@ -3283,8 +3324,12 @@ pub struct RChunksExactMut<'a, T: 'a> {
     chunk_size: usize,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a, T> RChunksExactMut<'a, T> {
     #[inline]
+    // flux_verify_error: type constrain
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         // SAFETY: 0 <= rem <= slice.len() by construction above

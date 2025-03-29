@@ -16,16 +16,21 @@ use crate::ops::{ControlFlow, NeverShortCircuit, Try};
 #[derive(Debug, Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[unstable(feature = "iter_array_chunks", reason = "recently added", issue = "100450")]
+#[flux_attrs::invariant(N > 0)]
 pub struct ArrayChunks<I: Iterator, const N: usize> {
     iter: I,
     remainder: Option<array::IntoIter<I::Item, N>>,
 }
 
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<I, const N: usize> ArrayChunks<I, N>
 where
     I: Iterator,
 {
     #[track_caller]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     pub(in crate::iter) fn new(iter: I) -> Self {
         assert!(N != 0, "chunk size must be non-zero");
         Self { iter, remainder: None }
@@ -124,7 +129,7 @@ where
         self.try_rfold((), |(), x| ControlFlow::Break(x)).break_value()
     }
 
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where

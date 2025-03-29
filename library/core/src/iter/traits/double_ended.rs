@@ -139,6 +139,8 @@ pub trait DoubleEndedIterator: Iterator {
         for i in 0..n {
             if self.next_back().is_none() {
                 // SAFETY: `i` is always less than `n`.
+                // flux_verify_error: loop
+                flux_assume(n > i);
                 return Err(unsafe { NonZero::new_unchecked(n - i) });
             }
         }
@@ -373,17 +375,17 @@ pub trait DoubleEndedIterator: Iterator {
 // flux_verify_impl:impl
 #[flux_attrs::trusted]
 impl<'a, I: DoubleEndedIterator + ?Sized> DoubleEndedIterator for &'a mut I {
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<I::Item> {
         (**self).next_back()
     }
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         (**self).advance_back_by(n)
     }
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<I::Item> {
         (**self).nth_back(n)
@@ -394,7 +396,7 @@ impl<'a, I: DoubleEndedIterator + ?Sized> DoubleEndedIterator for &'a mut I {
     {
         self.spec_rfold(init, f)
     }
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -431,7 +433,7 @@ impl<I: DoubleEndedIterator + ?Sized> DoubleEndedIteratorRefSpec for &mut I {
         accum
     }
 
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     default fn spec_try_rfold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where
@@ -446,12 +448,17 @@ impl<I: DoubleEndedIterator + ?Sized> DoubleEndedIteratorRefSpec for &mut I {
     }
 }
 
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 // flux_verify_impl:impl
 #[flux_attrs::trusted]
 impl<I: DoubleEndedIterator> DoubleEndedIteratorRefSpec for &mut I {
     impl_fold_via_try_fold! { spec_rfold -> spec_try_rfold }
 
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn spec_try_rfold<B, F, R>(&mut self, init: B, f: F) -> R
     where

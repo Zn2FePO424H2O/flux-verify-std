@@ -587,6 +587,9 @@ impl fmt::Display for AsciiChar {
 }
 
 #[unstable(feature = "ascii_char", issue = "110998")]
+// flux_verify_error: bit shift
+// flux_verify_error: bit mask
+#[flux_attrs::trusted]
 impl fmt::Debug for AsciiChar {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use AsciiChar::{Apostrophe, Null, ReverseSolidus as Backslash};

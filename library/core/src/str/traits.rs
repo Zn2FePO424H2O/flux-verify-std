@@ -852,7 +852,7 @@ impl FromStr for bool {
     /// assert!("not even a boolean".parse::<bool>().is_err());
     /// ```
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn from_str(s: &str) -> Result<bool, ParseBoolError> {
         match s {

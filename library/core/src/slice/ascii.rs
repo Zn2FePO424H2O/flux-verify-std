@@ -341,7 +341,7 @@ impl<'a> fmt::Debug for EscapeAscii<'a> {
 #[unstable(feature = "str_internals", issue = "none")]
 #[doc(hidden)]
 #[inline]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported statement
 #[flux_attrs::trusted]
 pub const fn is_ascii_simple(mut bytes: &[u8]) -> bool {
     while let [rest @ .., last] = bytes {
@@ -470,6 +470,8 @@ const fn is_ascii(s: &[u8]) -> bool {
 /// use SWAR techniques to test for ASCII in `usize`-sized chunks.
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
 #[inline]
+// flux_verify_error: condition matching
+#[flux_attrs::trusted]
 const fn is_ascii(bytes: &[u8]) -> bool {
     // Process chunks of 32 bytes at a time in the fast path to enable
     // auto-vectorization and use of `pmovmskb`. Two 128-bit vector registers

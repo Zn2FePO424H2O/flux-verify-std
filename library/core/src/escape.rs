@@ -7,6 +7,8 @@ use crate::ops::Range;
 const HEX_DIGITS: [ascii::Char; 16] = *b"0123456789abcdef".as_ascii().unwrap();
 
 #[inline]
+// flux_verify_error: vector length
+#[flux_attrs::trusted]
 const fn backslash<const N: usize>(a: ascii::Char) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 2) };
 
@@ -19,6 +21,8 @@ const fn backslash<const N: usize>(a: ascii::Char) -> ([ascii::Char; N], Range<u
 }
 
 #[inline]
+// flux_verify_error: vector length
+#[flux_attrs::trusted]
 const fn hex_escape<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 4) };
 
@@ -36,6 +40,8 @@ const fn hex_escape<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>) {
 }
 
 #[inline]
+// flux_verify_error: vector length
+#[flux_attrs::trusted]
 const fn verbatim<const N: usize>(a: ascii::Char) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 1) };
 
@@ -101,6 +107,9 @@ const fn escape_ascii<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>)
             arr
         };
 
+        let byte_as_usize = byte as usize;
+        // flux_verify_error: type cast
+        flux_assume_const(byte_as_usize < 256);
         let lookup = LOOKUP[byte as usize];
 
         // 8th bit indicates escape
@@ -229,3 +238,8 @@ impl<const N: usize> EscapeIterInner<N> {
         self.alive.advance_back_by(n)
     }
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume_const(_:bool) {}

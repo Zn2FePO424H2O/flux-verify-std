@@ -28072,7 +28072,7 @@ pub unsafe fn _mm_mask_testn_epi64_mask(k: __mmask8, a: __m128i, b: __m128i) -> 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vmovntps))]
 #[allow(clippy::cast_ptr_alignment)]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm512_stream_ps(mem_addr: *mut f32, a: __m512) {
     crate::arch::asm!(
@@ -28100,7 +28100,7 @@ pub unsafe fn _mm512_stream_ps(mem_addr: *mut f32, a: __m512) {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vmovntpd))]
 #[allow(clippy::cast_ptr_alignment)]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm512_stream_pd(mem_addr: *mut f64, a: __m512d) {
     crate::arch::asm!(
@@ -28128,7 +28128,7 @@ pub unsafe fn _mm512_stream_pd(mem_addr: *mut f64, a: __m512d) {
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 #[cfg_attr(test, assert_instr(vmovntdq))]
 #[allow(clippy::cast_ptr_alignment)]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm512_stream_si512(mem_addr: *mut i32, a: __m512i) {
     crate::arch::asm!(
@@ -28147,7 +28147,7 @@ pub unsafe fn _mm512_stream_si512(mem_addr: *mut i32, a: __m512i) {
 #[inline]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm512_stream_load_si512(mem_addr: *const __m512i) -> __m512i {
     let dst: __m512i;
@@ -33680,7 +33680,7 @@ pub unsafe fn _mm_maskz_load_pd(k: __mmask8, mem_addr: *const f64) -> __m128d {
 #[cfg_attr(test, assert_instr(vmovss))]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_mask_load_ss(src: __m128, k: __mmask8, mem_addr: *const f32) -> __m128 {
     let mut dst: __m128 = src;
@@ -33704,7 +33704,7 @@ pub unsafe fn _mm_mask_load_ss(src: __m128, k: __mmask8, mem_addr: *const f32) -
 #[cfg_attr(test, assert_instr(vmovss))]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_maskz_load_ss(k: __mmask8, mem_addr: *const f32) -> __m128 {
     let mut dst: __m128;
@@ -33728,7 +33728,7 @@ pub unsafe fn _mm_maskz_load_ss(k: __mmask8, mem_addr: *const f32) -> __m128 {
 #[cfg_attr(test, assert_instr(vmovsd))]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_mask_load_sd(src: __m128d, k: __mmask8, mem_addr: *const f64) -> __m128d {
     let mut dst: __m128d = src;
@@ -33752,7 +33752,7 @@ pub unsafe fn _mm_mask_load_sd(src: __m128d, k: __mmask8, mem_addr: *const f64) 
 #[cfg_attr(test, assert_instr(vmovsd))]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_maskz_load_sd(k: __mmask8, mem_addr: *const f64) -> __m128d {
     let mut dst: __m128d;
@@ -34062,7 +34062,7 @@ pub unsafe fn _mm_mask_store_pd(mem_addr: *mut f64, mask: __mmask8, a: __m128d) 
 #[cfg_attr(test, assert_instr(vmovss))]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_mask_store_ss(mem_addr: *mut f32, k: __mmask8, a: __m128) {
     asm!(
@@ -34082,7 +34082,7 @@ pub unsafe fn _mm_mask_store_ss(mem_addr: *mut f32, k: __mmask8, a: __m128) {
 #[cfg_attr(test, assert_instr(vmovsd))]
 #[target_feature(enable = "avx512f")]
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm_mask_store_sd(mem_addr: *mut f64, k: __mmask8, a: __m128d) {
     asm!(

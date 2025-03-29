@@ -215,7 +215,11 @@ impl<'a> BorrowedCursor<'a> {
     /// Returns the available space in the cursor.
     #[inline]
     pub fn capacity(&self) -> usize {
-        self.buf.capacity() - self.buf.filled
+        let self_buf_capacity = self.buf.capacity();
+        let self_buf_filled = self.buf.filled;
+        // flux_verify_error: type constrain
+        flux_assume(self_buf_capacity >= self_buf_filled);
+        self_buf_capacity - self_buf_filled
     }
 
     /// Returns the number of bytes written to this cursor since it was created from a `BorrowedBuf`.
@@ -224,7 +228,11 @@ impl<'a> BorrowedCursor<'a> {
     /// count written via either cursor, not the count since the cursor was reborrowed.
     #[inline]
     pub fn written(&self) -> usize {
-        self.buf.filled - self.start
+        let self_buf_filled = self.buf.filled;
+        let self_start = self.start;
+        // flux_verify_error: type constrain
+        flux_assume(self_buf_filled >= self_start);
+        self_buf_filled - self_start
     }
 
     /// Returns a shared reference to the initialized portion of the cursor.
@@ -354,3 +362,8 @@ impl<'a> BorrowedCursor<'a> {
         self.buf.filled += buf.len();
     }
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}

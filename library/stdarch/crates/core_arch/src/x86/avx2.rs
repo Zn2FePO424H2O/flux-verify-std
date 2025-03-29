@@ -3140,7 +3140,7 @@ pub unsafe fn _mm256_srlv_epi64(a: __m256i, count: __m256i) -> __m256i {
 #[target_feature(enable = "avx2")]
 #[cfg_attr(test, assert_instr(vmovntdqa))]
 #[stable(feature = "simd_x86_updates", since = "1.82.0")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _mm256_stream_load_si256(mem_addr: *const __m256i) -> __m256i {
     let dst: __m256i;

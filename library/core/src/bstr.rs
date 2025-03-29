@@ -246,7 +246,7 @@ impl<'a> Default for &'a ByteStr {
 // flux_verify_impl:impl
 #[flux_attrs::trusted]
 impl<'a> Default for &'a mut ByteStr {
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted]
     fn default() -> Self {
         ByteStr::from_bytes_mut(&mut [])
@@ -308,10 +308,14 @@ impl hash::Hash for ByteStr {
 }
 
 #[unstable(feature = "bstr", issue = "134915")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl Index<usize> for ByteStr {
     type Output = u8;
 
     #[inline]
+    // flux_verify_error: complex
+    #[flux_attrs::trusted_impl]
     fn index(&self, idx: usize) -> &u8 {
         &self.0[idx]
     }

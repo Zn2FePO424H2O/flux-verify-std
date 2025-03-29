@@ -998,7 +998,7 @@ impl f32 {
     #[inline]
     #[stable(feature = "num_midpoint", since = "1.85.0")]
     #[rustc_const_stable(feature = "num_midpoint", since = "1.85.0")]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     pub const fn midpoint(self, other: f32) -> f32 {
         cfg_if! {

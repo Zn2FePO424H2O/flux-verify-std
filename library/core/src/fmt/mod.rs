@@ -186,7 +186,7 @@ pub trait Write {
     /// # std::fmt::Result::Ok(())
     /// ```
     #[stable(feature = "fmt_write_char", since = "1.1.0")]
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted]
     fn write_char(&mut self, c: char) -> Result {
         self.write_str(c.encode_utf8(&mut [0; 4]))
@@ -254,19 +254,19 @@ pub trait Write {
 // flux_verify_impl:impl
 #[flux_attrs::trusted]
 impl<W: Write + ?Sized> Write for &mut W {
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn write_str(&mut self, s: &str) -> Result {
         (**self).write_str(s)
     }
 
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn write_char(&mut self, c: char) -> Result {
         (**self).write_char(c)
     }
 
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted_impl]
     fn write_fmt(&mut self, args: Arguments<'_>) -> Result {
         (**self).write_fmt(args)
@@ -605,6 +605,8 @@ pub struct Arguments<'a> {
 /// Used by the format_args!() macro to create a fmt::Arguments object.
 #[doc(hidden)]
 #[unstable(feature = "fmt_internals", issue = "none")]
+// flux_verify_impl: impl
+#[flux_attrs::trusted]
 impl<'a> Arguments<'a> {
     #[inline]
     pub const fn new_const<const N: usize>(pieces: &'a [&'static str; N]) -> Self {
@@ -645,6 +647,8 @@ impl<'a> Arguments<'a> {
     /// This is intended to be used for setting initial `String` capacity
     /// when using `format!`. Note: this is neither the lower nor upper bound.
     #[inline]
+    // flux_verify_error: condition matching
+    #[flux_attrs::trusted_impl]
     pub fn estimated_capacity(&self) -> usize {
         let pieces_length: usize = self.pieces.iter().map(|x| x.len()).sum();
 
@@ -1655,6 +1659,8 @@ impl<'a> Formatter<'a> {
                 let old_align =
                     crate::mem::replace(&mut self.options.align, Some(Alignment::Right));
                 write_prefix(self, sign, prefix)?;
+                // flux_verify_error: condition matching
+                flux_assume(min > width);
                 let post_padding = self.padding(min - width, Alignment::Right)?;
                 self.buf.write_str(buf)?;
                 post_padding.write(self)?;
@@ -1664,6 +1670,8 @@ impl<'a> Formatter<'a> {
             }
             // Otherwise, the sign and prefix goes after the padding
             Some(min) => {
+                // flux_verify_error: condition matching
+                flux_assume(min > width);
                 let post_padding = self.padding(min - width, Alignment::Right)?;
                 write_prefix(self, sign, prefix)?;
                 self.buf.write_str(buf)?;
@@ -1846,7 +1854,10 @@ impl<'a> Formatter<'a> {
                         "0000000000000000000000000000000000000000000000000000000000000000";
                     while nzeroes > ZEROES.len() {
                         self.buf.write_str(ZEROES)?;
-                        nzeroes -= ZEROES.len();
+                        let zeros_len = ZEROES.len();
+                        // flux_verify_error: condition matching
+                        flux_assume(nzeroes > zeros_len);
+                        nzeroes -= zeros_len;
                     }
                     if nzeroes > 0 {
                         self.buf.write_str(&ZEROES[..nzeroes])?;
@@ -2625,6 +2636,11 @@ impl<'a> Formatter<'a> {
     }
 }
 
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 #[stable(since = "1.2.0", feature = "formatter_write")]
 impl Write for Formatter<'_> {
     fn write_str(&mut self, s: &str) -> Result {
@@ -2784,7 +2800,7 @@ impl Debug for char {
 // flux_verify_impl:impl
 #[flux_attrs::trusted]
 impl Display for char {
-    // flux_verify_ice: refinement type error
+    // flux_verify_error: refinement type error
     #[flux_attrs::trusted]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if f.options.width.is_none() && f.options.precision.is_none() {

@@ -24,7 +24,7 @@ macro_rules! bt {
 #[inline]
 #[cfg_attr(test, assert_instr(bt))]
 #[stable(feature = "simd_x86_bittest", since = "1.55.0")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _bittest64(p: *const i64, b: i64) -> u8 {
     let r: u8;
@@ -45,7 +45,7 @@ pub unsafe fn _bittest64(p: *const i64, b: i64) -> u8 {
 #[inline]
 #[cfg_attr(test, assert_instr(bts))]
 #[stable(feature = "simd_x86_bittest", since = "1.55.0")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _bittestandset64(p: *mut i64, b: i64) -> u8 {
     let r: u8;
@@ -66,7 +66,7 @@ pub unsafe fn _bittestandset64(p: *mut i64, b: i64) -> u8 {
 #[inline]
 #[cfg_attr(test, assert_instr(btr))]
 #[stable(feature = "simd_x86_bittest", since = "1.55.0")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _bittestandreset64(p: *mut i64, b: i64) -> u8 {
     let r: u8;
@@ -87,7 +87,7 @@ pub unsafe fn _bittestandreset64(p: *mut i64, b: i64) -> u8 {
 #[inline]
 #[cfg_attr(test, assert_instr(btc))]
 #[stable(feature = "simd_x86_bittest", since = "1.55.0")]
-// flux_verify_ice: unsupported
+// flux_verify_ice: unsupported terminator
 #[flux_attrs::trusted]
 pub unsafe fn _bittestandcomplement64(p: *mut i64, b: i64) -> u8 {
     let r: u8;

@@ -136,7 +136,7 @@ where
 
     #[inline]
     #[rustc_inherit_overflow_checks]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, mut n: usize) -> Result<(), NonZero<usize>> {
         let skip_inner = self.n;

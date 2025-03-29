@@ -67,7 +67,7 @@ where
     }
 
     #[inline]
-    // flux_verify_ice: unsupported
+    // flux_verify_ice: unsupported terminator
     #[flux_attrs::trusted_impl]
     fn next_chunk<const N: usize>(
         &mut self,

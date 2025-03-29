@@ -524,7 +524,10 @@ impl CStr {
     #[stable(feature = "cstr_count_bytes", since = "1.79.0")]
     #[rustc_const_stable(feature = "const_cstr_from_ptr", since = "1.81.0")]
     pub const fn count_bytes(&self) -> usize {
-        self.inner.len() - 1
+        let self_inner_len = self.inner.len();
+        // flux_verify_error: type constrain
+        flux_assume_const(self_inner_len >= 1);
+        self_inner_len - 1
     }
 
     /// Returns `true` if `self.to_bytes()` has a length of 0.
@@ -582,7 +585,10 @@ impl CStr {
         let bytes = self.to_bytes_with_nul();
         // FIXME(const-hack) replace with range index
         // SAFETY: to_bytes_with_nul returns slice with length at least 1
-        unsafe { slice::from_raw_parts(bytes.as_ptr(), bytes.len() - 1) }
+        let bytes_len = bytes.len();
+        // flux_verify_error: complex
+        flux_assume_const(bytes_len >= 1);
+        unsafe { slice::from_raw_parts(bytes.as_ptr(), bytes_len - 1) }
     }
 
     /// Converts this C string to a byte slice containing the trailing 0 byte.
@@ -659,6 +665,11 @@ impl CStr {
         str::from_utf8(self.to_bytes())
     }
 }
+
+// flux_verify_assume: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume_const(_:bool) {}
 
 // `.to_bytes()` representations are compared instead of the inner `[c_char]`s,
 // because `c_char` is `i8` (not `u8`) on some platforms.
