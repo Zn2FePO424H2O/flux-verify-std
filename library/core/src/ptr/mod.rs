@@ -1833,7 +1833,7 @@ pub unsafe fn write_volatile<T>(dst: *mut T, src: T) {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume(_:bool) {}
@@ -1886,6 +1886,7 @@ pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
         // SAFETY: `m` is required to be a power-of-two, hence non-zero.
         let m_minus_one = unsafe { unchecked_sub(m, 1) };
         let x_inv_table_mod_shift = (x & (INV_TABLE_MOD - 1)) >> 1;
+        // flux_verify_error: bit shift
         flux_assume(x_inv_table_mod_shift < 7);
         let mut inverse = INV_TABLE_MOD_16[x_inv_table_mod_shift] as usize;
         let mut mod_gate = INV_TABLE_MOD;

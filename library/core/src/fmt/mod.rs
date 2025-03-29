@@ -251,7 +251,7 @@ pub trait Write {
 }
 
 #[stable(feature = "fmt_write_blanket_impl", since = "1.4.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<W: Write + ?Sized> Write for &mut W {
     // flux_verify_error: refinement type error
@@ -605,7 +605,7 @@ pub struct Arguments<'a> {
 /// Used by the format_args!() macro to create a fmt::Arguments object.
 #[doc(hidden)]
 #[unstable(feature = "fmt_internals", issue = "none")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Arguments<'a> {
     #[inline]
@@ -2636,7 +2636,7 @@ impl<'a> Formatter<'a> {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -2688,7 +2688,7 @@ macro_rules! fmt_refs {
 fmt_refs! { Debug, Display, Octal, Binary, LowerHex, UpperHex, LowerExp, UpperExp }
 
 #[unstable(feature = "never_type", issue = "35121")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Debug for ! {
     #[inline]
@@ -2700,7 +2700,7 @@ impl Debug for ! {
 }
 
 #[unstable(feature = "never_type", issue = "35121")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Display for ! {
     #[inline]
@@ -2797,7 +2797,7 @@ impl Debug for char {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Display for char {
     // flux_verify_error: refinement type error

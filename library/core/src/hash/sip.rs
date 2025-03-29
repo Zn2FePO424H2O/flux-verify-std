@@ -243,7 +243,7 @@ impl super::Hasher for SipHasher13 {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<S: Sip> super::Hasher for Hasher<S> {
     // Note: no integer hashing methods (`write_u*`, `write_i*`) are defined
@@ -329,7 +329,7 @@ impl<S: Sip> super::Hasher for Hasher<S> {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

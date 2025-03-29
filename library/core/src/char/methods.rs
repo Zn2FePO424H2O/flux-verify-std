@@ -7,7 +7,7 @@ use crate::str::from_utf8_unchecked_mut;
 use crate::unicode::printable::is_printable;
 use crate::unicode::{self, conversions};
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl char {
     /// The lowest valid code point a `char` can have, `'\0'`.

@@ -116,7 +116,7 @@ pub const CACHED_POW10_FIRST_E: i16 = -1087;
 #[doc(hidden)]
 pub const CACHED_POW10_LAST_E: i16 = 1039;
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -133,7 +133,9 @@ pub fn cached_power(alpha: i16, gamma: i16) -> (i16, Fp) {
     let domain = (CACHED_POW10_LAST_E - CACHED_POW10_FIRST_E) as i32;
     let idx = ((gamma as i32) - offset) * range / domain;
     let idx_usize = idx as usize;
+    // flux_verify_error: complex
     flux_assume(idx_usize <= 80);
+    // flux_verify_error: vector length
     flux_assume(flux_len(CACHED_POW10) == 81);
     let (f, e, k) = CACHED_POW10[idx_usize];
     debug_assert!(alpha <= e && e <= gamma);
@@ -439,6 +441,7 @@ pub fn format_shortest_opt<'a>(
                     || plus1v_up - plus1w >= plus1w + ten_kappa - plus1v_up)
             {
                 let n = *last;
+                // flux_verify_error: complex
                 flux_assume(n >= 1);
                 *last = n - 1;
                 debug_assert!(*last > b'0'); // the shortest repr cannot end with `0`
@@ -486,7 +489,7 @@ pub fn format_shortest<'a>(
 /// The exact and fixed mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 pub fn format_exact_opt<'a>(
     d: &Decoded,

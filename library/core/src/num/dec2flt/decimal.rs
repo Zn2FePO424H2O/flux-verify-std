@@ -29,12 +29,12 @@ impl Default for Decimal {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Decimal {
     /// The maximum number of digits required to unambiguously round a float.
@@ -242,6 +242,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
             if !is_8digits(v) {
                 break;
             }
+            // flux_verify_error: char cast magic
             flux_assume(v >= 0x3030_3030_3030_3030);
             d.digits[d.num_digits..].write_u64(v - 0x3030_3030_3030_3030);
             d.num_digits += 8;
@@ -249,6 +250,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
         }
         s = s.parse_digits(|digit| d.try_add_digit(digit));
         d.decimal_point = s.len() as i32 - first.len() as i32;
+        // flux_verify_error: vector length
         flux_assume(d.decimal_point>=0);
     }
     if d.num_digits != 0 {
@@ -256,6 +258,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
         let mut n_trailing_zeros = 0;
         let start_len = start.len();
         let s_len = s.len();
+        // flux_verify_error: sub vector length
         flux_assume(start_len > s_len);
         for &c in start[..(start_len - s_len)].iter().rev() {
             if c == b'0' {
@@ -265,6 +268,7 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
             }
         }
         d.decimal_point += n_trailing_zeros as i32;
+        // flux_verify_error: sub vector length
         flux_assume(d.num_digits >= n_trailing_zeros);
         d.num_digits -= n_trailing_zeros;
         d.decimal_point += d.num_digits as i32;
@@ -295,7 +299,9 @@ pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
         }
     }
     for i in d.num_digits..Decimal::MAX_DIGITS_WITHOUT_OVERFLOW {
+        // flux_verify_error: loop
         flux_assume(i >= d.num_digits);
+        // flux_verify_error: loop
         flux_assume(i < Decimal::MAX_DIGITS_WITHOUT_OVERFLOW);
         d.digits[i] = 0;
     }
@@ -361,6 +367,7 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
     ];
 
     shift &= 63;
+    // flux_verify_error: bit mask
     flux_assume(shift < 64);
     let x_a = TABLE[shift];
     let x_b = TABLE[shift + 1];
@@ -368,9 +375,12 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
     let pow5_a = (0x7FF & x_a) as usize;
     let pow5_b = (0x7FF & x_b) as usize;
     let pow5 = &TABLE_POW5[pow5_a..];
+    // flux_verify_error: complex
     flux_assume(pow5_b >= pow5_a);
     for (i, &p5) in pow5.iter().enumerate().take(pow5_b - pow5_a) {
+        // flux_verify_error: complex
         flux_assume(i < 64);
+        // flux_verify_error: complex
         flux_assume(num_new_digits >= 1);
         if i >= d.num_digits {
             return num_new_digits - 1;

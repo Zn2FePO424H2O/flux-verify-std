@@ -584,7 +584,7 @@ pub enum Option<T> {
 // Type implementation
 /////////////////////////////////////////////////////////////////////////////
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> Option<T> {
     /////////////////////////////////////////////////////////////////////////
@@ -2408,7 +2408,7 @@ unsafe impl<A> TrustedLen for IntoIter<A> {}
 /////////////////////////////////////////////////////////////////////////////
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<A, V: FromIterator<A>> FromIterator<Option<A>> for Option<V> {
     /// Takes each element in the [`Iterator`]: if it is [`None`][Option::None],
@@ -2563,7 +2563,7 @@ impl<T> Option<Option<T>> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> [Option<T>; N] {
     /// Transposes a `[Option<T>; N]` into a `Option<[T; N]>`.

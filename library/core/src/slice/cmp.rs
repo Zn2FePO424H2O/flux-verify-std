@@ -50,7 +50,7 @@ trait SlicePartialEq<B> {
 }
 
 // Generic slice equality
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<A, B> SlicePartialEq<B> for [A]
 where
@@ -103,7 +103,7 @@ trait SlicePartialOrd: Sized {
     fn partial_compare(left: &[Self], right: &[Self]) -> Option<Ordering>;
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<A: PartialOrd> SlicePartialOrd for A {
     // flux_verify_error: vector length

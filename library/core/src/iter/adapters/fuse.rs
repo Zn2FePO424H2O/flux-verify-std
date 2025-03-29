@@ -350,7 +350,7 @@ where
 /// Specialized `Fuse` impl which doesn't bother clearing `iter` when exhausted.
 /// However, we must still be prepared for the possibility that it was already cleared!
 #[doc(hidden)]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I> FuseImpl<I> for Fuse<I>
 where

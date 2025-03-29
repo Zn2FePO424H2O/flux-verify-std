@@ -105,7 +105,7 @@ where
     LaneCount<N>: SupportedLaneCount,
     T: SimdElement;
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> Simd<T, N>
 where
@@ -1006,7 +1006,7 @@ where
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> AsMut<[T]> for Simd<T, N>
 where

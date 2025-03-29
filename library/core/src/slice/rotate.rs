@@ -1,7 +1,7 @@
 use crate::mem::{self, MaybeUninit, SizedTypeProperties};
 use crate::{cmp, ptr};
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

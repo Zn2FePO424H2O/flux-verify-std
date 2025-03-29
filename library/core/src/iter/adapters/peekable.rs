@@ -30,7 +30,7 @@ impl<I: Iterator> Peekable<I> {
 // It ensures that `.peek(); .peek();` or `.peek(); .next();` only advances the
 // underlying iterator at most once. This does not by itself make the iterator
 // fused.
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 #[stable(feature = "rust1", since = "1.0.0")]
 impl<I: Iterator> Iterator for Peekable<I> {

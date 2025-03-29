@@ -223,7 +223,7 @@ pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
 
 /// The methods `index` and `index_mut` panic if the index is out of bounds.
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 unsafe impl<T> SliceIndex<[T]> for usize {
     type Output = T;

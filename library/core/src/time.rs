@@ -1107,7 +1107,7 @@ impl Duration {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume_const(_:bool) {}
@@ -1235,7 +1235,7 @@ impl<'a> Sum<&'a Duration> for Duration {
 }
 
 #[stable(feature = "duration_debug_impl", since = "1.27.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl fmt::Debug for Duration {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

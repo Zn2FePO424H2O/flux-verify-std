@@ -173,7 +173,7 @@ pub(crate) struct EscapeIterInner<const N: usize> {
     alive: Range<u8>,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<const N: usize> EscapeIterInner<N> {
     pub(crate) const fn backslash(c: ascii::Char) -> Self {
@@ -239,7 +239,7 @@ impl<const N: usize> EscapeIterInner<N> {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume_const(_:bool) {}

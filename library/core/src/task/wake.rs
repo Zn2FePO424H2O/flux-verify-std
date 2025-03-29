@@ -314,7 +314,7 @@ pub struct ContextBuilder<'a> {
     _marker2: PhantomData<*mut ()>,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> ContextBuilder<'a> {
     /// Creates a ContextBuilder from a Waker.

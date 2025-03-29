@@ -444,7 +444,7 @@ pub enum AsciiChar {
     Delete = 127,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl AsciiChar {
     /// Creates an ascii character from the byte `b`,

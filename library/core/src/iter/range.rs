@@ -441,7 +441,7 @@ step_integer_impls! {
 }
 
 #[unstable(feature = "step_trait", reason = "recently redesigned", issue = "42168")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Step for char {
     #[inline]
@@ -680,7 +680,7 @@ trait RangeIteratorImpl {
     fn spec_advance_back_by(&mut self, n: usize) -> Result<(), NonZero<usize>>;
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     type Item = A;
@@ -766,7 +766,7 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
     #[inline]
@@ -1169,7 +1169,7 @@ impl<A: Step> RangeInclusiveIteratorImpl for ops::RangeInclusive<A> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: TrustedStep> RangeInclusiveIteratorImpl for ops::RangeInclusive<T> {
     #[inline]

@@ -727,7 +727,7 @@ where
 
 // AsMut lifts over &mut
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized, U: ?Sized> AsMut<U> for &mut T
 where
@@ -785,7 +785,7 @@ impl<T> From<T> for T {
 #[allow(unused_attributes)] // FIXME(#58633): do a principled fix instead.
 #[rustc_reservation_impl = "permitting this impl would forbid us from adding \
                             `impl<T> From<!> for T` later; see rust-lang/rust#64715 for details"]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> From<!> for T {
     // flux_verify_ice: incompatible base types
@@ -966,7 +966,7 @@ impl Ord for Infallible {
 }
 
 #[stable(feature = "convert_infallible", since = "1.34.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl From<!> for Infallible {
     #[inline]

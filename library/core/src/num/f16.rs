@@ -134,7 +134,7 @@ pub mod consts {
 }
 
 #[cfg(not(test))]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl f16 {
     // FIXME(f16_f128): almost all methods in this `impl` are missing examples and a const

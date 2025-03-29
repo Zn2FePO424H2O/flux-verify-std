@@ -54,7 +54,7 @@ const fn bitset_search<
     (word & (1 << (needle % 64) as u64)) != 0
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume_const(_:bool) {}

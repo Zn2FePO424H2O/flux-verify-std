@@ -35,7 +35,7 @@ struct Parser<'a> {
     state: &'a [u8],
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Parser<'a> {
     fn new(input: &'a [u8]) -> Parser<'a> {

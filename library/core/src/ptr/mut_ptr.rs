@@ -1733,13 +1733,13 @@ impl<T: ?Sized> *mut T {
             panic!("is_aligned_to: align is not a power-of-two");
         }
 
-        // flux_verify_error: conditional matching
+        // flux_verify_error: condition matching
         flux_assume(align >= 1); 
         self.addr() & (align - 1) == 0
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> *mut [T] {
     /// Returns the length of a raw slice.

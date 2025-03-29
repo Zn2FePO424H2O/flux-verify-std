@@ -72,7 +72,7 @@ impl<T, const N: usize> IntoIterator for [T; N] {
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> IntoIter<T, N> {
     /// Creates a new iterator over the given `array`.
@@ -234,7 +234,7 @@ impl<T, const N: usize> IntoIter<T, N> {
 }
 
 #[stable(feature = "array_value_iter_impls", since = "1.40.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> Iterator for IntoIter<T, N> {
     type Item = T;
@@ -307,7 +307,7 @@ impl<T, const N: usize> Iterator for IntoIter<T, N> {
 }
 
 #[stable(feature = "array_value_iter_impls", since = "1.40.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> DoubleEndedIterator for IntoIter<T, N> {
     fn next_back(&mut self) -> Option<Self::Item> {

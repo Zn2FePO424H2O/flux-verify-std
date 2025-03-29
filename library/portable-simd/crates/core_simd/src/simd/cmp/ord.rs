@@ -218,7 +218,7 @@ macro_rules! impl_mask {
 
 impl_mask! { i8, i16, i32, i64, isize }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> SimdPartialOrd for Simd<*const T, N>
 where
@@ -253,7 +253,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> SimdOrd for Simd<*const T, N>
 where
@@ -282,7 +282,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> SimdPartialOrd for Simd<*mut T, N>
 where
@@ -317,7 +317,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> SimdOrd for Simd<*mut T, N>
 where

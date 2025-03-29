@@ -61,7 +61,7 @@ impl<I: Iterator, F, const N: usize> MapWindows<I, F, N> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
     #[inline]
@@ -108,7 +108,7 @@ impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> Buffer<T, N> {
     fn try_from_iter(iter: &mut impl Iterator<Item = T>) -> Option<Self> {
@@ -243,7 +243,7 @@ impl<T, const N: usize> Drop for Buffer<T, N> {
 }
 
 #[unstable(feature = "iter_map_windows", reason = "recently added", issue = "87155")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, F, R, const N: usize> Iterator for MapWindows<I, F, N>
 where

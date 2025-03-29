@@ -235,7 +235,7 @@ impl<T: ?Sized> Borrow<T> for &mut T {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized> BorrowMut<T> for &mut T {
     // flux_verify_error: refinement type error

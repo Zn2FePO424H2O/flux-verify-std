@@ -166,7 +166,7 @@ where
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, R> Iterator for GenericShunt<'_, I, R>
 where

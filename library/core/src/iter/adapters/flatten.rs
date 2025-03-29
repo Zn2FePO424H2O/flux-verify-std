@@ -53,7 +53,7 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator, U: IntoIterator, F> Iterator for FlatMap<I, U, F>
 where
@@ -425,7 +425,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, U> FlattenCompat<I, U>
 where
@@ -496,7 +496,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, U> FlattenCompat<I, U>
 where
@@ -568,7 +568,7 @@ where
 }
 
 // See also the `OneShot` specialization below.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, U> Iterator for FlattenCompat<I, U>
 where
@@ -685,7 +685,7 @@ where
 }
 
 // See also the `OneShot` specialization below.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, U> DoubleEndedIterator for FlattenCompat<I, U>
 where
@@ -886,7 +886,7 @@ fn try_flatten_one<I: IntoIterator<IntoIter: OneShot>, Acc, R: Try<Output = Acc>
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -899,6 +899,7 @@ where
     match inner.into_iter().next() {
         Some(_) => {
             let n_get = n.get();
+            // flux_verify_error: complex
             flux_assume(n_get > 0);
             NonZero::new(n_get - 1)
         },
@@ -918,7 +919,7 @@ where
 //
 // An exception to that is `advance_by(0)` and `advance_back_by(0)`, where the generic impls may set
 // `frontiter` or `backiter` without consuming the item, so we **must** override those.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, U> Iterator for FlattenCompat<I, U>
 where
@@ -990,7 +991,7 @@ where
 
 // Note: We don't actually care about `U: DoubleEndedIterator`, since forward and backward are the
 // same for a one-shot iterator, but we have to keep that to match the default specialization.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, U> DoubleEndedIterator for FlattenCompat<I, U>
 where

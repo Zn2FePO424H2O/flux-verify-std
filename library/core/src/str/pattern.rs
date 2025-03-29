@@ -390,10 +390,10 @@ pub struct CharSearcher<'a> {
     utf8_encoded: [u8; 4],
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl CharSearcher<'_> {
-    // flux_verify_sig: sig
+    // flux_verify_mark: sig
     #[flux_attrs::trusted_impl]
     #[flux_attrs::sig(fn (_) -> usize{x: x>=1})]
     fn utf8_size(&self) -> usize {
@@ -486,7 +486,7 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
     // let next_reject use the default implementation from the Searcher trait
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 unsafe impl<'a> ReverseSearcher<'a> for CharSearcher<'a> {
     #[inline]
@@ -573,7 +573,7 @@ impl<'a> DoubleEndedSearcher<'a> for CharSearcher<'a> {}
 /// ```
 /// assert_eq!("Hello world".find('o'), Some(4));
 /// ```
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Pattern for char {
     type Searcher<'a> = CharSearcher<'a>;
@@ -674,7 +674,7 @@ impl<const N: usize> MultiCharEq for &[char; N] {
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl MultiCharEq for &[char] {
     #[inline]
@@ -694,7 +694,7 @@ struct MultiCharEqSearcher<'a, C: MultiCharEq> {
     char_indices: super::CharIndices<'a>,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<C: MultiCharEq> Pattern for MultiCharEqPattern<C> {
     type Searcher<'a> = MultiCharEqSearcher<'a, C>;
@@ -756,7 +756,7 @@ unsafe impl<'a, C: MultiCharEq> ReverseSearcher<'a> for MultiCharEqSearcher<'a, 
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -940,7 +940,7 @@ pub struct CharPredicateSearcher<'a, F>(<MultiCharEqPattern<F> as Pattern>::Sear
 where
     F: FnMut(char) -> bool;
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<F> fmt::Debug for CharPredicateSearcher<'_, F>
 where
@@ -1007,7 +1007,7 @@ impl<'b, 'c> Pattern for &'c &'b str {
 /// ```
 /// assert_eq!("Hello world".find("world"), Some(6));
 /// ```
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'b> Pattern for &'b str {
     type Searcher<'a> = StrSearcher<'a, 'b>;
@@ -1238,7 +1238,7 @@ unsafe impl<'a, 'b> Searcher<'a> for StrSearcher<'a, 'b> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
     #[inline]
@@ -1418,7 +1418,7 @@ struct TwoWaySearcher {
     for reverse search, chosen instead so that |v'| < period(x).
 
 */
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl TwoWaySearcher {
     fn new(needle: &[u8], end: usize) -> TwoWaySearcher {

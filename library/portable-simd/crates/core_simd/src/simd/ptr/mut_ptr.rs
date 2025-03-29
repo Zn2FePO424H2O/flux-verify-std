@@ -74,7 +74,7 @@ pub trait SimdMutPtr: Copy + Sealed {
 
 impl<T, const N: usize> Sealed for Simd<*mut T, N> where LaneCount<N>: SupportedLaneCount {}
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> SimdMutPtr for Simd<*mut T, N>
 where

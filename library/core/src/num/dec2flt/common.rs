@@ -17,7 +17,7 @@ pub(crate) trait ByteSlice {
     fn parse_digits(&self, func: impl FnMut(u8)) -> &Self;
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl ByteSlice for [u8] {
     #[inline(always)] // inlining this is crucial to remove bound checks

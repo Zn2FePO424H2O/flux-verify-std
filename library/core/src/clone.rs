@@ -349,7 +349,7 @@ mod impls {
     }
 
     #[unstable(feature = "never_type", issue = "35121")]
-    // flux_verify_impl: impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl Clone for ! {
         #[inline]

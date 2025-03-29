@@ -1937,7 +1937,7 @@ unsafe impl<A> TrustedLen for IntoIter<A> {}
 /////////////////////////////////////////////////////////////////////////////
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<A, E, V: FromIterator<A>> FromIterator<Result<A, E>> for Result<V, E> {
     /// Takes each element in the `Iterator`: if it is an `Err`, no further

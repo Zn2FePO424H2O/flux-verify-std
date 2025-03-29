@@ -1336,7 +1336,7 @@ macro_rules! from_str_radix_int_impl {
 }
 from_str_radix_int_impl! { isize i8 i16 i32 i64 i128 usize u8 u16 u32 u64 u128 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume(_:bool) {}
@@ -1350,6 +1350,7 @@ const fn flux_assume(_:bool) {}
 #[unstable(issue = "none", feature = "std_internals")]
 pub const fn can_not_overflow<T>(radix: u32, is_signed_ty: bool, digits: &[u8]) -> bool {
     let size = mem::size_of::<T>();
+    // flux_verify_error: ZST
     flux_assume(size > 0);
     radix <= 16 && digits.len() <= size * 2 - is_signed_ty as usize
 }

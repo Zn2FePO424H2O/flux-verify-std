@@ -278,7 +278,7 @@ const UTF8_CHAR_WIDTH: &[u8; 256] = &[
 #[unstable(feature = "str_internals", issue = "none")]
 #[must_use]
 #[inline]
-// flux_verify_error: full table
+// flux_verify_error: type constrain
 #[flux_attrs::trusted]
 pub const fn utf8_char_width(b: u8) -> usize {
     UTF8_CHAR_WIDTH[b as usize] as usize
@@ -287,7 +287,7 @@ pub const fn utf8_char_width(b: u8) -> usize {
 /// Mask of the value bits of a continuation byte.
 const CONT_MASK: u8 = 0b0011_1111;
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

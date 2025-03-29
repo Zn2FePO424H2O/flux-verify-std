@@ -22,7 +22,7 @@ pub struct ArrayChunks<I: Iterator, const N: usize> {
     remainder: Option<array::IntoIter<I::Item, N>>,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, const N: usize> ArrayChunks<I, N>
 where
@@ -60,7 +60,7 @@ where
 }
 
 #[unstable(feature = "iter_array_chunks", reason = "recently added", issue = "100450")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, const N: usize> Iterator for ArrayChunks<I, N>
 where
@@ -118,7 +118,7 @@ where
 }
 
 #[unstable(feature = "iter_array_chunks", reason = "recently added", issue = "100450")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, const N: usize> DoubleEndedIterator for ArrayChunks<I, N>
 where

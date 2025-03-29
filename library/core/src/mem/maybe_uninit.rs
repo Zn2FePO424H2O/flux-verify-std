@@ -283,7 +283,7 @@ impl<T> fmt::Debug for MaybeUninit<T> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> MaybeUninit<T> {
     /// Creates a new `MaybeUninit<T>` initialized with the given value.
@@ -1284,7 +1284,7 @@ impl<T> MaybeUninit<T> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> [MaybeUninit<T>] {
     /// Copies the elements from `src` to `self`,

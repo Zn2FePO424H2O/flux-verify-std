@@ -26,7 +26,7 @@ impl<I> Take<I> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I> Iterator for Take<I>
 where
@@ -152,7 +152,7 @@ unsafe impl<I: InPlaceIterable> InPlaceIterable for Take<I> {
 }
 
 #[stable(feature = "double_ended_take_iterator", since = "1.38.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I> DoubleEndedIterator for Take<I>
 where

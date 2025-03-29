@@ -140,7 +140,7 @@ impl<F> fmt::Debug for PollFn<F> {
 }
 
 #[stable(feature = "future_poll_fn", since = "1.64.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, F> Future for PollFn<F>
 where

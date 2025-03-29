@@ -24,7 +24,7 @@ impl<I: Clone> Cycle<I> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I> Iterator for Cycle<I>
 where

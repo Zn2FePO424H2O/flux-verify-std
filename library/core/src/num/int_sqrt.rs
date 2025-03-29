@@ -37,7 +37,7 @@ const U8_ISQRT_WITH_REMAINDER: [(u8, u8); 256] = {
 #[must_use = "this returns the result of the operation, \
               without modifying the original"]
 #[inline]
-// flux_verify_error: full table
+// flux_verify_error: type constrain
 #[flux_attrs::trusted]
 pub(super) const fn u8(n: u8) -> u8 {
     U8_ISQRT_WITH_REMAINDER[n as usize].0
@@ -148,8 +148,10 @@ macro_rules! first_stage {
 
         const N_SHIFT: u32 = $original_bits - 8;
         let n = $n >> N_SHIFT;
+        // flux_verify_error: vector length
         flux_assume(flux_len0(U8_ISQRT_WITH_REMAINDER)==256);
         let n_usize = n as usize;
+        // flux_verify_error: type cast
         flux_assume(n_usize < 256);
         let (s, r) = U8_ISQRT_WITH_REMAINDER[n_usize];
 
@@ -195,6 +197,7 @@ macro_rules! middle_stage {
         let lo = n & LOWER_HALF_1_BITS;
         let numerator = (($r as $ty) << QUARTER_BITS) | (lo >> QUARTER_BITS);
         let denominator = ($s as $ty) << 1;
+        // flux_verify_error: bit shift
         flux_assume(denominator > 0);
         let q = numerator / denominator;
         let u = numerator % denominator;
@@ -203,6 +206,7 @@ macro_rules! middle_stage {
         let (mut r, overflow) =
             ((u << QUARTER_BITS) | (lo & LOWEST_QUARTER_1_BITS)).overflowing_sub(q * q);
         if overflow {
+            // flux_verify_error: bit shift
             flux_assume(s > 0);
             r = r.wrapping_add(2 * s - 1);
             s -= 1;
@@ -232,7 +236,7 @@ macro_rules! middle_stage {
     }};
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 const fn flux_assume(_:bool) {}
@@ -253,11 +257,13 @@ macro_rules! last_stage {
         let lo = $n & LOWER_HALF_1_BITS;
         let numerator = (($r as $ty) << QUARTER_BITS) | (lo >> QUARTER_BITS);
         let denominator = ($s as $ty) << 1;
+        // flux_verify_error: bit shift
         flux_assume(denominator > 0);
         let q = numerator / denominator;
         let mut s = ($s << QUARTER_BITS) as $ty + q;
         let (s_squared, overflow) = s.overflowing_mul(s);
         if overflow || s_squared > $n {
+            // flux_verify_error: bit shift
             flux_assume(s > 0);
             s -= 1;
         }

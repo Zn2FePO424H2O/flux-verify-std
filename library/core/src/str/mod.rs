@@ -116,7 +116,7 @@ fn slice_error_fail_rt(s: &str, begin: usize, end: usize) -> ! {
     );
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 #[cfg(not(test))]
 impl str {
@@ -2807,7 +2807,7 @@ impl Default for &str {
 }
 
 #[stable(feature = "default_mut_str", since = "1.28.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Default for &mut str {
     /// Creates an empty mutable str

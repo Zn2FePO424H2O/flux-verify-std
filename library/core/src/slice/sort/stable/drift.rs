@@ -8,7 +8,7 @@ use crate::slice::sort::stable::merge::merge;
 use crate::slice::sort::stable::quicksort::quicksort;
 use crate::{cmp, intrinsics};
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

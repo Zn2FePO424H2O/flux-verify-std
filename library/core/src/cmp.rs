@@ -1780,7 +1780,7 @@ mod impls {
     ord_impl! { char usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
 
     #[unstable(feature = "never_type", issue = "35121")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl PartialEq for ! {
         #[inline]
@@ -1795,7 +1795,7 @@ mod impls {
     impl Eq for ! {}
 
     #[unstable(feature = "never_type", issue = "35121")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl PartialOrd for ! {
         #[inline]
@@ -1807,7 +1807,7 @@ mod impls {
     }
 
     #[unstable(feature = "never_type", issue = "35121")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl Ord for ! {
         #[inline]

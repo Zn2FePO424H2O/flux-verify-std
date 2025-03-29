@@ -4,7 +4,7 @@ use crate::num::dec2flt::common::BiasedFp;
 use crate::num::dec2flt::decimal::{Decimal, parse_decimal};
 use crate::num::dec2flt::float::RawFloat;
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -110,6 +110,7 @@ pub(crate) fn parse_long_mantissa<F: RawFloat>(s: &[u8]) -> BiasedFp {
     }
     // Zero out all the bits above the explicit mantissa bits.
     let left_mantissa = 1_u64 << F::MANTISSA_EXPLICIT_BITS;
+    // flux_verify_error: bit shift
     flux_assume(left_mantissa >= 1);
     mantissa &= left_mantissa - 1;
     BiasedFp { f: mantissa, e: power2 }

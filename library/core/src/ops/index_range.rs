@@ -114,7 +114,7 @@ impl IndexRange {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Iterator for IndexRange {
     type Item = usize;
@@ -144,7 +144,7 @@ impl Iterator for IndexRange {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl DoubleEndedIterator for IndexRange {
     #[inline]

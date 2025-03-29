@@ -169,7 +169,7 @@ impl fmt::Debug for dyn Any + Send + Sync {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl dyn Any {
     /// Returns `true` if the inner type is the same as `T`.

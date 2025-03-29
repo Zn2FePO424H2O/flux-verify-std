@@ -29,7 +29,7 @@ impl<I, P> Filter<I, P> {
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I, P> Filter<I, P>
 where
@@ -91,7 +91,7 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where
@@ -171,7 +171,7 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: DoubleEndedIterator, P> DoubleEndedIterator for Filter<I, P>
 where

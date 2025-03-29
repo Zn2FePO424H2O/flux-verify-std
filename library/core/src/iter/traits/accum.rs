@@ -150,7 +150,7 @@ integer_sum_product! { i8 i16 i32 i64 i128 isize u8 u16 u32 u64 u128 usize }
 float_sum_product! { f32 f64 }
 
 #[stable(feature = "iter_arith_traits_result", since = "1.16.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, U, E> Sum<Result<U, E>> for Result<T, E>
 where
@@ -183,7 +183,7 @@ where
 }
 
 #[stable(feature = "iter_arith_traits_result", since = "1.16.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, U, E> Product<Result<U, E>> for Result<T, E>
 where
@@ -215,7 +215,7 @@ where
 }
 
 #[stable(feature = "iter_arith_traits_option", since = "1.37.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, U> Sum<Option<U>> for Option<T>
 where
@@ -247,7 +247,7 @@ where
 }
 
 #[stable(feature = "iter_arith_traits_option", since = "1.37.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, U> Product<Option<U>> for Option<T>
 where

@@ -555,7 +555,7 @@ pub trait Hasher {
 }
 
 #[stable(feature = "indirect_hasher_impl", since = "1.22.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<H: Hasher + ?Sized> Hasher for &mut H {
     // flux_verify_error: refinement type error
@@ -784,7 +784,7 @@ pub trait BuildHasher {
 #[stable(since = "1.7.0", feature = "build_hasher")]
 pub struct BuildHasherDefault<H>(marker::PhantomData<fn() -> H>);
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<H> BuildHasherDefault<H> {
     /// Creates a new BuildHasherDefault for Hasher `H`.
@@ -812,7 +812,7 @@ impl<H: Default + Hasher> BuildHasher for BuildHasherDefault<H> {
 }
 
 #[stable(since = "1.7.0", feature = "build_hasher")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<H> Clone for BuildHasherDefault<H> {
     fn clone(&self) -> BuildHasherDefault<H> {
@@ -888,7 +888,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl Hash for char {
         #[inline]
@@ -908,7 +908,7 @@ mod impls {
     }
 
     #[stable(feature = "never_hash", since = "1.29.0")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl Hash for ! {
         #[inline]

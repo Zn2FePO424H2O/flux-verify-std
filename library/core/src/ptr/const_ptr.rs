@@ -4,7 +4,7 @@ use crate::intrinsics::const_eval_select;
 use crate::mem::SizedTypeProperties;
 use crate::slice::{self, SliceIndex};
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized> *const T {
     /// Returns `true` if the pointer is null.

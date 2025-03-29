@@ -264,7 +264,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> FnMut<A> for &F
     where
@@ -290,7 +290,7 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
-    // flux_verify_impl:impl
+    // flux_verify_mark: impl
     #[flux_attrs::trusted]
     impl<A: Tuple, F: ?Sized> FnMut<A> for &mut F
     where

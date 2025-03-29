@@ -100,7 +100,7 @@ enum Direction {
 }
 
 #[cfg(not(test))]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> [T] {
     /// Returns the number of elements in the slice.
@@ -4909,7 +4909,7 @@ trait CloneFromSpec<T> {
     fn spec_clone_from(&mut self, src: &[T]);
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> CloneFromSpec<T> for [T]
 where
@@ -4948,7 +4948,7 @@ impl<T> Default for &[T] {
 }
 
 #[stable(feature = "mut_slice_default", since = "1.5.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> Default for &mut [T] {
     /// Creates a mutable empty slice.

@@ -211,7 +211,7 @@ impl<T, const N: usize> Borrow<[T]> for [T; N] {
 }
 
 #[stable(feature = "array_borrow", since = "1.4.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> BorrowMut<[T]> for [T; N] {
     // flux_verify_error: refinement type error
@@ -351,7 +351,7 @@ impl<'a, T, const N: usize> IntoIterator for &'a [T; N] {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, T, const N: usize> IntoIterator for &'a mut [T; N] {
     type Item = &'a mut T;
@@ -378,7 +378,7 @@ where
 }
 
 #[stable(feature = "index_trait_on_arrays", since = "1.50.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, I, const N: usize> IndexMut<I> for [T; N]
 where
@@ -430,7 +430,7 @@ impl<T: Ord, const N: usize> Ord for [T; N] {
 impl<T: Copy, const N: usize> Copy for [T; N] {}
 
 #[stable(feature = "copy_clone_array_lib", since = "1.58.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: Clone, const N: usize> Clone for [T; N] {
     #[inline]
@@ -488,7 +488,7 @@ macro_rules! array_impl_default {
 
 array_impl_default! {32, T T T T T T T T T T T T T T T T T T T T T T T T T T T T T T T T}
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> [T; N] {
     /// Returns an array of the same size as `self`, with function `f` applied to each element

@@ -115,7 +115,7 @@ impl DerefMut for ByteStr {
 unsafe impl DerefPure for ByteStr {}
 
 #[unstable(feature = "bstr", issue = "134915")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl fmt::Debug for ByteStr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -243,7 +243,7 @@ impl<'a> Default for &'a ByteStr {
 }
 
 #[unstable(feature = "bstr", issue = "134915")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Default for &'a mut ByteStr {
     // flux_verify_error: refinement type error
@@ -308,7 +308,7 @@ impl hash::Hash for ByteStr {
 }
 
 #[unstable(feature = "bstr", issue = "134915")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Index<usize> for ByteStr {
     type Output = u8;
@@ -382,7 +382,7 @@ impl Index<RangeToInclusive<usize>> for ByteStr {
 }
 
 #[unstable(feature = "bstr", issue = "134915")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl IndexMut<usize> for ByteStr {
     #[inline]

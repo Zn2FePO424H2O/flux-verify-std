@@ -216,7 +216,7 @@ unsafe trait StepByBackImpl<I> {
         F: FnMut(Acc, Self::Item) -> Acc;
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
     type Item = I::Item;
@@ -341,7 +341,7 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for StepBy<I> {
     type Item = I::Item;

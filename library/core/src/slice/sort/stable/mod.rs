@@ -81,7 +81,7 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], is_less
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -145,7 +145,7 @@ struct AlignedStorage<T, const N: usize> {
     storage: [MaybeUninit<u8>; N],
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> AlignedStorage<T, N> {
     fn new() -> Self {

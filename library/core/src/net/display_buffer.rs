@@ -24,7 +24,7 @@ impl<const SIZE: usize> DisplayBuffer<SIZE> {
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<const SIZE: usize> fmt::Write for DisplayBuffer<SIZE> {
     // flux_verify_error: refinement type error

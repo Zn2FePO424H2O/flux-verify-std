@@ -372,7 +372,7 @@ pub trait DoubleEndedIterator: Iterator {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, I: DoubleEndedIterator + ?Sized> DoubleEndedIterator for &'a mut I {
     // flux_verify_error: refinement type error
@@ -419,7 +419,7 @@ trait DoubleEndedIteratorRefSpec: DoubleEndedIterator {
         R: Try<Output = B>;
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: DoubleEndedIterator + ?Sized> DoubleEndedIteratorRefSpec for &mut I {
     default fn spec_rfold<B, F>(self, init: B, mut f: F) -> B
@@ -448,12 +448,12 @@ impl<I: DoubleEndedIterator + ?Sized> DoubleEndedIteratorRefSpec for &mut I {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: DoubleEndedIterator> DoubleEndedIteratorRefSpec for &mut I {
     impl_fold_via_try_fold! { spec_rfold -> spec_try_rfold }

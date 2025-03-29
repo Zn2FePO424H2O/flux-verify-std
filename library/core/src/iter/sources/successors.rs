@@ -38,7 +38,7 @@ pub struct Successors<T, F> {
 }
 
 #[stable(feature = "iter_successors", since = "1.34.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, F> Iterator for Successors<T, F>
 where

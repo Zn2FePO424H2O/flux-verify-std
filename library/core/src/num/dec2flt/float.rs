@@ -100,7 +100,7 @@ pub trait RawFloat:
     fn integer_decode(self) -> (u64, i16, i8);
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl RawFloat for f32 {
     const INFINITY: Self = f32::INFINITY;
@@ -157,7 +157,7 @@ impl RawFloat for f32 {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl RawFloat for f64 {
     const INFINITY: Self = f64::INFINITY;

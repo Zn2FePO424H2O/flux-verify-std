@@ -147,6 +147,7 @@ fn compute_product_approx(q: i64, w: u64, precision: usize) -> (u64, u64) {
     // That means whenever we need to round ties to even, we always have
     // an exact value.
     let index = (q - SMALLEST_POWER_OF_FIVE as i64) as usize;
+    // flux_verify_error: vector length
     flux_assume(flux_len(POWER_OF_FIVE_128) > index);
     let (lo5, hi5) = POWER_OF_FIVE_128[index];
     // Only need one multiplication as long as there is 1 zero but
@@ -168,7 +169,7 @@ fn compute_product_approx(q: i64, w: u64, precision: usize) -> (u64, u64) {
     (first_lo, first_hi)
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

@@ -32,7 +32,7 @@ fn clone_try_fold<T: Clone, Acc, R>(mut f: impl FnMut(Acc, T) -> R) -> impl FnMu
 }
 
 #[stable(feature = "iter_cloned", since = "1.1.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, I, T: 'a> Iterator for Cloned<I>
 where
@@ -80,7 +80,7 @@ where
 }
 
 #[stable(feature = "iter_cloned", since = "1.1.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, I, T: 'a> DoubleEndedIterator for Cloned<I>
 where

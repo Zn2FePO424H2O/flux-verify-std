@@ -293,7 +293,7 @@ where
 }
 
 #[doc(hidden)]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<A, B> ZipImpl<A, B> for Zip<A, B>
 where

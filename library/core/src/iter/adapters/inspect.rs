@@ -67,7 +67,7 @@ fn inspect_try_fold<'a, T, Acc, R>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator, F> Iterator for Inspect<I, F>
 where
@@ -108,7 +108,7 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: DoubleEndedIterator, F> DoubleEndedIterator for Inspect<I, F>
 where

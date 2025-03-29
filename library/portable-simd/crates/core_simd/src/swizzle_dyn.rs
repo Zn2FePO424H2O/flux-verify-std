@@ -1,7 +1,7 @@
 use crate::simd::{LaneCount, Simd, SupportedLaneCount};
 use core::mem;
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<const N: usize> Simd<u8, N>
 where

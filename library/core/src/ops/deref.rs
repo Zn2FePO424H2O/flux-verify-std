@@ -273,7 +273,7 @@ pub trait DerefMut: ~const Deref {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized> const DerefMut for &mut T {
     // flux_verify_error: refinement type error

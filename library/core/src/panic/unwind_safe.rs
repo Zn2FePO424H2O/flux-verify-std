@@ -288,7 +288,7 @@ impl<T: Default> Default for AssertUnwindSafe<T> {
 }
 
 #[stable(feature = "futures_api", since = "1.36.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<F: Future> Future for AssertUnwindSafe<F> {
     type Output = F::Output;
@@ -301,7 +301,7 @@ impl<F: Future> Future for AssertUnwindSafe<F> {
 }
 
 #[unstable(feature = "async_iterator", issue = "79024")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<S: AsyncIterator> AsyncIterator for AssertUnwindSafe<S> {
     type Item = S::Item;

@@ -26,7 +26,7 @@ static POW5TO256: [Digit; 19] = [
     0xf46eeddc, 0x5fdcefce, 0x553f7,
 ];
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -38,6 +38,7 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     // Save ourself the left shift for the smallest cases.
     if n < 8 {
         let n_and = n & 7;
+        // flux_verify_error: bit mask
         flux_assume(n_and <= 7);
         return x.mul_small(POW10[n_and]);
     }
@@ -45,6 +46,7 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     // This keeps the intermediate products smaller and faster.
     if n & 7 != 0 {
         let n_and = n & 7;
+        // flux_verify_error: bit mask
         flux_assume(n_and <= 7);
         x.mul_small(POW10[n_and] >> (n_and));
     }
@@ -71,6 +73,7 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
 
 fn div_2pow10(x: &mut Big, mut n: usize) -> &mut Big {
     let pow10_len = POW10.len();
+    // flux_verify_error: vector length
     flux_assume(pow10_len == 10);
     let largest = pow10_len - 1;
     while n > largest {

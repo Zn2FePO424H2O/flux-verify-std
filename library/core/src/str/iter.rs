@@ -32,7 +32,7 @@ pub struct Chars<'a> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Iterator for Chars<'a> {
     type Item = char;
@@ -193,7 +193,7 @@ impl<'a> Iterator for CharIndices<'a> {
             Some(ch) => {
                 let index = self.front_offset;
                 let len = self.iter.iter.len();
-                // flux_verify_assume: sub vector length
+                // flux_verify_error: sub vector length
                 flux_assume(pre_len >= len);
                 self.front_offset += pre_len - len;
                 Some((index, ch))
@@ -293,7 +293,7 @@ impl<'a> CharIndices<'a> {
 pub struct Bytes<'a>(pub(super) Copied<slice::Iter<'a, u8>>);
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Iterator for Bytes<'_> {
     type Item = u8;
@@ -384,7 +384,7 @@ impl Iterator for Bytes<'_> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl DoubleEndedIterator for Bytes<'_> {
     #[inline]
@@ -409,7 +409,7 @@ impl DoubleEndedIterator for Bytes<'_> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl ExactSizeIterator for Bytes<'_> {
     #[inline]
@@ -670,7 +670,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitInternal<'a, P> {
     #[inline]
@@ -971,7 +971,7 @@ where
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitNInternal<'a, P> {
     #[inline]
@@ -1205,7 +1205,7 @@ generate_pattern_iterators! {
 pub struct Lines<'a>(pub(super) Map<SplitInclusive<'a, char>, LinesMap>);
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Iterator for Lines<'a> {
     type Item = &'a str;
@@ -1231,7 +1231,7 @@ impl<'a> Iterator for Lines<'a> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> DoubleEndedIterator for Lines<'a> {
     #[inline]
@@ -1405,7 +1405,7 @@ impl<'a> SplitWhitespace<'a> {
 }
 
 #[stable(feature = "split_ascii_whitespace", since = "1.34.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Iterator for SplitAsciiWhitespace<'a> {
     type Item = &'a str;
@@ -1431,7 +1431,7 @@ impl<'a> Iterator for SplitAsciiWhitespace<'a> {
 }
 
 #[stable(feature = "split_ascii_whitespace", since = "1.34.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> DoubleEndedIterator for SplitAsciiWhitespace<'a> {
     #[inline]
@@ -1559,7 +1559,7 @@ impl fmt::Debug for EncodeUtf16<'_> {
 }
 
 #[stable(feature = "encode_utf16", since = "1.8.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Iterator for EncodeUtf16<'a> {
     type Item = u16;
@@ -1673,7 +1673,7 @@ macro_rules! escape_types_impls {
 
 escape_types_impls!(EscapeDebug, EscapeDefault, EscapeUnicode);
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}

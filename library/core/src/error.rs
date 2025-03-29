@@ -192,7 +192,7 @@ mod private {
 impl Error for ! {}
 
 // Copied from `any.rs`.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl dyn Error + 'static {
     /// Returns `true` if the inner type is the same as `T`.
@@ -938,7 +938,7 @@ pub(crate) mod tags {
 #[repr(transparent)]
 pub(crate) struct TaggedOption<'a, I: tags::Type<'a>>(pub Option<I::Reified>);
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, I: tags::Type<'a>> Tagged<TaggedOption<'a, I>> {
     // flux_verify_ice: unsupported unsize cast
@@ -963,7 +963,7 @@ struct Tagged<E: ?Sized> {
     value: E,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Tagged<dyn Erased<'a> + 'a> {
     /// Returns some reference to the dynamic value if it is tagged with `I`,

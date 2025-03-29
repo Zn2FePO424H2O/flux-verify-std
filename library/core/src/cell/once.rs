@@ -34,7 +34,7 @@ pub struct OnceCell<T> {
     inner: UnsafeCell<Option<T>>,
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> OnceCell<T> {
     /// Creates a new empty cell.

@@ -92,7 +92,7 @@ struct InitializingSlice<'a, T> {
     initialized_len: usize,
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, T> InitializingSlice<'a, T> {
     #[inline]

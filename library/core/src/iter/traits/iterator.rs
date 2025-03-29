@@ -4032,7 +4032,7 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator + ?Sized> Iterator for &mut I {
     type Item = I::Item;
@@ -4084,7 +4084,7 @@ trait IteratorRefSpec: Iterator {
         R: Try<Output = B>;
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator + ?Sized> IteratorRefSpec for &mut I {
     default fn spec_fold<B, F>(self, init: B, mut f: F) -> B
@@ -4113,12 +4113,12 @@ impl<I: Iterator + ?Sized> IteratorRefSpec for &mut I {
     }
 }
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator> IteratorRefSpec for &mut I {
     impl_fold_via_try_fold! { spec_fold -> spec_try_fold }

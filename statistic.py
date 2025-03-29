@@ -30,6 +30,8 @@ if __name__ == "__main__":
     tag_counts, tag_details, tag_locations = find_flux_verify_tags(search_directory)
 
     for tag1 in sorted(tag_counts.keys()):
+        if tag1 == "mark":
+            continue
         print(f"{tag1}: {tag_counts[tag1]}")
         for tag2, count in sorted(tag_details[tag1].items()):
             print(f"  - {tag2}: {count}")

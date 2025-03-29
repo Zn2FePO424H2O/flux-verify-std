@@ -197,7 +197,7 @@ where
     fn spec_next_chunk(&mut self) -> Result<[T; N], array::IntoIter<T, N>>;
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, const N: usize, I, T: 'a> SpecNextChunk<'a, N, T> for I
 where
@@ -209,7 +209,7 @@ where
     }
 }
 
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a, const N: usize, T: 'a> SpecNextChunk<'a, N, T> for crate::slice::Iter<'a, T>
 where

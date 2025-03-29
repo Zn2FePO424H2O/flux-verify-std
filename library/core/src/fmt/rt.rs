@@ -94,7 +94,7 @@ pub struct Argument<'a> {
 }
 
 #[rustc_diagnostic_item = "ArgumentMethods"]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Argument<'_> {
     #[inline]

@@ -30,7 +30,7 @@ impl<I> Skip<I> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I> Iterator for Skip<I>
 where
@@ -192,7 +192,7 @@ where
 impl<I> ExactSizeIterator for Skip<I> where I: ExactSizeIterator {}
 
 #[stable(feature = "double_ended_skip_iterator", since = "1.9.0")]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I> DoubleEndedIterator for Skip<I>
 where

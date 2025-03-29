@@ -6,7 +6,7 @@ use crate::num::dec2flt::number::Number;
 
 const MIN_19DIGIT_INT: u64 = 100_0000_0000_0000_0000;
 
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -24,6 +24,7 @@ fn parse_8digits(mut v: u64) -> u64 {
     const MASK: u64 = 0x0000_00FF_0000_00FF;
     const MUL1: u64 = 0x000F_4240_0000_0064;
     const MUL2: u64 = 0x0000_2710_0000_0001;
+    // flux_verify_error: char cast magic
     flux_assume(v >= 0x3030_3030_3030_3030);
     v -= 0x3030_3030_3030_3030;
     v = (v * 10) + (v >> 8); // will not overflow, fits in 63 bits

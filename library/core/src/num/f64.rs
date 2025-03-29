@@ -387,7 +387,7 @@ pub mod consts {
 }
 
 #[cfg(not(test))]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl f64 {
     /// The radix or base of the internal representation of `f64`.

@@ -186,7 +186,7 @@ pub trait Swizzle<const N: usize> {
     }
 }
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> Simd<T, N>
 where

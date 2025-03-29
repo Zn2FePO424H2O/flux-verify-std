@@ -34,7 +34,7 @@ impl<I: fmt::Debug, P> fmt::Debug for SkipWhile<I, P> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for SkipWhile<I, P>
 where

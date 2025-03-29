@@ -1616,7 +1616,7 @@ impl<T: ?Sized> fmt::Pointer for NonNull<T> {
 impl<T: ?Sized> Eq for NonNull<T> {}
 
 #[stable(feature = "nonnull", since = "1.25.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized> PartialEq for NonNull<T> {
     #[inline]

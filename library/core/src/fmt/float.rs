@@ -25,7 +25,7 @@ impl_general_format! { f32 f64 }
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
 #[inline(never)]
-// flux_verify_impl:impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 fn float_to_decimal_common_exact<T>(
     fmt: &mut Formatter<'_>,

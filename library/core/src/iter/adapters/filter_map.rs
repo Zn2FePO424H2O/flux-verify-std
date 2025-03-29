@@ -53,7 +53,7 @@ fn filter_map_try_fold<'a, T, B, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<B, I: Iterator, F> Iterator for FilterMap<I, F>
 where
@@ -152,7 +152,7 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<B, I: DoubleEndedIterator, F> DoubleEndedIterator for FilterMap<I, F>
 where

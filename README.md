@@ -15,7 +15,7 @@ enabled = true
 flux-attrs = { git = "https://github.com/flux-rs/flux.git" }
 
 ## To use flux_assume
-// flux_verify_assume: assume
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
 fn flux_assume(_:bool) {}
@@ -53,7 +53,7 @@ assume/impl: functional
 
 type constrain : show have refinement on the type defn
 
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 
     // flux_verify_error: type constrain

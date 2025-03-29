@@ -74,7 +74,7 @@ impl<T> FusedIterator for Empty<T> {}
 // not #[derive] because that adds a Clone bound on T,
 // which isn't necessary.
 #[stable(feature = "iter_empty", since = "1.2.0")]
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T> Clone for Empty<T> {
     fn clone(&self) -> Empty<T> {
@@ -84,7 +84,7 @@ impl<T> Clone for Empty<T> {
 
 // not #[derive] because that adds a Default bound on T,
 // which isn't necessary.
-// flux_verify_impl: impl
+// flux_verify_mark: impl
 #[flux_attrs::trusted]
 #[stable(feature = "iter_empty", since = "1.2.0")]
 impl<T> Default for Empty<T> {
