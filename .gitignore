@@ -7,3 +7,5 @@ library/core/log/
 log.txt
 
 log[E0999].txt
+
+.DS_Store
