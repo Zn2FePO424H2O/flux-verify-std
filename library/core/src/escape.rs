@@ -110,7 +110,7 @@ const fn escape_ascii<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>)
         let byte_as_usize = byte as usize;
         // flux_verify_error: type cast
         flux_assume_const(byte_as_usize < 256);
-        let lookup = LOOKUP[byte as usize];
+        let lookup = LOOKUP[byte_as_usize];
 
         // 8th bit indicates escape
         let lookup_escaped = lookup & 0x80 != 0;
@@ -210,7 +210,7 @@ impl<const N: usize> EscapeIterInner<N> {
     }
 
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     pub(crate) fn len(&self) -> usize {
         usize::from(self.alive.end - self.alive.start)

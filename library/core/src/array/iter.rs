@@ -222,7 +222,7 @@ impl<T, const N: usize> IntoIter<T, N> {
 
     /// Returns a mutable slice of all elements that have not been yielded yet.
     #[stable(feature = "array_value_iter", since = "1.51.0")]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     pub fn as_mut_slice(&mut self) -> &mut [T] {
         // SAFETY: We know that all elements within `alive` are properly initialized.

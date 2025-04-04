@@ -238,7 +238,7 @@ impl<T: ?Sized> Borrow<T> for &mut T {
 // flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized> BorrowMut<T> for &mut T {
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error star
     #[flux_attrs::trusted_impl]
     fn borrow_mut(&mut self) -> &mut T {
         &mut **self

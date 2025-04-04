@@ -525,7 +525,7 @@ impl CStr {
     #[rustc_const_stable(feature = "const_cstr_from_ptr", since = "1.81.0")]
     pub const fn count_bytes(&self) -> usize {
         let self_inner_len = self.inner.len();
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume_const(self_inner_len >= 1);
         self_inner_len - 1
     }

@@ -215,7 +215,7 @@ impl<'a, const N: usize, T: 'a> SpecNextChunk<'a, N, T> for crate::slice::Iter<'
 where
     T: Copy,
 {
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn spec_next_chunk(&mut self) -> Result<[T; N], array::IntoIter<T, N>> {
         let mut raw_array = [const { MaybeUninit::uninit() }; N];

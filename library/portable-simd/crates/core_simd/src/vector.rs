@@ -1014,7 +1014,7 @@ where
     T: SimdElement,
 {
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted_impl]
     fn as_mut(&mut self) -> &mut [T] {
         self.as_mut_array()

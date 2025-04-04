@@ -674,7 +674,7 @@ where
 #[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitInternal<'a, P> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     fn get_end(&mut self) -> Option<&'a str> {
         if !self.finished {
@@ -1565,7 +1565,7 @@ impl<'a> Iterator for EncodeUtf16<'a> {
     type Item = u16;
 
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn next(&mut self) -> Option<u16> {
         if self.extra != 0 {

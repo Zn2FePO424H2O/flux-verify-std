@@ -1966,12 +1966,12 @@ pub struct ChunksExact<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> ChunksExact<'a, T> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         let slice_len = slice.len();
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume(slice_len >= rem);
         let fst_len = slice_len - rem;
         // SAFETY: 0 <= fst_len <= slice.len() by construction above
@@ -2071,7 +2071,7 @@ impl<'a, T> DoubleEndedIterator for ChunksExact<'a, T> {
         } else {
             let self_v_len = self.v.len();
             let self_chunk_size = self.chunk_size;
-            // flux_verify_error: logic constrain
+            // flux_verify_error: logic constraint
             flux_assume (self_v_len >= self_chunk_size);
             let (fst, snd) = self.v.split_at(self_v_len - self_chunk_size);
             self.v = fst;
@@ -2157,12 +2157,12 @@ pub struct ChunksExactMut<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> ChunksExactMut<'a, T> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         let slice_len = slice.len();
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume (slice_len >= rem);
         let fst_len = slice_len - rem;
         // SAFETY: 0 <= fst_len <= slice.len() by construction above
@@ -2787,7 +2787,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
         } else {
             // Can't underflow because of the check above
             let self_v_len = self.v.len();
-            // flux_verify_error: logic constrain
+            // flux_verify_error: logic constraint
             flux_assume(self_v_len >= end);
             let end = self_v_len - end;
             let start = match end.checked_sub(self.chunk_size) {
@@ -2801,7 +2801,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
     }
 
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         if self.v.is_empty() {
@@ -2816,7 +2816,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
         let self_v_len = self.v.len();
         let idx_self_chunk_size = idx * self.chunk_size;
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume(self_v_len >= idx_self_chunk_size);
         let end = self_v_len - idx_self_chunk_size;
         let start = match end.checked_sub(self.chunk_size) {
@@ -2824,7 +2824,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
             Some(start) => start,
         };
         // SAFETY: mostly identical to `Chunks::__iterator_get_unchecked`.
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume(end >= start);
         unsafe { from_raw_parts(self.v.as_ptr().add(start), end - start) }
     }
@@ -2835,7 +2835,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
 #[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunks<'a, T> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.v.is_empty() {
@@ -2860,7 +2860,7 @@ impl<'a, T> DoubleEndedIterator for RChunks<'a, T> {
             // can't underflow because `n < len`
             let offset_from_end = (len - 1 - n) * self.chunk_size;
             let self_v_len = self.v.len();
-            // flux_verify_error: logic constrain
+            // flux_verify_error: logic constraint
             flux_assume(self_v_len >= offset_from_end);
             let end = self_v_len - offset_from_end;
             let start = end.saturating_sub(self.chunk_size);
@@ -3125,7 +3125,7 @@ pub struct RChunksExact<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> RChunksExact<'a, T> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
@@ -3173,7 +3173,7 @@ impl<'a, T> Iterator for RChunksExact<'a, T> {
     type Item = &'a [T];
 
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.v.len() < self.chunk_size {
@@ -3217,7 +3217,7 @@ impl<'a, T> Iterator for RChunksExact<'a, T> {
         self.next_back()
     }
 
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
         let end = self.v.len() - idx * self.chunk_size;
@@ -3251,7 +3251,7 @@ impl<'a, T> DoubleEndedIterator for RChunksExact<'a, T> {
             // none of these operations can underflow/overflow
             let offset = (len - n) * self.chunk_size;
             let self_v_len = self.v.len();
-            // flux_verify_error: logic constrain
+            // flux_verify_error: logic constraint
             flux_assume(self_v_len >= offset);
             let start = self_v_len - offset;
             let end = start + self.chunk_size;
@@ -3328,7 +3328,7 @@ pub struct RChunksExactMut<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> RChunksExactMut<'a, T> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;

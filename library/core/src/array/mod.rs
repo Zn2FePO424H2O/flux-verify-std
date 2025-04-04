@@ -124,7 +124,7 @@ where
 /// ```
 #[inline]
 #[unstable(feature = "array_try_from_fn", issue = "89379")]
-// flux_verify_error: refinement type error
+// flux_verify_error: refinement type error slice
 #[flux_attrs::trusted]
 pub fn try_from_fn<R, const N: usize, F>(cb: F) -> ChangeOutputType<R, [R::Output; N]>
 where
@@ -214,7 +214,7 @@ impl<T, const N: usize> Borrow<[T]> for [T; N] {
 // flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T, const N: usize> BorrowMut<[T]> for [T; N] {
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn borrow_mut(&mut self) -> &mut [T] {
         self
@@ -357,7 +357,7 @@ impl<'a, T, const N: usize> IntoIterator for &'a mut [T; N] {
     type Item = &'a mut T;
     type IntoIter = IterMut<'a, T>;
 
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn into_iter(self) -> IterMut<'a, T> {
         self.iter_mut()
@@ -385,7 +385,7 @@ where
     [T]: IndexMut<I>,
 {
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn index_mut(&mut self, index: I) -> &mut Self::Output {
         IndexMut::index_mut(self as &mut [T], index)
@@ -439,7 +439,7 @@ impl<T: Clone, const N: usize> Clone for [T; N] {
     }
 
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn clone_from(&mut self, other: &Self) {
         self.clone_from_slice(other);
@@ -954,7 +954,7 @@ impl<T> Drop for Guard<'_, T> {
 ///
 /// Used for [`Iterator::next_chunk`].
 #[inline]
-// flux_verify_error: refinement type error
+// flux_verify_error: refinement type error slice
 #[flux_attrs::trusted]
 pub(crate) fn iter_next_chunk<T, const N: usize>(
     iter: &mut impl Iterator<Item = T>,

@@ -2,6 +2,8 @@ dummy/
 
 library/target/
 
+library/core/log/
+
 log.txt
 
 log[E0999].txt

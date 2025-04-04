@@ -282,8 +282,6 @@ impl<S: Sip> super::Hasher for Hasher<S> {
         let left = len & 0x7; // len % 8
 
         let mut i = needed;
-        // flux_verify_error: bit mask
-        flux_assume(len >= left);
         while i < len - left {
             // SAFETY: because `len - left` is the biggest multiple of 8 under
             // `len`, and because `i` starts at `needed` where `len` is `length - needed`,
@@ -328,11 +326,6 @@ impl<S: Sip> super::Hasher for Hasher<S> {
         state.v0 ^ state.v1 ^ state.v2 ^ state.v3
     }
 }
-
-// flux_verify_mark: assume
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
 
 impl<S: Sip> Clone for Hasher<S> {
     #[inline]

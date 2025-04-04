@@ -246,7 +246,7 @@ impl<'a> Default for &'a ByteStr {
 // flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<'a> Default for &'a mut ByteStr {
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn default() -> Self {
         ByteStr::from_bytes_mut(&mut [])

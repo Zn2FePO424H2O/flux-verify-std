@@ -734,7 +734,7 @@ where
     T: AsMut<U>,
 {
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error star
     #[flux_attrs::trusted_impl]
     fn as_mut(&mut self) -> &mut U {
         (*self).as_mut()

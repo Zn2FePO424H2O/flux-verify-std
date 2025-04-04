@@ -129,7 +129,7 @@ where
         self.try_rfold((), |(), x| ControlFlow::Break(x)).break_value()
     }
 
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where

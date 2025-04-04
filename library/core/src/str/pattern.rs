@@ -678,7 +678,7 @@ impl<const N: usize> MultiCharEq for &[char; N] {
 #[flux_attrs::trusted]
 impl MultiCharEq for &[char] {
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted_impl]
     fn matches(&mut self, c: char) -> bool {
         self.iter().any(|&m| m == c)
@@ -1242,7 +1242,7 @@ unsafe impl<'a, 'b> Searcher<'a> for StrSearcher<'a, 'b> {
 #[flux_attrs::trusted]
 unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
     #[inline]
-    // flux_verify_error: logic constrain
+    // flux_verify_error: logic constraint
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         match self.searcher {

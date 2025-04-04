@@ -217,7 +217,7 @@ impl<'a> BorrowedCursor<'a> {
     pub fn capacity(&self) -> usize {
         let self_buf_capacity = self.buf.capacity();
         let self_buf_filled = self.buf.filled;
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume(self_buf_capacity >= self_buf_filled);
         self_buf_capacity - self_buf_filled
     }
@@ -230,7 +230,7 @@ impl<'a> BorrowedCursor<'a> {
     pub fn written(&self) -> usize {
         let self_buf_filled = self.buf.filled;
         let self_start = self.start;
-        // flux_verify_error: logic constrain
+        // flux_verify_error: logic constraint
         flux_assume(self_buf_filled >= self_start);
         self_buf_filled - self_start
     }

@@ -124,7 +124,7 @@ impl<T, const N: usize> Buffer<T, N> {
     }
 
     #[inline]
-    // flux_verify_error: refinement type error
+    // flux_verify_error: refinement type error slice
     #[flux_attrs::trusted]
     fn buffer_mut_ptr(&mut self) -> *mut MaybeUninit<T> {
         self.buffer.as_mut_ptr().cast()
