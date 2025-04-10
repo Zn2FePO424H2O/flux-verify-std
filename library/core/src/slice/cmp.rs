@@ -76,6 +76,7 @@ where
             // flux_verify_error: loop
             // flux_verify_error: vector length
             flux_assume(flux_arr_len(self) > idx);
+            // flux_verify_error: vector length
             flux_assume(flux_arr_len(other) > idx);
             if self[idx] != other[idx] {
                 return false;
@@ -126,6 +127,7 @@ impl<A: PartialOrd> SlicePartialOrd for A {
             // flux_verify_error: loop
             // flux_verify_error: vector length
             flux_assume(flux_arr_len(lhs) > i);
+            // flux_verify_error: vector length
             flux_assume(flux_arr_len(rhs) > i);
             match lhs[i].partial_cmp(&rhs[i]) {
                 Some(Ordering::Equal) => (),
@@ -195,6 +197,7 @@ impl<A: Ord> SliceOrd for A {
             // flux_verify_error: loop
             // flux_verify_error: vector length
             flux_assume(flux_arr_len(lhs) > i);
+            // flux_verify_error: vector length
             flux_assume(flux_arr_len(rhs) > i);
             match lhs[i].cmp(&rhs[i]) {
                 Ordering::Equal => (),
