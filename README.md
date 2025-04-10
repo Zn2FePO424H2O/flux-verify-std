@@ -43,12 +43,13 @@ Each flux_assume and trusted have a comment to show their purpose. The format is
   - sub vector length: 
   - type cast: lost information on the variable during type cast
   - vector length: 
+  - member and -=: self.var -= 1 should be same as self.var = self.var - 1
 
 ## To use flux_assume
 // flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
+const fn flux_assume(_:bool) {}
 
 ## Static vector len
 #[flux_attrs::sig(fn (_) -> usize[N])]

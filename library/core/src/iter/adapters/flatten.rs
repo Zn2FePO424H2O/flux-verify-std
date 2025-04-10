@@ -511,7 +511,6 @@ where
     where
         Fold: FnMut(Acc, U) -> Acc,
     {
-        #[flux_attrs::trusted]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
         ) -> impl FnMut(Acc, T) -> Acc + '_ {

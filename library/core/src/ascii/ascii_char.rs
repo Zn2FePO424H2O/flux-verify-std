@@ -586,10 +586,12 @@ impl fmt::Display for AsciiChar {
     }
 }
 
-#[unstable(feature = "ascii_char", issue = "110998")]
-// flux_verify_error: bit shift
-// flux_verify_error: bit mask
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
+#[unstable(feature = "ascii_char", issue = "110998")]
 impl fmt::Debug for AsciiChar {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use AsciiChar::{Apostrophe, Null, ReverseSolidus as Backslash};
@@ -609,8 +611,14 @@ impl fmt::Debug for AsciiChar {
                 const HEX_DIGITS: [AsciiChar; 16] = *b"0123456789abcdef".as_ascii().unwrap();
 
                 let byte = self.to_u8();
-                let hi = HEX_DIGITS[usize::from(byte >> 4)];
-                let lo = HEX_DIGITS[usize::from(byte & 0xf)];
+                let byte_shift_4 = usize::from(byte >> 4);
+                let byte_and_0xf = usize::from(byte & 0xf);
+                // flux_verify_error: bit shift
+                flux_assume(byte_shift_4<16);
+                // flux_verify_error: bit mask
+                flux_assume(byte_and_0xf<16);
+                let hi = HEX_DIGITS[byte_shift_4];
+                let lo = HEX_DIGITS[byte_and_0xf];
                 ([Apostrophe, Backslash, AsciiChar::SmallX, hi, lo, Apostrophe], 6)
             }
             _ => ([Apostrophe, *self, Apostrophe, Null, Null, Null], 3),

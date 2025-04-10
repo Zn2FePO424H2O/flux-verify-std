@@ -1177,7 +1177,7 @@ impl<T, I: SplitIter<Item = T>> Iterator for GenericSplitN<I> {
     type Item = T;
 
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<T> {
         match self.count {
@@ -2354,7 +2354,7 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
     type Item = &'a [T; N];
 
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.num == 0 {
@@ -2382,7 +2382,7 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
     }
 
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         if self.num <= n {
@@ -2410,7 +2410,7 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
 #[flux_attrs::trusted]
 impl<'a, T, const N: usize> DoubleEndedIterator for ArrayWindows<'a, T, N> {
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T; N]> {
         if self.num == 0 {
@@ -2423,7 +2423,7 @@ impl<'a, T, const N: usize> DoubleEndedIterator for ArrayWindows<'a, T, N> {
     }
 
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<&'a [T; N]> {
         if self.num <= n {

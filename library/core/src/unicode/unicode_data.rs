@@ -41,7 +41,7 @@ const fn bitset_search<
         // Lower 6 bits
         let one_shift_six = 1 << 6;
         // flux_verify_error: bit shift
-        flux_assume_const(one_shift_six > 1);
+        flux_assume(one_shift_six > 1);
         let quantity = mapping & (one_shift_six - 1);
         if mapping & (1 << 7) != 0 {
             // shift
@@ -57,12 +57,13 @@ const fn bitset_search<
 // flux_verify_mark: assume
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (b:bool) ensures b)]
-const fn flux_assume_const(_:bool) {}
+const fn flux_assume(_:bool) {}
 
-// flux_verify_error: bit shift
-#[flux_attrs::trusted]
 fn decode_prefix_sum(short_offset_run_header: u32) -> u32 {
-    short_offset_run_header & ((1 << 21) - 1)
+    let value = 1 << 21;
+    // flux_verify_error: bit shift
+    flux_assume(value>1);
+    short_offset_run_header & (value - 1)
 }
 
 fn decode_length(short_offset_run_header: u32) -> usize {

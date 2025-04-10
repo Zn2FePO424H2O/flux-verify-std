@@ -366,7 +366,6 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         F: FnMut(Acc, Self::Item) -> R,
         R: Try<Output = Acc>,
     {
-        #[flux_attrs::trusted]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
             step_minus_one: usize,
@@ -389,7 +388,6 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         Self: Sized,
         F: FnMut(Acc, I::Item) -> Acc,
     {
-        #[flux_attrs::trusted]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
             step_minus_one: usize,

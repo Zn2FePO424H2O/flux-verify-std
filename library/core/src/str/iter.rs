@@ -975,7 +975,7 @@ where
 #[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitNInternal<'a, P> {
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a str> {
         match self.count {
@@ -992,7 +992,7 @@ impl<'a, P: Pattern> SplitNInternal<'a, P> {
     }
 
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a str>
     where

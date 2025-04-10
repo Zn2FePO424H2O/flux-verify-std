@@ -647,7 +647,7 @@ impl<'a> Arguments<'a> {
     /// This is intended to be used for setting initial `String` capacity
     /// when using `format!`. Note: this is neither the lower nor upper bound.
     #[inline]
-    // flux_verify_error: condition matching
+    // flux_verify_complex: condition matching
     #[flux_attrs::trusted_impl]
     pub fn estimated_capacity(&self) -> usize {
         let pieces_length: usize = self.pieces.iter().map(|x| x.len()).sum();

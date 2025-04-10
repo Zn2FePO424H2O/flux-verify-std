@@ -49,15 +49,20 @@ trait SlicePartialEq<B> {
     }
 }
 
-// Generic slice equality
-// flux_verify_mark: impl
+// flux_verify_mark: assume
 #[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (&[T][@n]) -> usize[n])]
+fn flux_arr_len<T> (arr:&[T]) -> usize {arr.len()}
+
+// Generic slice equality
 impl<A, B> SlicePartialEq<B> for [A]
 where
     A: PartialEq<B>,
 {
-    // flux_verify_error: condition matching
-    #[flux_attrs::trusted_impl]
     default fn equal(&self, other: &[B]) -> bool {
         if self.len() != other.len() {
             return false;
@@ -68,6 +73,10 @@ where
         // See PR https://github.com/rust-lang/rust/pull/116846
         for idx in 0..self.len() {
             // bound checks are optimized away
+            // flux_verify_error: loop
+            // flux_verify_error: vector length
+            flux_assume(flux_arr_len(self) > idx);
+            flux_assume(flux_arr_len(other) > idx);
             if self[idx] != other[idx] {
                 return false;
             }
@@ -103,11 +112,7 @@ trait SlicePartialOrd: Sized {
     fn partial_compare(left: &[Self], right: &[Self]) -> Option<Ordering>;
 }
 
-// flux_verify_mark: impl
-#[flux_attrs::trusted]
 impl<A: PartialOrd> SlicePartialOrd for A {
-    // flux_verify_error: vector length
-    #[flux_attrs::trusted_impl]
     default fn partial_compare(left: &[A], right: &[A]) -> Option<Ordering> {
         let l = cmp::min(left.len(), right.len());
 
@@ -117,6 +122,11 @@ impl<A: PartialOrd> SlicePartialOrd for A {
         let rhs = &right[..l];
 
         for i in 0..l {
+            // bound checks are optimized away
+            // flux_verify_error: loop
+            // flux_verify_error: vector length
+            flux_assume(flux_arr_len(lhs) > i);
+            flux_assume(flux_arr_len(rhs) > i);
             match lhs[i].partial_cmp(&rhs[i]) {
                 Some(Ordering::Equal) => (),
                 non_eq => return non_eq,
@@ -171,8 +181,6 @@ trait SliceOrd: Sized {
     fn compare(left: &[Self], right: &[Self]) -> Ordering;
 }
 
-// flux_verify_error: vector length
-#[flux_attrs::trusted]
 impl<A: Ord> SliceOrd for A {
     default fn compare(left: &[Self], right: &[Self]) -> Ordering {
         let l = cmp::min(left.len(), right.len());
@@ -183,6 +191,11 @@ impl<A: Ord> SliceOrd for A {
         let rhs = &right[..l];
 
         for i in 0..l {
+            // bound checks are optimized away
+            // flux_verify_error: loop
+            // flux_verify_error: vector length
+            flux_assume(flux_arr_len(lhs) > i);
+            flux_assume(flux_arr_len(rhs) > i);
             match lhs[i].cmp(&rhs[i]) {
                 Ordering::Equal => (),
                 non_eq => return non_eq,
