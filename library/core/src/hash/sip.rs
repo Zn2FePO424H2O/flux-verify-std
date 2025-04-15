@@ -254,7 +254,7 @@ impl<S: Sip> super::Hasher for Hasher<S> {
     // slightly slowing down compile speeds on some benchmarks. See #69152 for
     // details.
     #[inline]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn write(&mut self, msg: &[u8]) {
         let length = msg.len();

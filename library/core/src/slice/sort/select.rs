@@ -307,7 +307,7 @@ fn ninther<T, F: FnMut(&T, &T) -> bool>(
 
 /// returns the index pointing to the median of the 3
 /// elements `v[a]`, `v[b]` and `v[c]`
-// flux_verify_error: complex
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 fn median_idx<T, F: FnMut(&T, &T) -> bool>(
     v: &[T],

@@ -1565,7 +1565,7 @@ impl<'a> Iterator for EncodeUtf16<'a> {
     type Item = u16;
 
     #[inline]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted]
     fn next(&mut self) -> Option<u16> {
         if self.extra != 0 {

@@ -124,7 +124,7 @@ const fn contains_nonascii(x: usize) -> bool {
 /// returning `Ok(())` in that case, or, if it is invalid, `Err(err)`.
 #[inline(always)]
 #[rustc_allow_const_fn_unstable(const_eval_select)] // fallback impl has same behavior
-// flux_verify_error: complex
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 pub(super) const fn run_utf8_validation(v: &[u8]) -> Result<(), Utf8Error> {
     let mut index = 0;

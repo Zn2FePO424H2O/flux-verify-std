@@ -100,8 +100,6 @@ pub trait RawFloat:
     fn integer_decode(self) -> (u64, i16, i8);
 }
 
-// flux_verify_mark: impl
-#[flux_attrs::trusted]
 impl RawFloat for f32 {
     const INFINITY: Self = f32::INFINITY;
     const NEG_INFINITY: Self = f32::NEG_INFINITY;
@@ -131,13 +129,15 @@ impl RawFloat for f32 {
         f32::from_bits((v & 0xFFFFFFFF) as u32)
     }
 
-    // flux_verify_error: bit mask
-    #[flux_attrs::trusted_impl]
     fn pow10_fast_path(exponent: usize) -> Self {
         #[allow(clippy::use_self)]
         const TABLE: [f32; 16] =
             [1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 0., 0., 0., 0., 0.];
-        TABLE[exponent & 15]
+        
+        let exponent15 = exponent & 15;
+        // flux_verify_error: bit mask
+        flux_assume(flux_len(TABLE)>exponent15);
+        TABLE[exponent15]
     }
 
     /// Returns the mantissa, exponent and sign as integers.
@@ -157,8 +157,6 @@ impl RawFloat for f32 {
     }
 }
 
-// flux_verify_mark: impl
-#[flux_attrs::trusted]
 impl RawFloat for f64 {
     const INFINITY: Self = f64::INFINITY;
     const NEG_INFINITY: Self = f64::NEG_INFINITY;
@@ -188,14 +186,16 @@ impl RawFloat for f64 {
         f64::from_bits(v)
     }
 
-    // flux_verify_error: bit mask
-    #[flux_attrs::trusted_impl]
     fn pow10_fast_path(exponent: usize) -> Self {
         const TABLE: [f64; 32] = [
             1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14, 1e15,
             1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22, 0., 0., 0., 0., 0., 0., 0., 0., 0.,
         ];
-        TABLE[exponent & 31]
+
+        let exponent31 = exponent & 31;
+        // flux_verify_error: bit mask
+        flux_assume(flux_len(TABLE)>exponent31);
+        TABLE[exponent31]
     }
 
     /// Returns the mantissa, exponent and sign as integers.
@@ -216,4 +216,14 @@ impl RawFloat for f64 {
     fn classify(self) -> FpCategory {
         self.classify()
     }
+}
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
+#[flux_attrs::sig(fn (_) -> usize[N])]
+fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
+    N
 }

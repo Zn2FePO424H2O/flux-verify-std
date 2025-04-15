@@ -1014,7 +1014,7 @@ where
     T: SimdElement,
 {
     #[inline]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted_impl]
     fn as_mut(&mut self) -> &mut [T] {
         self.as_mut_array()
@@ -1197,7 +1197,7 @@ where
 }
 
 #[inline]
-// flux_verify_error: vector length
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 fn lane_indices<const N: usize>() -> Simd<usize, N>
 where

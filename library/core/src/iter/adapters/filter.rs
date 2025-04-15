@@ -37,7 +37,7 @@ where
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted]
     fn next_chunk_dropless<const N: usize>(
         &mut self,

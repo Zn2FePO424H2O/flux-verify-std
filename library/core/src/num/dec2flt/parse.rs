@@ -6,11 +6,6 @@ use crate::num::dec2flt::number::Number;
 
 const MIN_19DIGIT_INT: u64 = 100_0000_0000_0000_0000;
 
-// flux_verify_mark: assume
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
-
 /// Parse 8 digits, loaded as bytes in little-endian order.
 ///
 /// This uses the trick where every digit is in [0x030, 0x39],
@@ -203,8 +198,6 @@ pub fn parse_number(s: &[u8]) -> Option<Number> {
 }
 
 /// Try to parse a special, non-finite float.
-// flux_verify_error: vector length
-#[flux_attrs::trusted]
 pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> {
     // Since a valid string has at most the length 8, we can load
     // all relevant characters into a u64 and work from there.
@@ -218,6 +211,8 @@ pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> 
         register = s.read_u64();
         len = 8;
     } else if s.len() == 3 {
+        // flux_verify_error: vector length
+        flux_assume(flux_arr_len(s)==3);
         let a = s[0] as u64;
         let b = s[1] as u64;
         let c = s[2] as u64;
@@ -249,3 +244,12 @@ pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> 
 
     if negative { Some(-float) } else { Some(float) }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (&[T][@n]) -> usize[n])]
+fn flux_arr_len<T> (arr:&[T]) -> usize {arr.len()}

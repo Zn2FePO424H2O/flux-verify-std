@@ -762,7 +762,7 @@ impl f64 {
     #[doc(alias = "nextUp")]
     #[stable(feature = "float_next_up_down", since = "CURRENT_RUSTC_VERSION")]
     #[rustc_const_stable(feature = "float_next_up_down", since = "CURRENT_RUSTC_VERSION")]
-    // flux_verify_error: bit mask
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub const fn next_up(self) -> Self {
         // Some targets violate Rust's assumption of IEEE semantics, e.g. by flushing

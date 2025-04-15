@@ -281,7 +281,7 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn interleave(self, other: Self) -> (Self, Self) {
-        // flux_verify_error: complex
+        // flux_verify_complex: unknown
         #[flux_attrs::trusted_impl]
         const fn interleave<const N: usize>(high: bool) -> [usize; N] {
             let mut idx = [0; N];
@@ -334,7 +334,7 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn deinterleave(self, other: Self) -> (Self, Self) {
-        // flux_verify_error: complex
+        // flux_verify_complex: unknown
         #[flux_attrs::trusted_impl]
         const fn deinterleave<const N: usize>(second: bool) -> [usize; N] {
             let mut idx = [0; N];

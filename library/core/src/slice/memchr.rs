@@ -33,7 +33,7 @@ pub const fn memchr(x: u8, text: &[u8]) -> Option<usize> {
 }
 
 #[inline]
-// flux_verify_error: condition matching
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 const fn memchr_naive(x: u8, text: &[u8]) -> Option<usize> {
     let mut i = 0;

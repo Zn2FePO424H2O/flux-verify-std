@@ -8,7 +8,7 @@ const HEX_DIGITS: [ascii::Char; 16] = *b"0123456789abcdef".as_ascii().unwrap();
 
 
 #[inline]
-// flux_verify_complex: vector length
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 const fn backslash<const N: usize>(a: ascii::Char) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 2) };
@@ -22,7 +22,7 @@ const fn backslash<const N: usize>(a: ascii::Char) -> ([ascii::Char; N], Range<u
 }
 
 #[inline]
-// flux_verify_complex: vector length
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 const fn hex_escape<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 4) };
@@ -41,7 +41,7 @@ const fn hex_escape<const N: usize>(byte: u8) -> ([ascii::Char; N], Range<u8>) {
 }
 
 #[inline]
-// flux_verify_complex: vector length
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 const fn verbatim<const N: usize>(a: ascii::Char) -> ([ascii::Char; N], Range<u8>) {
     const { assert!(N >= 1) };

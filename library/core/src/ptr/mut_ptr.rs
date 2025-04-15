@@ -1882,7 +1882,7 @@ impl<T> *mut [T] {
     /// ```
     #[inline(always)]
     #[unstable(feature = "raw_slice_split", issue = "95595")]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub unsafe fn split_at_mut_unchecked(self, mid: usize) -> (*mut [T], *mut [T]) {
         let len = self.len();

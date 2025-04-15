@@ -76,7 +76,7 @@ impl Decimal {
     }
 
     /// Trim trailing zeros from the buffer.
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(super) fn trim(&mut self) {
         // All of the following calls to `Decimal::trim` can't panic because:

@@ -276,7 +276,7 @@ pub trait DerefMut: ~const Deref {
 // flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<T: ?Sized> const DerefMut for &mut T {
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn deref_mut(&mut self) -> &mut T {
         *self

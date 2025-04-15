@@ -1491,7 +1491,7 @@ impl<'a, T> Iterator for Windows<'a, T> {
 #[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for Windows<'a, T> {
     #[inline]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.size.get() > self.v.len() {
@@ -1504,7 +1504,7 @@ impl<'a, T> DoubleEndedIterator for Windows<'a, T> {
     }
 
     #[inline]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let (end, overflow) = self.v.len().overflowing_sub(n);
@@ -2339,7 +2339,7 @@ pub struct ArrayWindows<'a, T: 'a, const N: usize> {
 #[flux_attrs::trusted]
 impl<'a, T: 'a, const N: usize> ArrayWindows<'a, T, N> {
     #[inline]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T]) -> Self {
         let num_windows = slice.len().saturating_sub(N - 1);

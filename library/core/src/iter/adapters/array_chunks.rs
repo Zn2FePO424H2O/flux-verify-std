@@ -29,7 +29,7 @@ where
     I: Iterator,
 {
     #[track_caller]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(in crate::iter) fn new(iter: I) -> Self {
         assert!(N != 0, "chunk size must be non-zero");
@@ -129,7 +129,7 @@ where
         self.try_rfold((), |(), x| ControlFlow::Break(x)).break_value()
     }
 
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted]
     fn try_rfold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where

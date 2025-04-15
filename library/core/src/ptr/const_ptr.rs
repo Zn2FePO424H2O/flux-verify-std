@@ -1477,7 +1477,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline]
     #[unstable(feature = "pointer_is_aligned_to", issue = "96284")]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub fn is_aligned_to(self, align: usize) -> bool {
         if !align.is_power_of_two() {

@@ -90,7 +90,7 @@ impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
         self.buffer.as_ref().map(Buffer::as_array_ref)
     }
 
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let Some(ref iter) = self.iter else { return (0, Some(0)) };
@@ -124,7 +124,7 @@ impl<T, const N: usize> Buffer<T, N> {
     }
 
     #[inline]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted]
     fn buffer_mut_ptr(&mut self) -> *mut MaybeUninit<T> {
         self.buffer.as_mut_ptr().cast()

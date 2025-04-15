@@ -2812,7 +2812,7 @@ impl Default for &str {
 impl Default for &mut str {
     /// Creates an empty mutable str
     #[inline]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted_impl]
     fn default() -> Self {
         // SAFETY: The empty string is valid UTF-8.

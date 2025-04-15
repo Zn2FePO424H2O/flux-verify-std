@@ -186,7 +186,7 @@ pub trait Write {
     /// # std::fmt::Result::Ok(())
     /// ```
     #[stable(feature = "fmt_write_char", since = "1.1.0")]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted]
     fn write_char(&mut self, c: char) -> Result {
         self.write_str(c.encode_utf8(&mut [0; 4]))
@@ -254,19 +254,19 @@ pub trait Write {
 // flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl<W: Write + ?Sized> Write for &mut W {
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn write_str(&mut self, s: &str) -> Result {
         (**self).write_str(s)
     }
 
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn write_char(&mut self, c: char) -> Result {
         (**self).write_char(c)
     }
 
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn write_fmt(&mut self, args: Arguments<'_>) -> Result {
         (**self).write_fmt(args)
@@ -647,7 +647,7 @@ impl<'a> Arguments<'a> {
     /// This is intended to be used for setting initial `String` capacity
     /// when using `format!`. Note: this is neither the lower nor upper bound.
     #[inline]
-    // flux_verify_complex: condition matching
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub fn estimated_capacity(&self) -> usize {
         let pieces_length: usize = self.pieces.iter().map(|x| x.len()).sum();
@@ -2800,7 +2800,7 @@ impl Debug for char {
 // flux_verify_mark: impl
 #[flux_attrs::trusted]
 impl Display for char {
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if f.options.width.is_none() && f.options.precision.is_none() {

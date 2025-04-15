@@ -25,7 +25,8 @@ flux-attrs = { git = "https://github.com/flux-rs/flux.git" }
 
 Each flux_assume and trusted have a comment to show their purpose. The format is flux_verify_\[class\]: \[type\]
   - mark: functional trusted.
-  - error: refinement errors
+  - complex: refinement errors solved by trusted
+  - error: refinement errors solved by assume
   - ice: catched panics and internel flux errors
   - panic: uncatched panics
 
@@ -35,7 +36,7 @@ Each flux_assume and trusted have a comment to show their purpose. The format is
   - bit mask: 
   - bit shift: 
   - char cast magic: s.read_u64() must between 0x3030_3030_3030_3030 and 0x3939_3939_3939_3939
-  - complex: I don't know why or too complex and case by case
+  - unknown: I don't know why
   - condition matching: Flux worry about condition that not in this brunch
   - logic constrain: error impossibile because the logic of the program
   - loop: for i in a..b a <= i < b

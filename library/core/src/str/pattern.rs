@@ -490,7 +490,7 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
 #[flux_attrs::trusted]
 unsafe impl<'a> ReverseSearcher<'a> for CharSearcher<'a> {
     #[inline]
-    // flux_verify_error: complex
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         let old_finger = self.finger_back;
@@ -678,7 +678,7 @@ impl<const N: usize> MultiCharEq for &[char; N] {
 #[flux_attrs::trusted]
 impl MultiCharEq for &[char] {
     #[inline]
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted_impl]
     fn matches(&mut self, c: char) -> bool {
         self.iter().any(|&m| m == c)
@@ -1505,7 +1505,7 @@ impl TwoWaySearcher {
     // How far we can jump when we encounter a mismatch is all based on the fact
     // that (u, v) is a critical factorization for the needle.
     #[inline]
-    // flux_verify_error: sub vector length
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next<S>(&mut self, haystack: &[u8], needle: &[u8], long_period: bool) -> S::Output
     where
@@ -1590,7 +1590,7 @@ impl TwoWaySearcher {
     // To search in reverse through the haystack, we search forward through
     // a reversed haystack with a reversed needle, matching first u' and then v'.
     #[inline]
-    // flux_verify_error: sub vector length
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next_back<S>(&mut self, haystack: &[u8], needle: &[u8], long_period: bool) -> S::Output
     where

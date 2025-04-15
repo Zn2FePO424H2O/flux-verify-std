@@ -270,7 +270,7 @@ mod impls {
     where
         F: Fn<A>,
     {
-        // flux_verify_error: refinement type error star
+        // flux_verify_complex: refinement type error star
         #[flux_attrs::trusted_impl]
         extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
             (**self).call(args)
@@ -296,7 +296,7 @@ mod impls {
     where
         F: FnMut<A>,
     {
-        // flux_verify_error: refinement type error star
+        // flux_verify_complex: refinement type error star
         #[flux_attrs::trusted_impl]
         extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
             (*self).call_mut(args)

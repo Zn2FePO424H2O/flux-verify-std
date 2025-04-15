@@ -959,7 +959,7 @@ simd_ty!(
 /// Used to continue `Debug`ging SIMD types as `MySimd(1, 2, 3, 4)`, as they
 /// were before moving to array-based simd.
 #[inline]
-// flux_verify_error: complex
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 pub(crate) fn debug_simd_finish<T: crate::fmt::Debug, const N: usize>(
     formatter: &mut crate::fmt::Formatter<'_>,

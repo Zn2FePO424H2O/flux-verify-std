@@ -1252,7 +1252,7 @@ impl fmt::Debug for Duration {
         ///
         /// A prefix and postfix may be added. The whole thing is padded
         /// to the formatter's `width`, if specified.
-        // flux_verify_error: complex
+        // flux_verify_complex: unknown
         #[flux_attrs::trusted_impl]
         fn fmt_decimal(
             f: &mut fmt::Formatter<'_>,

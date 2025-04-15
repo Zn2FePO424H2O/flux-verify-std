@@ -4037,7 +4037,7 @@ where
 impl<I: Iterator + ?Sized> Iterator for &mut I {
     type Item = I::Item;
     #[inline]
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         (**self).next()
@@ -4045,12 +4045,12 @@ impl<I: Iterator + ?Sized> Iterator for &mut I {
     fn size_hint(&self) -> (usize, Option<usize>) {
         (**self).size_hint()
     }
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> {
         (**self).advance_by(n)
     }
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         (**self).nth(n)
@@ -4061,7 +4061,7 @@ impl<I: Iterator + ?Sized> Iterator for &mut I {
     {
         self.spec_fold(init, f)
     }
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
@@ -4098,7 +4098,7 @@ impl<I: Iterator + ?Sized> IteratorRefSpec for &mut I {
         accum
     }
 
-    // flux_verify_error: refinement type error slice
+    // flux_verify_complex: refinement type error slice
     #[flux_attrs::trusted_impl]
     default fn spec_try_fold<B, F, R>(&mut self, init: B, mut f: F) -> R
     where
@@ -4123,7 +4123,7 @@ fn flux_assume(_:bool) {}
 impl<I: Iterator> IteratorRefSpec for &mut I {
     impl_fold_via_try_fold! { spec_fold -> spec_try_fold }
 
-    // flux_verify_error: refinement type error star
+    // flux_verify_complex: refinement type error star
     #[flux_attrs::trusted_impl]
     fn spec_try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
