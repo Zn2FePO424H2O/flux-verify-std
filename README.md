@@ -36,7 +36,7 @@ Each flux_assume and trusted have a comment to show their purpose. The format is
   - bit mask: 
   - bit shift: 
   - char cast magic: s.read_u64() must between 0x3030_3030_3030_3030 and 0x3939_3939_3939_3939
-  - unknown: I don't know why
+  - unknown: I don't know how to fix
   - condition matching: Flux worry about condition that not in this brunch
   - logic constrain: error impossibile because the logic of the program
   - loop: for i in a..b a <= i < b

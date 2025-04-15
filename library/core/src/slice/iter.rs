@@ -1966,7 +1966,7 @@ pub struct ChunksExact<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> ChunksExact<'a, T> {
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
@@ -2157,7 +2157,7 @@ pub struct ChunksExactMut<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> ChunksExactMut<'a, T> {
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
@@ -2801,7 +2801,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
     }
 
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         if self.v.is_empty() {
@@ -2835,7 +2835,7 @@ impl<'a, T> Iterator for RChunks<'a, T> {
 #[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunks<'a, T> {
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.v.is_empty() {
@@ -3125,7 +3125,7 @@ pub struct RChunksExact<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> RChunksExact<'a, T> {
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
@@ -3217,7 +3217,7 @@ impl<'a, T> Iterator for RChunksExact<'a, T> {
         self.next_back()
     }
 
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
         let end = self.v.len() - idx * self.chunk_size;
@@ -3328,7 +3328,7 @@ pub struct RChunksExactMut<'a, T: 'a> {
 #[flux_attrs::trusted]
 impl<'a, T> RChunksExactMut<'a, T> {
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;

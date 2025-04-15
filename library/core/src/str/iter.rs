@@ -674,7 +674,7 @@ where
 #[flux_attrs::trusted]
 impl<'a, P: Pattern> SplitInternal<'a, P> {
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     fn get_end(&mut self) -> Option<&'a str> {
         if !self.finished {

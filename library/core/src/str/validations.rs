@@ -278,7 +278,7 @@ const UTF8_CHAR_WIDTH: &[u8; 256] = &[
 #[unstable(feature = "str_internals", issue = "none")]
 #[must_use]
 #[inline]
-// flux_verify_error: logic constraint
+// flux_verify_complex: unknown
 #[flux_attrs::trusted]
 pub const fn utf8_char_width(b: u8) -> usize {
     UTF8_CHAR_WIDTH[b as usize] as usize

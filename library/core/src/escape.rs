@@ -211,7 +211,7 @@ impl<const N: usize> EscapeIterInner<N> {
     }
 
     #[inline]
-    // flux_verify_error: logic constraint
+    // flux_verify_complex: unknown
     #[flux_attrs::trusted_impl]
     pub(crate) fn len(&self) -> usize {
         usize::from(self.alive.end - self.alive.start)
