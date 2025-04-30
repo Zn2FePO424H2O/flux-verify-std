@@ -1278,7 +1278,7 @@ unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
                     SearchStep::Reject(mut a, b) => {
                         // skip to next char boundary
                         while !self.haystack.is_char_boundary(a) {
-                            // flux_verify_error: complex
+                            // flux_verify_complex: unknown
                             flux_assume(a >= 1);
                             a -= 1;
                         }

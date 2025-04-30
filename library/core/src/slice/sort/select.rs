@@ -246,7 +246,7 @@ fn median_of_ninthers<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F)
     let mut a = lo - 4 * frac - gap;
     let mut b = hi + gap;
     for i in lo..hi {
-        // flux_verify_error: complex
+        // flux_verify_complex: unknown
         flux_assume(i >= frac);
         ninther(v, is_less, a, i - frac, b, a + 1, i, b + 1, a + 2, i + frac, b + 2);
         a += 3;

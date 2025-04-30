@@ -695,14 +695,14 @@ impl Duration {
             let nanos = if self.nanos.as_inner() >= rhs.nanos.as_inner() {
                 let self_nanos_as_inner = self.nanos.as_inner();
                 let rhs_nanos_as_inner = rhs.nanos.as_inner();
-                // flux_verify_error: complex
+                // flux_verify_complex: unknown
                 flux_assume_const(self_nanos_as_inner >= rhs_nanos_as_inner);
                 self_nanos_as_inner - rhs_nanos_as_inner
             } else if let Some(sub_secs) = secs.checked_sub(1) {
                 secs = sub_secs;
                 let self_nanos_as_inner = self.nanos.as_inner();
                 let rhs_nanos_as_inner = rhs.nanos.as_inner();
-                // flux_verify_error: complex
+                // flux_verify_complex: unknown
                 flux_assume_const(self_nanos_as_inner + NANOS_PER_SEC >= rhs_nanos_as_inner);
                 self_nanos_as_inner + NANOS_PER_SEC - rhs_nanos_as_inner
             } else {

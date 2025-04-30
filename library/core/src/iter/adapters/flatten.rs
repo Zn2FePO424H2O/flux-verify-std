@@ -898,7 +898,7 @@ where
     match inner.into_iter().next() {
         Some(_) => {
             let n_get = n.get();
-            // flux_verify_error: complex
+            // flux_verify_complex: unknown
             flux_assume(n_get > 0);
             NonZero::new(n_get - 1)
         },

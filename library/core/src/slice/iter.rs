@@ -1688,7 +1688,7 @@ impl<'a, T> DoubleEndedIterator for Chunks<'a, T> {
             // in this branch of the `if`, we already know that `self.v` is
             // non-empty).
             let self_v_len = self.v.len();
-            // flux_verify_error: complex
+            // flux_verify_complex: unknown
             flux_assume(self_v_len >= chunksz);
             let (fst, snd) = unsafe { self.v.split_at_unchecked(self_v_len - chunksz) };
             self.v = fst;

@@ -32,18 +32,18 @@ Each flux_assume and trusted have a comment to show their purpose. The format is
 
 ## Eror types
 
-  - ZST: none ZST type have non zero size
-  - bit mask: 
-  - bit shift: 
-  - char cast magic: s.read_u64() must between 0x3030_3030_3030_3030 and 0x3939_3939_3939_3939
-  - unknown: I don't know how to fix
-  - condition matching: Flux worry about condition that not in this brunch
-  - logic constrain: error impossibile because the logic of the program
-  - loop: for i in a..b a <= i < b
+  - 3 ZST: none ZST type have non zero size
+  - 6 bit mask: 
+  - 13 bit shift: 
+  - 2 char cast magic: s.read_u64() must between 0x3030_3030_3030_3030 and 0x3939_3939_3939_3939
+  - 10 condition matching: Flux worry about condition that not in this brunch
+  - 12 logic constrain: error impossibile because the logic of the program
+  - 7 loop: for i in a..b a <= i < b
+  - 6 sub vector length: 
+  - 4 type cast: lost information on the variable during type cast
+  - 17 vector length: 
+
   - refinement type error: not showing what the refinement is
-  - sub vector length: 
-  - type cast: lost information on the variable during type cast
-  - vector length: 
   - member and -=: self.var -= 1 should be same as self.var = self.var - 1
 
 ## To use flux_assume

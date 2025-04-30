@@ -68,7 +68,7 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool>(
             next_run =
                 create_run(&mut v[scan_idx..], scratch, min_good_run_len, eager_sort, is_less);
             let prev_run_len = prev_run.len();
-            // flux_verify_error: complex
+            // flux_verify_complex: unknown
             flux_assume(scan_idx >= prev_run_len);
             desired_depth = merge_tree_depth(
                 scan_idx - prev_run_len,
