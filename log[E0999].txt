@@ -1,7 +1,0 @@
-error[E0999]: assertion might fail: possible remainder with a divisor of zero
-    --> /Users/Exelica/Downloads/project/flux-verify-std/library/core/src/slice/iter.rs:1972:19
-     |
-1972 |         let rem = slice.len() % chunk_size;
-     |                   ^^^^^^^^^^^^^^^^^^^^^^^^
-
-error: could not compile `core` (lib) due to 1 previous error
