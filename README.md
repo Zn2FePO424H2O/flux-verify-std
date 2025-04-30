@@ -46,6 +46,9 @@ Each flux_assume and trusted have a comment to show their purpose. The format is
   - refinement type error: not showing what the refinement is
   - member and -=: self.var -= 1 should be same as self.var = self.var - 1
 
+## Document for the errors
+  https://hackmd.io/@47Z2wNHXRvOTVNfT7WF7OQ/B1N9EFEaye
+
 ## To use flux_assume
 // flux_verify_mark: assume
 #[flux_attrs::trusted]
