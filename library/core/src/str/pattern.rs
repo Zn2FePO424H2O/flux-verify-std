@@ -57,9 +57,9 @@ use crate::{cmp, fmt};
 /// [`Searcher`] type, which does the actual work of finding
 /// occurrences of the pattern in a string.
 ///
-/// Depending on the type of the pattern, the behaviour of methods like
+/// Depending on the type of the pattern, the behavior of methods like
 /// [`str::find`] and [`str::contains`] can change. The table below describes
-/// some of those behaviours.
+/// some of those behaviors.
 ///
 /// | Pattern type             | Match condition                           |
 /// |--------------------------|-------------------------------------------|
@@ -160,6 +160,21 @@ pub trait Pattern: Sized {
             None
         }
     }
+
+    /// Returns the pattern as utf-8 bytes if possible.
+    fn as_utf8_pattern(&self) -> Option<Utf8Pattern<'_>> {
+        None
+    }
+}
+/// Result of calling [`Pattern::as_utf8_pattern()`].
+/// Can be used for inspecting the contents of a [`Pattern`] in cases
+/// where the underlying representation can be represented as UTF-8.
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub enum Utf8Pattern<'a> {
+    /// Type returned by String and str types.
+    StringPattern(&'a [u8]),
+    /// Type returned by char types.
+    CharPattern(char),
 }
 
 // Searcher
@@ -375,7 +390,12 @@ pub struct CharSearcher<'a> {
     utf8_encoded: [u8; 4],
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl CharSearcher<'_> {
+    // flux_verify_mark: sig
+    #[flux_attrs::trusted_impl]
+    #[flux_attrs::sig(fn (_) -> usize{x: x>=1})]
     fn utf8_size(&self) -> usize {
         self.utf8_size.into()
     }
@@ -403,7 +423,10 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
         if let Some(ch) = iter.next() {
             // add byte offset of current character
             // without re-encoding as utf-8
-            self.finger += old_len - iter.iter.len();
+            let iter_iter_len = iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(old_len >= iter_iter_len);
+            self.finger += old_len - iter_iter_len;
             if ch == self.needle {
                 SearchStep::Match(old_finger, self.finger)
             } else {
@@ -441,7 +464,11 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
                 // to a UTF8 boundary.
                 self.finger += index + 1;
                 if self.finger >= self.utf8_size() {
-                    let found_char = self.finger - self.utf8_size();
+                    let self_utf8_size = self.utf8_size();
+                    let self_finger = self.finger;
+                    // flux_verify_error: condition matching
+                    flux_assume(self_finger >= self_utf8_size);
+                    let found_char = self_finger - self_utf8_size;
                     if let Some(slice) = self.haystack.as_bytes().get(found_char..self.finger) {
                         if slice == &self.utf8_encoded[0..self.utf8_size()] {
                             return Some((found_char, self.finger));
@@ -459,8 +486,12 @@ unsafe impl<'a> Searcher<'a> for CharSearcher<'a> {
     // let next_reject use the default implementation from the Searcher trait
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 unsafe impl<'a> ReverseSearcher<'a> for CharSearcher<'a> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         let old_finger = self.finger_back;
         // SAFETY: see the comment for next() above
@@ -542,10 +573,14 @@ impl<'a> DoubleEndedSearcher<'a> for CharSearcher<'a> {}
 /// ```
 /// assert_eq!("Hello world".find('o'), Some(4));
 /// ```
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl Pattern for char {
     type Searcher<'a> = CharSearcher<'a>;
 
     #[inline]
+    // flux_verify_ice: region parameter out of range
+    #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> Self::Searcher<'_> {
         let mut utf8_encoded = [0; 4];
         let utf8_size = self
@@ -599,6 +634,11 @@ impl Pattern for char {
     {
         self.encode_utf8(&mut [0u8; 4]).strip_suffix_of(haystack)
     }
+
+    #[inline]
+    fn as_utf8_pattern(&self) -> Option<Utf8Pattern<'_>> {
+        Some(Utf8Pattern::CharPattern(*self))
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -634,8 +674,12 @@ impl<const N: usize> MultiCharEq for &[char; N] {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl MultiCharEq for &[char] {
     #[inline]
+    // flux_verify_complex: refinement type error slice
+    #[flux_attrs::trusted_impl]
     fn matches(&mut self, c: char) -> bool {
         self.iter().any(|&m| m == c)
     }
@@ -650,10 +694,14 @@ struct MultiCharEqSearcher<'a, C: MultiCharEq> {
     char_indices: super::CharIndices<'a>,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<C: MultiCharEq> Pattern for MultiCharEqPattern<C> {
     type Searcher<'a> = MultiCharEqSearcher<'a, C>;
 
     #[inline]
+    // flux_verify_ice: region parameter out of range
+    #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> MultiCharEqSearcher<'_, C> {
         MultiCharEqSearcher { haystack, char_eq: self.0, char_indices: haystack.char_indices() }
     }
@@ -673,6 +721,8 @@ unsafe impl<'a, C: MultiCharEq> Searcher<'a> for MultiCharEqSearcher<'a, C> {
         let pre_len = s.iter.iter.len();
         if let Some((i, c)) = s.next() {
             let len = s.iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(pre_len >= len);
             let char_len = pre_len - len;
             if self.char_eq.matches(c) {
                 return SearchStep::Match(i, i + char_len);
@@ -693,6 +743,8 @@ unsafe impl<'a, C: MultiCharEq> ReverseSearcher<'a> for MultiCharEqSearcher<'a, 
         let pre_len = s.iter.iter.len();
         if let Some((i, c)) = s.next_back() {
             let len = s.iter.iter.len();
+            // flux_verify_error: sub vector length
+            flux_assume(pre_len >= len);
             let char_len = pre_len - len;
             if self.char_eq.matches(c) {
                 return SearchStep::Match(i, i + char_len);
@@ -703,6 +755,11 @@ unsafe impl<'a, C: MultiCharEq> ReverseSearcher<'a> for MultiCharEqSearcher<'a, 
         SearchStep::Done
     }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 impl<'a, C: MultiCharEq> DoubleEndedSearcher<'a> for MultiCharEqSearcher<'a, C> {}
 
@@ -866,8 +923,8 @@ impl<'a, 'b> DoubleEndedSearcher<'a> for CharSliceSearcher<'a, 'b> {}
 /// # Examples
 ///
 /// ```
-/// assert_eq!("Hello world".find(&['l', 'l'] as &[_]), Some(2));
-/// assert_eq!("Hello world".find(&['l', 'l'][..]), Some(2));
+/// assert_eq!("Hello world".find(&['o', 'l'][..]), Some(2));
+/// assert_eq!("Hello world".find(&['h', 'w'][..]), Some(6));
 /// ```
 impl<'b> Pattern for &'b [char] {
     pattern_methods!('a, CharSliceSearcher<'a, 'b>, MultiCharEqPattern, CharSliceSearcher);
@@ -883,6 +940,8 @@ pub struct CharPredicateSearcher<'a, F>(<MultiCharEqPattern<F> as Pattern>::Sear
 where
     F: FnMut(char) -> bool;
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<F> fmt::Debug for CharPredicateSearcher<'_, F>
 where
     F: FnMut(char) -> bool,
@@ -948,10 +1007,14 @@ impl<'b, 'c> Pattern for &'c &'b str {
 /// ```
 /// assert_eq!("Hello world".find("world"), Some(6));
 /// ```
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'b> Pattern for &'b str {
     type Searcher<'a> = StrSearcher<'a, 'b>;
 
     #[inline]
+    // flux_verify_ice: region parameter out of range
+    #[flux_attrs::trusted_impl]
     fn into_searcher(self, haystack: &str) -> StrSearcher<'_, 'b> {
         StrSearcher::new(haystack, self)
     }
@@ -1021,6 +1084,11 @@ impl<'b> Pattern for &'b str {
         } else {
             None
         }
+    }
+
+    #[inline]
+    fn as_utf8_pattern(&self) -> Option<Utf8Pattern<'_>> {
+        Some(Utf8Pattern::StringPattern(self.as_bytes()))
     }
 }
 
@@ -1170,8 +1238,12 @@ unsafe impl<'a, 'b> Searcher<'a> for StrSearcher<'a, 'b> {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> SearchStep {
         match self.searcher {
             StrSearcherImpl::Empty(ref mut searcher) => {
@@ -1206,6 +1278,8 @@ unsafe impl<'a, 'b> ReverseSearcher<'a> for StrSearcher<'a, 'b> {
                     SearchStep::Reject(mut a, b) => {
                         // skip to next char boundary
                         while !self.haystack.is_char_boundary(a) {
+                            // flux_verify_complex: unknown
+                            flux_assume(a >= 1);
                             a -= 1;
                         }
                         searcher.end = cmp::min(a, searcher.end);
@@ -1344,6 +1418,8 @@ struct TwoWaySearcher {
     for reverse search, chosen instead so that |v'| < period(x).
 
 */
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl TwoWaySearcher {
     fn new(needle: &[u8], end: usize) -> TwoWaySearcher {
         let (crit_pos_false, period_false) = TwoWaySearcher::maximal_suffix(needle, false);
@@ -1429,6 +1505,8 @@ impl TwoWaySearcher {
     // How far we can jump when we encounter a mismatch is all based on the fact
     // that (u, v) is a critical factorization for the needle.
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next<S>(&mut self, haystack: &[u8], needle: &[u8], long_period: bool) -> S::Output
     where
         S: TwoWayStrategy,
@@ -1512,6 +1590,8 @@ impl TwoWaySearcher {
     // To search in reverse through the haystack, we search forward through
     // a reversed haystack with a reversed needle, matching first u' and then v'.
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back<S>(&mut self, haystack: &[u8], needle: &[u8], long_period: bool) -> S::Output
     where
         S: TwoWayStrategy,
@@ -1750,6 +1830,8 @@ impl TwoWayStrategy for RejectAndMatch {
 /// [0]: http://0x80.pl/articles/simd-strfind.html#sse-avx2
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
 #[inline]
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 fn simd_contains(needle: &str, haystack: &str) -> Option<bool> {
     let needle = needle.as_bytes();
     let haystack = haystack.as_bytes();
@@ -1814,7 +1896,7 @@ fn simd_contains(needle: &str, haystack: &str) -> Option<bool> {
             }
             mask &= !(1 << trailing);
         }
-        return false;
+        false
     };
 
     let test_chunk = |idx| -> u16 {
@@ -1830,7 +1912,7 @@ fn simd_contains(needle: &str, haystack: &str) -> Option<bool> {
         let both = eq_first.bitand(eq_last);
         let mask = both.to_bitmask() as u16;
 
-        return mask;
+        mask
     };
 
     let mut i = 0;
@@ -1882,6 +1964,8 @@ fn simd_contains(needle: &str, haystack: &str) -> Option<bool> {
 /// Both slices must have the same length.
 #[cfg(all(target_arch = "x86_64", target_feature = "sse2"))] // only called on x86
 #[inline]
+// flux_verify_ice: no primop rule
+#[flux_attrs::trusted]
 unsafe fn small_slice_eq(x: &[u8], y: &[u8]) -> bool {
     debug_assert_eq!(x.len(), y.len());
     // This function is adapted from

@@ -85,7 +85,7 @@ pub trait Swizzle<const N: usize> {
         LaneCount<N>: SupportedLaneCount,
         LaneCount<M>: SupportedLaneCount,
     {
-        // Safety: `vector` is a vector, and the index is a const array of u32.
+        // Safety: `vector` is a vector, and the index is a const vector of u32.
         unsafe {
             core::intrinsics::simd::simd_shuffle(
                 vector,
@@ -103,7 +103,11 @@ pub trait Swizzle<const N: usize> {
                         output[i] = index as u32;
                         i += 1;
                     }
-                    output
+
+                    // The index list needs to be returned as a vector.
+                    #[repr(simd)]
+                    struct SimdShuffleIdx<const LEN: usize>([u32; LEN]);
+                    SimdShuffleIdx(output)
                 },
             )
         }
@@ -121,7 +125,7 @@ pub trait Swizzle<const N: usize> {
         LaneCount<N>: SupportedLaneCount,
         LaneCount<M>: SupportedLaneCount,
     {
-        // Safety: `first` and `second` are vectors, and the index is a const array of u32.
+        // Safety: `first` and `second` are vectors, and the index is a const vector of u32.
         unsafe {
             core::intrinsics::simd::simd_shuffle(
                 first,
@@ -139,7 +143,11 @@ pub trait Swizzle<const N: usize> {
                         output[i] = index as u32;
                         i += 1;
                     }
-                    output
+
+                    // The index list needs to be returned as a vector.
+                    #[repr(simd)]
+                    struct SimdShuffleIdx<const LEN: usize>([u32; LEN]);
+                    SimdShuffleIdx(output)
                 },
             )
         }
@@ -178,6 +186,8 @@ pub trait Swizzle<const N: usize> {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Simd<T, N>
 where
     T: SimdElement,
@@ -271,6 +281,8 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn interleave(self, other: Self) -> (Self, Self) {
+        // flux_verify_complex: unknown
+        #[flux_attrs::trusted_impl]
         const fn interleave<const N: usize>(high: bool) -> [usize; N] {
             let mut idx = [0; N];
             let mut i = 0;
@@ -322,6 +334,8 @@ where
     #[inline]
     #[must_use = "method returns a new vector and does not mutate the original inputs"]
     pub fn deinterleave(self, other: Self) -> (Self, Self) {
+        // flux_verify_complex: unknown
+        #[flux_attrs::trusted_impl]
         const fn deinterleave<const N: usize>(second: bool) -> [usize; N] {
             let mut idx = [0; N];
             let mut i = 0;

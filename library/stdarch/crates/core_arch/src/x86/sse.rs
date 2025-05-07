@@ -22,7 +22,8 @@ pub unsafe fn _mm_add_ss(a: __m128, b: __m128) -> __m128 {
     simd_insert!(a, 0, _mm_cvtss_f32(a) + _mm_cvtss_f32(b))
 }
 
-/// Adds __m128 vectors.
+/// Adds packed single-precision (32-bit) floating-point elements in `a` and
+/// `b`.
 ///
 /// [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_add_ps)
 #[inline]
@@ -45,7 +46,8 @@ pub unsafe fn _mm_sub_ss(a: __m128, b: __m128) -> __m128 {
     simd_insert!(a, 0, _mm_cvtss_f32(a) - _mm_cvtss_f32(b))
 }
 
-/// Subtracts __m128 vectors.
+/// Subtracts packed single-precision (32-bit) floating-point elements in `a` and
+/// `b`.
 ///
 /// [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sub_ps)
 #[inline]
@@ -68,7 +70,8 @@ pub unsafe fn _mm_mul_ss(a: __m128, b: __m128) -> __m128 {
     simd_insert!(a, 0, _mm_cvtss_f32(a) * _mm_cvtss_f32(b))
 }
 
-/// Multiplies __m128 vectors.
+/// Multiplies packed single-precision (32-bit) floating-point elements in `a` and
+/// `b`.
 ///
 /// [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mul_ps)
 #[inline]
@@ -91,7 +94,8 @@ pub unsafe fn _mm_div_ss(a: __m128, b: __m128) -> __m128 {
     simd_insert!(a, 0, _mm_cvtss_f32(a) / _mm_cvtss_f32(b))
 }
 
-/// Divides __m128 vectors.
+/// Divides packed single-precision (32-bit) floating-point elements in `a` and
+/// `b`.
 ///
 /// [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_div_ps)
 #[inline]
@@ -893,7 +897,7 @@ pub unsafe fn _mm_cvt_si2ss(a: __m128, b: i32) -> __m128 {
 #[cfg_attr(test, assert_instr(movss))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_set_ss(a: f32) -> __m128 {
-    __m128(a, 0.0, 0.0, 0.0)
+    __m128([a, 0.0, 0.0, 0.0])
 }
 
 /// Construct a `__m128` with all element set to `a`.
@@ -904,7 +908,7 @@ pub unsafe fn _mm_set_ss(a: f32) -> __m128 {
 #[cfg_attr(test, assert_instr(shufps))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_set1_ps(a: f32) -> __m128 {
-    __m128(a, a, a, a)
+    __m128([a, a, a, a])
 }
 
 /// Alias for [`_mm_set1_ps`](fn._mm_set1_ps.html)
@@ -942,7 +946,7 @@ pub unsafe fn _mm_set_ps1(a: f32) -> __m128 {
 #[cfg_attr(test, assert_instr(unpcklps))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_set_ps(a: f32, b: f32, c: f32, d: f32) -> __m128 {
-    __m128(d, c, b, a)
+    __m128([d, c, b, a])
 }
 
 /// Construct a `__m128` from four floating point values lowest to highest.
@@ -968,7 +972,7 @@ pub unsafe fn _mm_set_ps(a: f32, b: f32, c: f32, d: f32) -> __m128 {
 )]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_setr_ps(a: f32, b: f32, c: f32, d: f32) -> __m128 {
-    __m128(a, b, c, d)
+    __m128([a, b, c, d])
 }
 
 /// Construct a `__m128` with all elements initialized to zero.
@@ -979,7 +983,7 @@ pub unsafe fn _mm_setr_ps(a: f32, b: f32, c: f32, d: f32) -> __m128 {
 #[cfg_attr(test, assert_instr(xorps))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_setzero_ps() -> __m128 {
-    __m128(0.0, 0.0, 0.0, 0.0)
+    const { mem::zeroed() }
 }
 
 /// A utility function for creating masks to use with Intel shuffle and
@@ -1085,7 +1089,7 @@ pub unsafe fn _mm_movelh_ps(a: __m128, b: __m128) -> __m128 {
 pub unsafe fn _mm_movemask_ps(a: __m128) -> i32 {
     // Propagate the highest bit to the rest, because simd_bitmask
     // requires all-1 or all-0.
-    let mask: i32x4 = simd_lt(transmute(a), i32x4::splat(0));
+    let mask: i32x4 = simd_lt(transmute(a), i32x4::ZERO);
     simd_bitmask::<i32x4, u8>(mask).into()
 }
 
@@ -1100,7 +1104,7 @@ pub unsafe fn _mm_movemask_ps(a: __m128) -> i32 {
 #[cfg_attr(test, assert_instr(movss))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_load_ss(p: *const f32) -> __m128 {
-    __m128(*p, 0.0, 0.0, 0.0)
+    __m128([*p, 0.0, 0.0, 0.0])
 }
 
 /// Construct a `__m128` by duplicating the value read from `p` into all
@@ -1116,7 +1120,7 @@ pub unsafe fn _mm_load_ss(p: *const f32) -> __m128 {
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_load1_ps(p: *const f32) -> __m128 {
     let a = *p;
-    __m128(a, a, a, a)
+    __m128([a, a, a, a])
 }
 
 /// Alias for [`_mm_load1_ps`](fn._mm_load1_ps.html)
@@ -1448,21 +1452,19 @@ pub unsafe fn _mm_getcsr() -> u32 {
 ///
 /// It contains several groups of flags:
 ///
-/// * *Exception flags* report which exceptions occurred since last they were
-/// reset.
+/// * *Exception flags* report which exceptions occurred since last they were reset.
 ///
-/// * *Masking flags* can be used to mask (ignore) certain exceptions. By
-/// default
-/// these flags are all set to 1, so all exceptions are masked. When an
-/// an exception is masked, the processor simply sets the exception flag and
-/// continues the operation. If the exception is unmasked, the flag is also set
-/// but additionally an exception handler is invoked.
+/// * *Masking flags* can be used to mask (ignore) certain exceptions. By default
+///   these flags are all set to 1, so all exceptions are masked. When
+///   an exception is masked, the processor simply sets the exception flag and
+///   continues the operation. If the exception is unmasked, the flag is also set
+///   but additionally an exception handler is invoked.
 ///
 /// * *Rounding mode flags* control the rounding mode of floating point
-/// instructions.
+///   instructions.
 ///
 /// * The *denormals-are-zero mode flag* turns all numbers which would be
-/// denormalized (exponent bits are all zeros) into zeros.
+///   denormalized (exponent bits are all zeros) into zeros.
 ///
 /// Note that modifying the masking flags, rounding mode, or denormals-are-zero mode flags leads to
 /// **immediate Undefined Behavior**: Rust assumes that these are always in their default state and
@@ -1485,14 +1487,12 @@ pub unsafe fn _mm_getcsr() -> u32 {
 /// * `_MM_EXCEPT_DIV_ZERO`: Division by zero occurred.
 ///
 /// * `_MM_EXCEPT_OVERFLOW`: A numeric overflow exception occurred, i.e., a
-/// result was too large to be represented (e.g., an `f32` with absolute
-/// value
-///   greater than `2^128`).
+///   result was too large to be represented (e.g., an `f32` with absolute
+///   value greater than `2^128`).
 ///
 /// * `_MM_EXCEPT_UNDERFLOW`: A numeric underflow exception occurred, i.e., a
-/// result was too small to be represented in a normalized way (e.g., an
-/// `f32`
-///   with absulte value smaller than `2^-126`.)
+///   result was too small to be represented in a normalized way (e.g., an
+///   `f32` with absolute value smaller than `2^-126`.)
 ///
 /// * `_MM_EXCEPT_INEXACT`: An inexact-result exception occurred (a.k.a.
 ///   precision exception). This means some precision was lost due to rounding.
@@ -1825,7 +1825,7 @@ pub const _MM_HINT_ET1: i32 = 6;
 /// * [`_MM_HINT_T1`](constant._MM_HINT_T1.html): Fetch into L2 and higher.
 ///
 /// * [`_MM_HINT_T2`](constant._MM_HINT_T2.html): Fetch into L3 and higher or
-/// an   implementation-specific choice (e.g., L2 if there is no L3).
+///   an implementation-specific choice (e.g., L2 if there is no L3).
 ///
 /// * [`_MM_HINT_NTA`](constant._MM_HINT_NTA.html): Fetch data using the
 ///   non-temporal access (NTA) hint. It may be a place closer than main memory
@@ -1881,7 +1881,7 @@ pub unsafe fn _mm_prefetch<const STRATEGY: i32>(p: *const i8) {
 #[target_feature(enable = "sse")]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_undefined_ps() -> __m128 {
-    _mm_set1_ps(0.0)
+    const { mem::zeroed() }
 }
 
 /// Transpose the 4x4 matrix formed by 4 rows of __m128 in place.
@@ -1990,6 +1990,8 @@ extern "C" {
 #[cfg_attr(test, assert_instr(movntps))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 #[allow(clippy::cast_ptr_alignment)]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_ps(mem_addr: *mut f32, a: __m128) {
     crate::arch::asm!(
         vps!("movntps", ",{a}"),
@@ -2002,10 +2004,12 @@ pub unsafe fn _mm_stream_ps(mem_addr: *mut f32, a: __m128) {
 #[cfg(test)]
 mod tests {
     use crate::{hint::black_box, mem::transmute, ptr};
-    use std::{boxed, f32::NAN};
+    use std::boxed;
     use stdarch_test::simd_test;
 
     use crate::core_arch::{simd::*, x86::*};
+
+    const NAN: f32 = f32::NAN;
 
     #[simd_test(enable = "sse")]
     unsafe fn test_mm_add_ps() {

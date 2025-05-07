@@ -29,12 +29,16 @@ impl<I, P> Filter<I, P> {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, P> Filter<I, P>
 where
     I: Iterator,
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
+    // flux_verify_complex: refinement type error slice
+    #[flux_attrs::trusted]
     fn next_chunk_dropless<const N: usize>(
         &mut self,
     ) -> Result<[I::Item; N], array::IntoIter<I::Item, N>> {
@@ -87,6 +91,8 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where
     P: FnMut(&I::Item) -> bool,
@@ -94,11 +100,15 @@ where
     type Item = I::Item;
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         self.iter.find(&mut self.predicate)
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_chunk<const N: usize>(
         &mut self,
     ) -> Result<[Self::Item; N], array::IntoIter<Self::Item, N>> {
@@ -161,11 +171,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I: DoubleEndedIterator, P> DoubleEndedIterator for Filter<I, P>
 where
     P: FnMut(&I::Item) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<I::Item> {
         self.iter.rfind(&mut self.predicate)
     }

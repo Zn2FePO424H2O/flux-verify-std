@@ -75,6 +75,8 @@ macro_rules! impl_mask {
 
 impl_mask! { i8, i16, i32, i64, isize }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> SimdPartialEq for Simd<*const T, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -82,16 +84,22 @@ where
     type Mask = Mask<isize, N>;
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_eq(self, other: Self) -> Self::Mask {
         self.addr().simd_eq(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_ne(self, other: Self) -> Self::Mask {
         self.addr().simd_ne(other.addr())
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> SimdPartialEq for Simd<*mut T, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -99,11 +107,15 @@ where
     type Mask = Mask<isize, N>;
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_eq(self, other: Self) -> Self::Mask {
         self.addr().simd_eq(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_ne(self, other: Self) -> Self::Mask {
         self.addr().simd_ne(other.addr())
     }

@@ -20,6 +20,7 @@ mod tests;
 // only one location which panics rather than a bunch throughout the module.
 #[cfg(not(no_global_oom_handling))]
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never))]
+#[track_caller]
 fn capacity_overflow() -> ! {
     panic!("capacity overflow");
 }
@@ -32,21 +33,15 @@ enum AllocInit {
     Zeroed,
 }
 
-#[repr(transparent)]
-#[cfg_attr(target_pointer_width = "16", rustc_layout_scalar_valid_range_end(0x7fff))]
-#[cfg_attr(target_pointer_width = "32", rustc_layout_scalar_valid_range_end(0x7fff_ffff))]
-#[cfg_attr(target_pointer_width = "64", rustc_layout_scalar_valid_range_end(0x7fff_ffff_ffff_ffff))]
-struct Cap(usize);
+type Cap = core::num::niche_types::UsizeNoHighBit;
 
-impl Cap {
-    const ZERO: Cap = unsafe { Cap(0) };
+const ZERO_CAP: Cap = unsafe { Cap::new_unchecked(0) };
 
-    /// `Cap(cap)`, except if `T` is a ZST then `Cap::ZERO`.
-    ///
-    /// # Safety: cap must be <= `isize::MAX`.
-    unsafe fn new<T>(cap: usize) -> Self {
-        if T::IS_ZST { Cap::ZERO } else { unsafe { Self(cap) } }
-    }
+/// `Cap(cap)`, except if `T` is a ZST then `Cap::ZERO`.
+///
+/// # Safety: cap must be <= `isize::MAX`.
+unsafe fn new_cap<T>(cap: usize) -> Cap {
+    if T::IS_ZST { ZERO_CAP } else { unsafe { Cap::new_unchecked(cap) } }
 }
 
 /// A low-level utility for more ergonomically allocating, reallocating, and deallocating
@@ -96,22 +91,14 @@ struct RawVecInner<A: Allocator = Global> {
 }
 
 impl<T> RawVec<T, Global> {
-    /// HACK(Centril): This exists because stable `const fn` can only call stable `const fn`, so
-    /// they cannot call `Self::new()`.
-    ///
-    /// If you change `RawVec<T>::new` or dependencies, please take care to not introduce anything
-    /// that would truly const-call something unstable.
-    pub const NEW: Self = Self::new();
-
     /// Creates the biggest possible `RawVec` (on the system heap)
     /// without allocating. If `T` has positive size, then this makes a
     /// `RawVec` with capacity `0`. If `T` is zero-sized, then it makes a
     /// `RawVec` with capacity `usize::MAX`. Useful for implementing
     /// delayed allocation.
     #[must_use]
-    #[rustc_const_stable(feature = "raw_vec_internals_const", since = "1.81")]
     pub const fn new() -> Self {
-        Self { inner: RawVecInner::new::<T>(), _marker: PhantomData }
+        Self::new_in(Global)
     }
 
     /// Creates a `RawVec` (on the system heap) with exactly the
@@ -132,6 +119,7 @@ impl<T> RawVec<T, Global> {
     #[cfg(not(any(no_global_oom_handling, test)))]
     #[must_use]
     #[inline]
+    #[track_caller]
     pub fn with_capacity(capacity: usize) -> Self {
         Self { inner: RawVecInner::with_capacity(capacity, T::LAYOUT), _marker: PhantomData }
     }
@@ -140,6 +128,7 @@ impl<T> RawVec<T, Global> {
     #[cfg(not(any(no_global_oom_handling, test)))]
     #[must_use]
     #[inline]
+    #[track_caller]
     pub fn with_capacity_zeroed(capacity: usize) -> Self {
         Self {
             inner: RawVecInner::with_capacity_zeroed_in(capacity, Global, T::LAYOUT),
@@ -149,15 +138,10 @@ impl<T> RawVec<T, Global> {
 }
 
 impl RawVecInner<Global> {
-    #[must_use]
-    #[rustc_const_stable(feature = "raw_vec_internals_const", since = "1.81")]
-    const fn new<T>() -> Self {
-        Self::new_in(Global, core::mem::align_of::<T>())
-    }
-
     #[cfg(not(any(no_global_oom_handling, test)))]
     #[must_use]
     #[inline]
+    #[track_caller]
     fn with_capacity(capacity: usize, elem_layout: Layout) -> Self {
         match Self::try_allocate_in(capacity, AllocInit::Uninitialized, Global, elem_layout) {
             Ok(res) => res,
@@ -188,7 +172,6 @@ impl<T, A: Allocator> RawVec<T, A> {
     /// Like `new`, but parameterized over the choice of allocator for
     /// the returned `RawVec`.
     #[inline]
-    #[rustc_const_stable(feature = "raw_vec_internals_const", since = "1.81")]
     pub const fn new_in(alloc: A) -> Self {
         Self { inner: RawVecInner::new_in(alloc, align_of::<T>()), _marker: PhantomData }
     }
@@ -197,6 +180,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     /// allocator for the returned `RawVec`.
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     pub fn with_capacity_in(capacity: usize, alloc: A) -> Self {
         Self {
             inner: RawVecInner::with_capacity_in(capacity, alloc, T::LAYOUT),
@@ -218,6 +202,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     /// of allocator for the returned `RawVec`.
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     pub fn with_capacity_zeroed_in(capacity: usize, alloc: A) -> Self {
         Self {
             inner: RawVecInner::with_capacity_zeroed_in(capacity, alloc, T::LAYOUT),
@@ -266,7 +251,7 @@ impl<T, A: Allocator> RawVec<T, A> {
         // SAFETY: Precondition passed to the caller
         unsafe {
             let ptr = ptr.cast();
-            let capacity = Cap::new::<T>(capacity);
+            let capacity = new_cap::<T>(capacity);
             Self {
                 inner: RawVecInner::from_raw_parts_in(ptr, capacity, alloc),
                 _marker: PhantomData,
@@ -284,7 +269,7 @@ impl<T, A: Allocator> RawVec<T, A> {
         // SAFETY: Precondition passed to the caller
         unsafe {
             let ptr = ptr.cast();
-            let capacity = Cap::new::<T>(capacity);
+            let capacity = new_cap::<T>(capacity);
             Self { inner: RawVecInner::from_nonnull_in(ptr, capacity, alloc), _marker: PhantomData }
         }
     }
@@ -293,7 +278,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     /// `Unique::dangling()` if `capacity == 0` or `T` is zero-sized. In the former case, you must
     /// be careful.
     #[inline]
-    pub fn ptr(&self) -> *mut T {
+    pub const fn ptr(&self) -> *mut T {
         self.inner.ptr()
     }
 
@@ -306,7 +291,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     ///
     /// This will always be `usize::MAX` if `T` is zero-sized.
     #[inline]
-    pub fn capacity(&self) -> usize {
+    pub const fn capacity(&self) -> usize {
         self.inner.capacity(size_of::<T>())
     }
 
@@ -337,6 +322,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     /// Aborts on OOM.
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     pub fn reserve(&mut self, len: usize, additional: usize) {
         self.inner.reserve(len, additional, T::LAYOUT)
     }
@@ -345,6 +331,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     /// caller to ensure `len == self.capacity()`.
     #[cfg(not(no_global_oom_handling))]
     #[inline(never)]
+    #[track_caller]
     pub fn grow_one(&mut self) {
         self.inner.grow_one(T::LAYOUT)
     }
@@ -372,6 +359,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     ///
     /// Aborts on OOM.
     #[cfg(not(no_global_oom_handling))]
+    #[track_caller]
     pub fn reserve_exact(&mut self, len: usize, additional: usize) {
         self.inner.reserve_exact(len, additional, T::LAYOUT)
     }
@@ -396,6 +384,7 @@ impl<T, A: Allocator> RawVec<T, A> {
     ///
     /// Aborts on OOM.
     #[cfg(not(no_global_oom_handling))]
+    #[track_caller]
     #[inline]
     pub fn shrink_to_fit(&mut self, cap: usize) {
         self.inner.shrink_to_fit(cap, T::LAYOUT)
@@ -412,20 +401,20 @@ unsafe impl<#[may_dangle] T, A: Allocator> Drop for RawVec<T, A> {
 
 impl<A: Allocator> RawVecInner<A> {
     #[inline]
-    #[rustc_const_stable(feature = "raw_vec_internals_const", since = "1.81")]
     const fn new_in(alloc: A, align: usize) -> Self {
         let ptr = unsafe { core::mem::transmute(align) };
         // `cap: 0` means "unallocated". zero-sized types are ignored.
-        Self { ptr, cap: Cap::ZERO, alloc }
+        Self { ptr, cap: ZERO_CAP, alloc }
     }
 
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     fn with_capacity_in(capacity: usize, alloc: A, elem_layout: Layout) -> Self {
         match Self::try_allocate_in(capacity, AllocInit::Uninitialized, alloc, elem_layout) {
             Ok(this) => {
                 unsafe {
-                    // Make it more obvious that a subsquent Vec::reserve(capacity) will not allocate.
+                    // Make it more obvious that a subsequent Vec::reserve(capacity) will not allocate.
                     hint::assert_unchecked(!this.needs_to_grow(0, capacity, elem_layout));
                 }
                 this
@@ -445,6 +434,7 @@ impl<A: Allocator> RawVecInner<A> {
 
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     fn with_capacity_zeroed_in(capacity: usize, alloc: A, elem_layout: Layout) -> Self {
         match Self::try_allocate_in(capacity, AllocInit::Zeroed, alloc, elem_layout) {
             Ok(res) => res,
@@ -487,7 +477,11 @@ impl<A: Allocator> RawVecInner<A> {
         // Allocators currently return a `NonNull<[u8]>` whose length
         // matches the size requested. If that ever changes, the capacity
         // here should change to `ptr.len() / mem::size_of::<T>()`.
-        Ok(Self { ptr: Unique::from(ptr.cast()), cap: unsafe { Cap(capacity) }, alloc })
+        Ok(Self {
+            ptr: Unique::from(ptr.cast()),
+            cap: unsafe { Cap::new_unchecked(capacity) },
+            alloc,
+        })
     }
 
     #[inline]
@@ -501,18 +495,18 @@ impl<A: Allocator> RawVecInner<A> {
     }
 
     #[inline]
-    fn ptr<T>(&self) -> *mut T {
+    const fn ptr<T>(&self) -> *mut T {
         self.non_null::<T>().as_ptr()
     }
 
     #[inline]
-    fn non_null<T>(&self) -> NonNull<T> {
-        self.ptr.cast().into()
+    const fn non_null<T>(&self) -> NonNull<T> {
+        self.ptr.cast().as_non_null_ptr()
     }
 
     #[inline]
-    fn capacity(&self, elem_size: usize) -> usize {
-        if elem_size == 0 { usize::MAX } else { self.cap.0 }
+    const fn capacity(&self, elem_size: usize) -> usize {
+        if elem_size == 0 { usize::MAX } else { self.cap.as_inner() }
     }
 
     #[inline]
@@ -522,7 +516,7 @@ impl<A: Allocator> RawVecInner<A> {
 
     #[inline]
     fn current_memory(&self, elem_layout: Layout) -> Option<(NonNull<u8>, Layout)> {
-        if elem_layout.size() == 0 || self.cap.0 == 0 {
+        if elem_layout.size() == 0 || self.cap.as_inner() == 0 {
             None
         } else {
             // We could use Layout::array here which ensures the absence of isize and usize overflows
@@ -530,7 +524,7 @@ impl<A: Allocator> RawVecInner<A> {
             // has already been allocated so we know it can't overflow and currently Rust does not
             // support such types. So we can do better by skipping some checks and avoid an unwrap.
             unsafe {
-                let alloc_size = elem_layout.size().unchecked_mul(self.cap.0);
+                let alloc_size = elem_layout.size().unchecked_mul(self.cap.as_inner());
                 let layout = Layout::from_size_align_unchecked(alloc_size, elem_layout.align());
                 Some((self.ptr.into(), layout))
             }
@@ -539,6 +533,7 @@ impl<A: Allocator> RawVecInner<A> {
 
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     fn reserve(&mut self, len: usize, additional: usize, elem_layout: Layout) {
         // Callers expect this function to be very cheap when there is already sufficient capacity.
         // Therefore, we move all the resizing and error-handling logic from grow_amortized and
@@ -563,8 +558,9 @@ impl<A: Allocator> RawVecInner<A> {
 
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     fn grow_one(&mut self, elem_layout: Layout) {
-        if let Err(err) = self.grow_amortized(self.cap.0, 1, elem_layout) {
+        if let Err(err) = self.grow_amortized(self.cap.as_inner(), 1, elem_layout) {
             handle_error(err);
         }
     }
@@ -586,6 +582,7 @@ impl<A: Allocator> RawVecInner<A> {
     }
 
     #[cfg(not(no_global_oom_handling))]
+    #[track_caller]
     fn reserve_exact(&mut self, len: usize, additional: usize, elem_layout: Layout) {
         if let Err(err) = self.try_reserve_exact(len, additional, elem_layout) {
             handle_error(err);
@@ -610,6 +607,7 @@ impl<A: Allocator> RawVecInner<A> {
 
     #[cfg(not(no_global_oom_handling))]
     #[inline]
+    #[track_caller]
     fn shrink_to_fit(&mut self, cap: usize, elem_layout: Layout) {
         if let Err(err) = self.shrink(cap, elem_layout) {
             handle_error(err);
@@ -627,7 +625,7 @@ impl<A: Allocator> RawVecInner<A> {
         // the size requested. If that ever changes, the capacity here should
         // change to `ptr.len() / mem::size_of::<T>()`.
         self.ptr = Unique::from(ptr.cast());
-        self.cap = unsafe { Cap(cap) };
+        self.cap = unsafe { Cap::new_unchecked(cap) };
     }
 
     fn grow_amortized(
@@ -650,7 +648,7 @@ impl<A: Allocator> RawVecInner<A> {
 
         // This guarantees exponential growth. The doubling cannot overflow
         // because `cap <= isize::MAX` and the type of `cap` is `usize`.
-        let cap = cmp::max(self.cap.0 * 2, required_cap);
+        let cap = cmp::max(self.cap.as_inner() * 2, required_cap);
         let cap = cmp::max(min_non_zero_cap(elem_layout.size()), cap);
 
         let new_layout = layout_array(cap, elem_layout)?;
@@ -719,7 +717,7 @@ impl<A: Allocator> RawVecInner<A> {
             unsafe { self.alloc.deallocate(ptr, layout) };
             self.ptr =
                 unsafe { Unique::new_unchecked(ptr::without_provenance_mut(elem_layout.align())) };
-            self.cap = Cap::ZERO;
+            self.cap = ZERO_CAP;
         } else {
             let ptr = unsafe {
                 // Layout cannot overflow here because it would have
@@ -754,7 +752,9 @@ impl<A: Allocator> RawVecInner<A> {
     }
 }
 
-#[inline(never)]
+// not marked inline(never) since we want optimizers to be able to observe the specifics of this
+// function, see tests/codegen/vec-reserve-extend.rs.
+#[cold]
 fn finish_grow<A>(
     new_layout: Layout,
     current_memory: Option<(NonNull<u8>, Layout)>,
@@ -782,6 +782,8 @@ where
 // Central function for reserve error handling.
 #[cfg(not(no_global_oom_handling))]
 #[cold]
+#[optimize(size)]
+#[track_caller]
 fn handle_error(e: TryReserveError) -> ! {
     match e.kind() {
         CapacityOverflow => capacity_overflow(),

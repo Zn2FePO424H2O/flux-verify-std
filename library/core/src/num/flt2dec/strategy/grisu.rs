@@ -7,7 +7,7 @@
 
 use crate::mem::MaybeUninit;
 use crate::num::diy_float::Fp;
-use crate::num::flt2dec::{round_up, Decoded, MAX_SIG_DIGITS};
+use crate::num::flt2dec::{Decoded, MAX_SIG_DIGITS, round_up};
 
 // see the comments in `format_shortest_opt` for the rationale.
 #[doc(hidden)]
@@ -116,13 +116,28 @@ pub const CACHED_POW10_FIRST_E: i16 = -1087;
 #[doc(hidden)]
 pub const CACHED_POW10_LAST_E: i16 = 1039;
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
+#[flux_attrs::sig(fn (_) -> usize[N])]
+fn flux_len<T, const N: usize>(_: [T; N]) -> usize {
+    N
+}
+
 #[doc(hidden)]
 pub fn cached_power(alpha: i16, gamma: i16) -> (i16, Fp) {
     let offset = CACHED_POW10_FIRST_E as i32;
     let range = (CACHED_POW10.len() as i32) - 1;
     let domain = (CACHED_POW10_LAST_E - CACHED_POW10_FIRST_E) as i32;
     let idx = ((gamma as i32) - offset) * range / domain;
-    let (f, e, k) = CACHED_POW10[idx as usize];
+    let idx_usize = idx as usize;
+    // flux_verify_complex: unknown
+    flux_assume(idx_usize <= 80);
+    // flux_verify_error: vector length
+    flux_assume(flux_len(CACHED_POW10) == 81);
+    let (f, e, k) = CACHED_POW10[idx_usize];
     debug_assert!(alpha <= e && e <= gamma);
     (k, Fp { f, e })
 }
@@ -162,6 +177,8 @@ pub fn max_pow10_no_more_than(x: u32) -> (u8, u32) {
 /// The shortest mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn format_shortest_opt<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -275,7 +292,7 @@ pub fn format_shortest_opt<'a>(
             let ten_kappa = (ten_kappa as u64) << e; // scale 10^kappa back to the shared exponent
             return round_and_weed(
                 // SAFETY: we initialized that memory above.
-                unsafe { MaybeUninit::slice_assume_init_mut(&mut buf[..i]) },
+                unsafe { buf[..i].assume_init_mut() },
                 exp,
                 plus1rem,
                 delta1,
@@ -324,7 +341,7 @@ pub fn format_shortest_opt<'a>(
             let ten_kappa = 1 << e; // implicit divisor
             return round_and_weed(
                 // SAFETY: we initialized that memory above.
-                unsafe { MaybeUninit::slice_assume_init_mut(&mut buf[..i]) },
+                unsafe { buf[..i].assume_init_mut() },
                 exp,
                 r,
                 threshold,
@@ -354,6 +371,7 @@ pub fn format_shortest_opt<'a>(
     // - `plus1v = (plus1 - v) * k` (and also, `threshold > plus1v` from prior invariants)
     // - `ten_kappa = 10^kappa * k`
     // - `ulp = 2^-e * k`
+    #[flux_attrs::sig(fn (_,_,remainder: u64,threshold: u64{threshold>=remainder},plus1v: u64,_,ulp: u64{plus1v >= ulp})  -> Option<(&[u8], i16)>)]
     fn round_and_weed(
         buf: &mut [u8],
         exp: i16,
@@ -422,7 +440,10 @@ pub fn format_shortest_opt<'a>(
                 && (plus1w + ten_kappa < plus1v_up
                     || plus1v_up - plus1w >= plus1w + ten_kappa - plus1v_up)
             {
-                *last -= 1;
+                let n = *last;
+                // flux_verify_complex: unknown
+                flux_assume(n >= 1);
+                *last = n - 1;
                 debug_assert!(*last > b'0'); // the shortest repr cannot end with `0`
                 plus1w += ten_kappa;
             }
@@ -468,6 +489,8 @@ pub fn format_shortest<'a>(
 /// The exact and fixed mode implementation for Grisu.
 ///
 /// It returns `None` when it would return an inexact representation otherwise.
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 pub fn format_exact_opt<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -713,7 +736,7 @@ pub fn format_exact_opt<'a>(
         // `10^kappa` did not overflow after all, the second check is fine.
         if ten_kappa - remainder > remainder && ten_kappa - 2 * remainder >= 2 * ulp {
             // SAFETY: our caller initialized that memory.
-            return Some((unsafe { MaybeUninit::slice_assume_init_ref(&buf[..len]) }, exp));
+            return Some((unsafe { buf[..len].assume_init_ref() }, exp));
         }
 
         //   :<------- remainder ------>|   :
@@ -736,7 +759,7 @@ pub fn format_exact_opt<'a>(
         if remainder > ulp && ten_kappa - (remainder - ulp) <= remainder - ulp {
             if let Some(c) =
                 // SAFETY: our caller must have initialized that memory.
-                round_up(unsafe { MaybeUninit::slice_assume_init_mut(&mut buf[..len]) })
+                round_up(unsafe { buf[..len].assume_init_mut() })
             {
                 // only add an additional digit when we've been requested the fixed precision.
                 // we also need to check that, if the original buffer was empty,
@@ -748,7 +771,7 @@ pub fn format_exact_opt<'a>(
                 }
             }
             // SAFETY: we and our caller initialized that memory.
-            return Some((unsafe { MaybeUninit::slice_assume_init_ref(&buf[..len]) }, exp));
+            return Some((unsafe { buf[..len].assume_init_ref() }, exp));
         }
 
         // otherwise we are doomed (i.e., some values between `v - 1 ulp` and `v + 1 ulp` are

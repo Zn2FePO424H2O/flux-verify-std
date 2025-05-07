@@ -105,6 +105,8 @@ where
     LaneCount<N>: SupportedLaneCount,
     T: SimdElement;
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Simd<T, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -1004,12 +1006,16 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> AsMut<[T]> for Simd<T, N>
 where
     LaneCount<N>: SupportedLaneCount,
     T: SimdElement,
 {
     #[inline]
+    // flux_verify_complex: refinement type error slice
+    #[flux_attrs::trusted_impl]
     fn as_mut(&mut self) -> &mut [T] {
         self.as_mut_array()
     }
@@ -1191,6 +1197,8 @@ where
 }
 
 #[inline]
+// flux_verify_complex: unknown
+#[flux_attrs::trusted]
 fn lane_indices<const N: usize>() -> Simd<usize, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -1203,6 +1211,8 @@ where
 }
 
 #[inline]
+// flux_verify_ice: type parameter out of range
+#[flux_attrs::trusted]
 fn mask_up_to<M, const N: usize>(len: usize) -> Mask<M, N>
 where
     LaneCount<N>: SupportedLaneCount,

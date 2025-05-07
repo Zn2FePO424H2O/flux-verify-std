@@ -455,9 +455,8 @@ unsafe fn _mm_slli_si128_impl<const IMM8: i32>(a: __m128i) -> __m128i {
             16 - shift + i
         }
     }
-    let zero = _mm_set1_epi8(0).as_i8x16();
     transmute::<i8x16, _>(simd_shuffle!(
-        zero,
+        i8x16::ZERO,
         a.as_i8x16(),
         [
             mask(IMM8, 0),
@@ -670,10 +669,9 @@ unsafe fn _mm_srli_si128_impl<const IMM8: i32>(a: __m128i) -> __m128i {
             i + (shift as u32)
         }
     }
-    let zero = _mm_set1_epi8(0).as_i8x16();
     let x: i8x16 = simd_shuffle!(
         a.as_i8x16(),
-        zero,
+        i8x16::ZERO,
         [
             mask(IMM8, 0),
             mask(IMM8, 1),
@@ -1191,7 +1189,7 @@ pub unsafe fn _mm_setr_epi8(
 #[cfg_attr(test, assert_instr(xorps))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_setzero_si128() -> __m128i {
-    _mm_set1_epi64x(0)
+    const { mem::zeroed() }
 }
 
 /// Loads 64-bit integer from memory into first element of returned vector.
@@ -1307,9 +1305,11 @@ pub unsafe fn _mm_storel_epi64(mem_addr: *mut __m128i, a: __m128i) {
 ///
 /// See [`_mm_sfence`] for details.
 #[inline]
-#[target_feature(enable = "sse,sse2")]
+#[target_feature(enable = "sse2")]
 #[cfg_attr(test, assert_instr(movntdq))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_si128(mem_addr: *mut __m128i, a: __m128i) {
     crate::arch::asm!(
         vps!("movntdq",  ",{a}"),
@@ -1337,6 +1337,8 @@ pub unsafe fn _mm_stream_si128(mem_addr: *mut __m128i, a: __m128i) {
 #[target_feature(enable = "sse2")]
 #[cfg_attr(test, assert_instr(movnti))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_si32(mem_addr: *mut i32, a: i32) {
     crate::arch::asm!(
         vps!("movnti", ",{a:e}"), // `:e` for 32bit value
@@ -1359,8 +1361,7 @@ pub unsafe fn _mm_stream_si32(mem_addr: *mut i32, a: i32) {
 )]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_move_epi64(a: __m128i) -> __m128i {
-    let zero = _mm_setzero_si128();
-    let r: i64x2 = simd_shuffle!(a.as_i64x2(), zero.as_i64x2(), [0, 2]);
+    let r: i64x2 = simd_shuffle!(a.as_i64x2(), i64x2::ZERO, [0, 2]);
     transmute(r)
 }
 
@@ -1434,7 +1435,7 @@ pub unsafe fn _mm_insert_epi16<const IMM8: i32>(a: __m128i, i: i32) -> __m128i {
 #[cfg_attr(test, assert_instr(pmovmskb))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_movemask_epi8(a: __m128i) -> i32 {
-    let z = i8x16::splat(0);
+    let z = i8x16::ZERO;
     let m: i8x16 = simd_lt(a.as_i8x16(), z);
     simd_bitmask::<_, u16>(m) as u32 as i32
 }
@@ -2267,7 +2268,7 @@ pub unsafe fn _mm_ucomineq_sd(a: __m128d, b: __m128d) -> i32 {
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_cvtpd_ps(a: __m128d) -> __m128 {
     let r = simd_cast::<_, f32x2>(a.as_f64x2());
-    let zero = f32x2::new(0.0, 0.0);
+    let zero = f32x2::ZERO;
     transmute::<f32x4, _>(simd_shuffle!(r, zero, [0, 1, 2, 3]))
 }
 
@@ -2424,7 +2425,7 @@ pub unsafe fn _mm_set_pd1(a: f64) -> __m128d {
 #[target_feature(enable = "sse2")]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_set_pd(a: f64, b: f64) -> __m128d {
-    __m128d(b, a)
+    __m128d([b, a])
 }
 
 /// Sets packed double-precision (64-bit) floating-point elements in the return
@@ -2447,7 +2448,7 @@ pub unsafe fn _mm_setr_pd(a: f64, b: f64) -> __m128d {
 #[cfg_attr(test, assert_instr(xorp))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_setzero_pd() -> __m128d {
-    _mm_set_pd(0.0, 0.0)
+    const { mem::zeroed() }
 }
 
 /// Returns a mask of the most significant bit of each element in `a`.
@@ -2463,7 +2464,7 @@ pub unsafe fn _mm_setzero_pd() -> __m128d {
 pub unsafe fn _mm_movemask_pd(a: __m128d) -> i32 {
     // Propagate the highest bit to the rest, because simd_bitmask
     // requires all-1 or all-0.
-    let mask: i64x2 = simd_lt(transmute(a), i64x2::splat(0));
+    let mask: i64x2 = simd_lt(transmute(a), i64x2::ZERO);
     simd_bitmask::<i64x2, u8>(mask).into()
 }
 
@@ -2536,10 +2537,12 @@ pub unsafe fn _mm_loadl_pd(a: __m128d, mem_addr: *const f64) -> __m128d {
 ///
 /// See [`_mm_sfence`] for details.
 #[inline]
-#[target_feature(enable = "sse,sse2")]
+#[target_feature(enable = "sse2")]
 #[cfg_attr(test, assert_instr(movntpd))]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 #[allow(clippy::cast_ptr_alignment)]
+// flux_verify_ice: unsupported terminator
+#[flux_attrs::trusted]
 pub unsafe fn _mm_stream_pd(mem_addr: *mut f64, a: __m128d) {
     crate::arch::asm!(
         vps!("movntpd", ",{a}"),
@@ -2787,7 +2790,7 @@ pub unsafe fn _mm_loadu_si32(mem_addr: *const u8) -> __m128i {
     ))
 }
 
-/// Loads unaligned 16-bits of integer data from memory into new vector.
+/// Loads unaligned 64-bits of integer data from memory into new vector.
 ///
 /// `mem_addr` does not need to be aligned on any particular boundary.
 ///
@@ -2902,7 +2905,7 @@ pub unsafe fn _mm_castsi128_ps(a: __m128i) -> __m128 {
 #[target_feature(enable = "sse2")]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_undefined_pd() -> __m128d {
-    __m128d(0.0, 0.0)
+    const { mem::zeroed() }
 }
 
 /// Returns vector of type __m128i with indeterminate elements.
@@ -2914,7 +2917,7 @@ pub unsafe fn _mm_undefined_pd() -> __m128d {
 #[target_feature(enable = "sse2")]
 #[stable(feature = "simd_x86", since = "1.27.0")]
 pub unsafe fn _mm_undefined_si128() -> __m128i {
-    __m128i(0, 0)
+    const { mem::zeroed() }
 }
 
 /// The resulting `__m128d` element is composed by the low-order values of
@@ -3046,13 +3049,13 @@ mod tests {
         hint::black_box,
     };
     use std::{
-        boxed, f32,
-        f64::{self, NAN},
-        i32,
+        boxed, f32, f64,
         mem::{self, transmute},
         ptr,
     };
     use stdarch_test::simd_test;
+
+    const NAN: f64 = f64::NAN;
 
     #[test]
     fn test_mm_pause() {

@@ -1,14 +1,19 @@
 #!/bin/bash
 
 #library version
-#rustup component add rust-src --toolchain nightly-2024-08-20
+#rustup component add rust-src --toolchain nightly-2025-01-27
 
 export __CARGO_TESTS_ONLY_SRC_ROOT=$(pwd)/library
+
+#cleanup() {
+    #rm -rf /Users/Exelica/Downloads/project/flux-verify-std/dummy
+#}
+#trap cleanup EXIT
 
 cargo new dummy
 cd dummy
 echo '[toolchain]
-channel = "nightly-2024-08-20"
+channel = "nightly-2025-01-27"
 components = ["rust-src", "rustc-dev", "llvm-tools", "rustfmt"]' > ./rust-toolchain
 
 case "$(uname -s)" in
@@ -17,7 +22,8 @@ case "$(uname -s)" in
     *) echo "Unsupported OS"; exit 1 ;;
 esac
 
-FLUX_CATCH_BUGS=1 cargo flux -Z build-std --target "$target"
+FLUXFLAGS="-Fcatch-bugs -Ftimings" cargo flux -Z build-std --target "$target"
 
 cd ..
-rm -rf dummy
+
+python3 counter.py

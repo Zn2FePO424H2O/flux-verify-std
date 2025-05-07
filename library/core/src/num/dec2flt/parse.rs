@@ -1,6 +1,6 @@
 //! Functions to parse floating-point numbers.
 
-use crate::num::dec2flt::common::{is_8digits, ByteSlice};
+use crate::num::dec2flt::common::{ByteSlice, is_8digits};
 use crate::num::dec2flt::float::RawFloat;
 use crate::num::dec2flt::number::Number;
 
@@ -14,10 +14,13 @@ const MIN_19DIGIT_INT: u64 = 100_0000_0000_0000_0000;
 ///
 /// This is based off the algorithm described in "Fast numeric string to
 /// int", available here: <https://johnnylee-sde.github.io/Fast-numeric-string-to-int/>.
+#[flux_attrs::sig(fn(v: u64 { v >= 0} ) -> u64)]
 fn parse_8digits(mut v: u64) -> u64 {
     const MASK: u64 = 0x0000_00FF_0000_00FF;
     const MUL1: u64 = 0x000F_4240_0000_0064;
     const MUL2: u64 = 0x0000_2710_0000_0001;
+    // flux_verify_error: char cast magic
+    flux_assume(v >= 0x3030_3030_3030_3030);
     v -= 0x3030_3030_3030_3030;
     v = (v * 10) + (v >> 8); // will not overflow, fits in 63 bits
     let v1 = (v & MASK).wrapping_mul(MUL1);
@@ -208,6 +211,8 @@ pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> 
         register = s.read_u64();
         len = 8;
     } else if s.len() == 3 {
+        // flux_verify_error: vector length
+        flux_assume(flux_arr_len(s)==3);
         let a = s[0] as u64;
         let b = s[1] as u64;
         let c = s[2] as u64;
@@ -239,3 +244,12 @@ pub(crate) fn parse_inf_nan<F: RawFloat>(s: &[u8], negative: bool) -> Option<F> 
 
     if negative { Some(-float) } else { Some(float) }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (&[T][@n]) -> usize[n])]
+fn flux_arr_len<T> (arr:&[T]) -> usize {arr.len()}

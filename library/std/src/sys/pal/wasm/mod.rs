@@ -2,7 +2,7 @@
 //!
 //! This module contains the facade (aka platform-specific) implementations of
 //! OS level functionality for wasm. Note that this wasm is *not* the emscripten
-//! wasm, so we have no runtime here.
+//! or wasi wasm, so we have no runtime here.
 //!
 //! This is all super highly experimental and not actually intended for
 //! wide/production use yet, it's still all in the experimental category. This
@@ -16,7 +16,6 @@
 
 #![deny(unsafe_op_in_unsafe_fn)]
 
-pub mod alloc;
 #[path = "../unsupported/args.rs"]
 pub mod args;
 pub mod env;

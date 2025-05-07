@@ -68,10 +68,14 @@ macro_rules! not_impl {
 not_impl! { bool usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
 
 #[stable(feature = "not_never", since = "1.60.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl Not for ! {
     type Output = !;
 
     #[inline]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     fn not(self) -> ! {
         match self {}
     }

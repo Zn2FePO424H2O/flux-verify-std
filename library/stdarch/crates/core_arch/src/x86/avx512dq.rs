@@ -30,8 +30,7 @@ pub unsafe fn _mm_mask_and_pd(src: __m128d, k: __mmask8, a: __m128d, b: __m128d)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_and_pd(k: __mmask8, a: __m128d, b: __m128d) -> __m128d {
     let and = _mm_and_pd(a, b).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, and, zero))
+    transmute(simd_select_bitmask(k, and, f64x2::ZERO))
 }
 
 /// Compute the bitwise AND of packed double-precision (64-bit) floating point numbers in a and b
@@ -58,8 +57,7 @@ pub unsafe fn _mm256_mask_and_pd(src: __m256d, k: __mmask8, a: __m256d, b: __m25
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_and_pd(k: __mmask8, a: __m256d, b: __m256d) -> __m256d {
     let and = _mm256_and_pd(a, b).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, and, zero))
+    transmute(simd_select_bitmask(k, and, f64x4::ZERO))
 }
 
 /// Compute the bitwise AND of packed double-precision (64-bit) floating point numbers in a and b
@@ -98,8 +96,7 @@ pub unsafe fn _mm512_mask_and_pd(src: __m512d, k: __mmask8, a: __m512d, b: __m51
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_and_pd(k: __mmask8, a: __m512d, b: __m512d) -> __m512d {
     let and = _mm512_and_pd(a, b).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, and, zero))
+    transmute(simd_select_bitmask(k, and, f64x8::ZERO))
 }
 
 /// Compute the bitwise AND of packed single-precision (32-bit) floating point numbers in a and b
@@ -126,8 +123,7 @@ pub unsafe fn _mm_mask_and_ps(src: __m128, k: __mmask8, a: __m128, b: __m128) ->
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_and_ps(k: __mmask8, a: __m128, b: __m128) -> __m128 {
     let and = _mm_and_ps(a, b).as_f32x4();
-    let zero = _mm_setzero_ps().as_f32x4();
-    transmute(simd_select_bitmask(k, and, zero))
+    transmute(simd_select_bitmask(k, and, f32x4::ZERO))
 }
 
 /// Compute the bitwise AND of packed single-precision (32-bit) floating point numbers in a and b
@@ -154,8 +150,7 @@ pub unsafe fn _mm256_mask_and_ps(src: __m256, k: __mmask8, a: __m256, b: __m256)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_and_ps(k: __mmask8, a: __m256, b: __m256) -> __m256 {
     let and = _mm256_and_ps(a, b).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, and, zero))
+    transmute(simd_select_bitmask(k, and, f32x8::ZERO))
 }
 
 /// Compute the bitwise AND of packed single-precision (32-bit) floating point numbers in a and b
@@ -197,8 +192,7 @@ pub unsafe fn _mm512_mask_and_ps(src: __m512, k: __mmask16, a: __m512, b: __m512
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_and_ps(k: __mmask16, a: __m512, b: __m512) -> __m512 {
     let and = _mm512_and_ps(a, b).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, and, zero))
+    transmute(simd_select_bitmask(k, and, f32x16::ZERO))
 }
 
 // Andnot
@@ -228,8 +222,7 @@ pub unsafe fn _mm_mask_andnot_pd(src: __m128d, k: __mmask8, a: __m128d, b: __m12
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_andnot_pd(k: __mmask8, a: __m128d, b: __m128d) -> __m128d {
     let andnot = _mm_andnot_pd(a, b).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, andnot, zero))
+    transmute(simd_select_bitmask(k, andnot, f64x2::ZERO))
 }
 
 /// Compute the bitwise NOT of packed double-precision (64-bit) floating point numbers in a and then
@@ -257,8 +250,7 @@ pub unsafe fn _mm256_mask_andnot_pd(src: __m256d, k: __mmask8, a: __m256d, b: __
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_andnot_pd(k: __mmask8, a: __m256d, b: __m256d) -> __m256d {
     let andnot = _mm256_andnot_pd(a, b).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, andnot, zero))
+    transmute(simd_select_bitmask(k, andnot, f64x4::ZERO))
 }
 
 /// Compute the bitwise NOT of packed double-precision (64-bit) floating point numbers in a and then
@@ -298,8 +290,7 @@ pub unsafe fn _mm512_mask_andnot_pd(src: __m512d, k: __mmask8, a: __m512d, b: __
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_andnot_pd(k: __mmask8, a: __m512d, b: __m512d) -> __m512d {
     let andnot = _mm512_andnot_pd(a, b).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, andnot, zero))
+    transmute(simd_select_bitmask(k, andnot, f64x8::ZERO))
 }
 
 /// Compute the bitwise NOT of packed single-precision (32-bit) floating point numbers in a and then
@@ -327,8 +318,7 @@ pub unsafe fn _mm_mask_andnot_ps(src: __m128, k: __mmask8, a: __m128, b: __m128)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_andnot_ps(k: __mmask8, a: __m128, b: __m128) -> __m128 {
     let andnot = _mm_andnot_ps(a, b).as_f32x4();
-    let zero = _mm_setzero_ps().as_f32x4();
-    transmute(simd_select_bitmask(k, andnot, zero))
+    transmute(simd_select_bitmask(k, andnot, f32x4::ZERO))
 }
 
 /// Compute the bitwise NOT of packed single-precision (32-bit) floating point numbers in a and then
@@ -356,8 +346,7 @@ pub unsafe fn _mm256_mask_andnot_ps(src: __m256, k: __mmask8, a: __m256, b: __m2
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_andnot_ps(k: __mmask8, a: __m256, b: __m256) -> __m256 {
     let andnot = _mm256_andnot_ps(a, b).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, andnot, zero))
+    transmute(simd_select_bitmask(k, andnot, f32x8::ZERO))
 }
 
 /// Compute the bitwise NOT of packed single-precision (32-bit) floating point numbers in a and then
@@ -397,8 +386,7 @@ pub unsafe fn _mm512_mask_andnot_ps(src: __m512, k: __mmask16, a: __m512, b: __m
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_andnot_ps(k: __mmask16, a: __m512, b: __m512) -> __m512 {
     let andnot = _mm512_andnot_ps(a, b).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, andnot, zero))
+    transmute(simd_select_bitmask(k, andnot, f32x16::ZERO))
 }
 
 // Or
@@ -427,8 +415,7 @@ pub unsafe fn _mm_mask_or_pd(src: __m128d, k: __mmask8, a: __m128d, b: __m128d) 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_or_pd(k: __mmask8, a: __m128d, b: __m128d) -> __m128d {
     let or = _mm_or_pd(a, b).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, or, zero))
+    transmute(simd_select_bitmask(k, or, f64x2::ZERO))
 }
 
 /// Compute the bitwise OR of packed double-precision (64-bit) floating point numbers in a and b
@@ -455,8 +442,7 @@ pub unsafe fn _mm256_mask_or_pd(src: __m256d, k: __mmask8, a: __m256d, b: __m256
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_or_pd(k: __mmask8, a: __m256d, b: __m256d) -> __m256d {
     let or = _mm256_or_pd(a, b).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, or, zero))
+    transmute(simd_select_bitmask(k, or, f64x4::ZERO))
 }
 
 /// Compute the bitwise OR of packed double-precision (64-bit) floating point numbers in a and b
@@ -495,8 +481,7 @@ pub unsafe fn _mm512_mask_or_pd(src: __m512d, k: __mmask8, a: __m512d, b: __m512
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_or_pd(k: __mmask8, a: __m512d, b: __m512d) -> __m512d {
     let or = _mm512_or_pd(a, b).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, or, zero))
+    transmute(simd_select_bitmask(k, or, f64x8::ZERO))
 }
 
 /// Compute the bitwise OR of packed single-precision (32-bit) floating point numbers in a and b
@@ -523,8 +508,7 @@ pub unsafe fn _mm_mask_or_ps(src: __m128, k: __mmask8, a: __m128, b: __m128) -> 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_or_ps(k: __mmask8, a: __m128, b: __m128) -> __m128 {
     let or = _mm_or_ps(a, b).as_f32x4();
-    let zero = _mm_setzero_ps().as_f32x4();
-    transmute(simd_select_bitmask(k, or, zero))
+    transmute(simd_select_bitmask(k, or, f32x4::ZERO))
 }
 
 /// Compute the bitwise OR of packed single-precision (32-bit) floating point numbers in a and b
@@ -551,8 +535,7 @@ pub unsafe fn _mm256_mask_or_ps(src: __m256, k: __mmask8, a: __m256, b: __m256) 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_or_ps(k: __mmask8, a: __m256, b: __m256) -> __m256 {
     let or = _mm256_or_ps(a, b).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, or, zero))
+    transmute(simd_select_bitmask(k, or, f32x8::ZERO))
 }
 
 /// Compute the bitwise OR of packed single-precision (32-bit) floating point numbers in a and b
@@ -594,8 +577,7 @@ pub unsafe fn _mm512_mask_or_ps(src: __m512, k: __mmask16, a: __m512, b: __m512)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_or_ps(k: __mmask16, a: __m512, b: __m512) -> __m512 {
     let or = _mm512_or_ps(a, b).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, or, zero))
+    transmute(simd_select_bitmask(k, or, f32x16::ZERO))
 }
 
 // Xor
@@ -624,8 +606,7 @@ pub unsafe fn _mm_mask_xor_pd(src: __m128d, k: __mmask8, a: __m128d, b: __m128d)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_xor_pd(k: __mmask8, a: __m128d, b: __m128d) -> __m128d {
     let xor = _mm_xor_pd(a, b).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, xor, zero))
+    transmute(simd_select_bitmask(k, xor, f64x2::ZERO))
 }
 
 /// Compute the bitwise XOR of packed double-precision (64-bit) floating point numbers in a and b
@@ -652,8 +633,7 @@ pub unsafe fn _mm256_mask_xor_pd(src: __m256d, k: __mmask8, a: __m256d, b: __m25
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_xor_pd(k: __mmask8, a: __m256d, b: __m256d) -> __m256d {
     let xor = _mm256_xor_pd(a, b).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, xor, zero))
+    transmute(simd_select_bitmask(k, xor, f64x4::ZERO))
 }
 
 /// Compute the bitwise XOR of packed double-precision (64-bit) floating point numbers in a and b
@@ -692,8 +672,7 @@ pub unsafe fn _mm512_mask_xor_pd(src: __m512d, k: __mmask8, a: __m512d, b: __m51
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_xor_pd(k: __mmask8, a: __m512d, b: __m512d) -> __m512d {
     let xor = _mm512_xor_pd(a, b).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, xor, zero))
+    transmute(simd_select_bitmask(k, xor, f64x8::ZERO))
 }
 
 /// Compute the bitwise XOR of packed single-precision (32-bit) floating point numbers in a and b
@@ -720,8 +699,7 @@ pub unsafe fn _mm_mask_xor_ps(src: __m128, k: __mmask8, a: __m128, b: __m128) ->
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_xor_ps(k: __mmask8, a: __m128, b: __m128) -> __m128 {
     let xor = _mm_xor_ps(a, b).as_f32x4();
-    let zero = _mm_setzero_ps().as_f32x4();
-    transmute(simd_select_bitmask(k, xor, zero))
+    transmute(simd_select_bitmask(k, xor, f32x4::ZERO))
 }
 
 /// Compute the bitwise XOR of packed single-precision (32-bit) floating point numbers in a and b
@@ -748,8 +726,7 @@ pub unsafe fn _mm256_mask_xor_ps(src: __m256, k: __mmask8, a: __m256, b: __m256)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_xor_ps(k: __mmask8, a: __m256, b: __m256) -> __m256 {
     let xor = _mm256_xor_ps(a, b).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, xor, zero))
+    transmute(simd_select_bitmask(k, xor, f32x8::ZERO))
 }
 
 /// Compute the bitwise XOR of packed single-precision (32-bit) floating point numbers in a and b
@@ -791,8 +768,7 @@ pub unsafe fn _mm512_mask_xor_ps(src: __m512, k: __mmask16, a: __m512, b: __m512
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_xor_ps(k: __mmask16, a: __m512, b: __m512) -> __m512 {
     let xor = _mm512_xor_ps(a, b).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, xor, zero))
+    transmute(simd_select_bitmask(k, xor, f32x16::ZERO))
 }
 
 // Broadcast
@@ -832,8 +808,7 @@ pub unsafe fn _mm256_mask_broadcast_f32x2(src: __m256, k: __mmask8, a: __m128) -
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_broadcast_f32x2(k: __mmask8, a: __m128) -> __m256 {
     let b = _mm256_broadcast_f32x2(a).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x8::ZERO))
 }
 
 /// Broadcasts the lower 2 packed single-precision (32-bit) floating-point elements from a to all
@@ -871,8 +846,7 @@ pub unsafe fn _mm512_mask_broadcast_f32x2(src: __m512, k: __mmask16, a: __m128) 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_broadcast_f32x2(k: __mmask16, a: __m128) -> __m512 {
     let b = _mm512_broadcast_f32x2(a).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x16::ZERO))
 }
 
 /// Broadcasts the 8 packed single-precision (32-bit) floating-point elements from a to all
@@ -908,8 +882,7 @@ pub unsafe fn _mm512_mask_broadcast_f32x8(src: __m512, k: __mmask16, a: __m256) 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_broadcast_f32x8(k: __mmask16, a: __m256) -> __m512 {
     let b = _mm512_broadcast_f32x8(a).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x16::ZERO))
 }
 
 /// Broadcasts the 2 packed double-precision (64-bit) floating-point elements from a to all
@@ -945,8 +918,7 @@ pub unsafe fn _mm256_mask_broadcast_f64x2(src: __m256d, k: __mmask8, a: __m128d)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_broadcast_f64x2(k: __mmask8, a: __m128d) -> __m256d {
     let b = _mm256_broadcast_f64x2(a).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x4::ZERO))
 }
 
 /// Broadcasts the 2 packed double-precision (64-bit) floating-point elements from a to all
@@ -982,8 +954,7 @@ pub unsafe fn _mm512_mask_broadcast_f64x2(src: __m512d, k: __mmask8, a: __m128d)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_broadcast_f64x2(k: __mmask8, a: __m128d) -> __m512d {
     let b = _mm512_broadcast_f64x2(a).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x8::ZERO))
 }
 
 /// Broadcasts the lower 2 packed 32-bit integers from a to all elements of dst.
@@ -1021,8 +992,7 @@ pub unsafe fn _mm_mask_broadcast_i32x2(src: __m128i, k: __mmask8, a: __m128i) ->
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_broadcast_i32x2(k: __mmask8, a: __m128i) -> __m128i {
     let b = _mm_broadcast_i32x2(a).as_i32x4();
-    let zero = _mm_setzero_si128().as_i32x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i32x4::ZERO))
 }
 
 /// Broadcasts the lower 2 packed 32-bit integers from a to all elements of dst.
@@ -1060,8 +1030,7 @@ pub unsafe fn _mm256_mask_broadcast_i32x2(src: __m256i, k: __mmask8, a: __m128i)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_broadcast_i32x2(k: __mmask8, a: __m128i) -> __m256i {
     let b = _mm256_broadcast_i32x2(a).as_i32x8();
-    let zero = _mm256_setzero_si256().as_i32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i32x8::ZERO))
 }
 
 /// Broadcasts the lower 2 packed 32-bit integers from a to all elements of dst.
@@ -1099,8 +1068,7 @@ pub unsafe fn _mm512_mask_broadcast_i32x2(src: __m512i, k: __mmask16, a: __m128i
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_broadcast_i32x2(k: __mmask16, a: __m128i) -> __m512i {
     let b = _mm512_broadcast_i32x2(a).as_i32x16();
-    let zero = _mm512_setzero_si512().as_i32x16();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i32x16::ZERO))
 }
 
 /// Broadcasts the 8 packed 32-bit integers from a to all elements of dst.
@@ -1136,8 +1104,7 @@ pub unsafe fn _mm512_mask_broadcast_i32x8(src: __m512i, k: __mmask16, a: __m256i
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_broadcast_i32x8(k: __mmask16, a: __m256i) -> __m512i {
     let b = _mm512_broadcast_i32x8(a).as_i32x16();
-    let zero = _mm512_setzero_si512().as_i32x16();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i32x16::ZERO))
 }
 
 /// Broadcasts the 2 packed 64-bit integers from a to all elements of dst.
@@ -1173,8 +1140,7 @@ pub unsafe fn _mm256_mask_broadcast_i64x2(src: __m256i, k: __mmask8, a: __m128i)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_broadcast_i64x2(k: __mmask8, a: __m128i) -> __m256i {
     let b = _mm256_broadcast_i64x2(a).as_i64x4();
-    let zero = _mm256_setzero_si256().as_i64x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x4::ZERO))
 }
 
 /// Broadcasts the 2 packed 64-bit integers from a to all elements of dst.
@@ -1210,8 +1176,7 @@ pub unsafe fn _mm512_mask_broadcast_i64x2(src: __m512i, k: __mmask8, a: __m128i)
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_broadcast_i64x2(k: __mmask8, a: __m128i) -> __m512i {
     let b = _mm512_broadcast_i64x2(a).as_i64x8();
-    let zero = _mm512_setzero_si512().as_i64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x8::ZERO))
 }
 
 // Extract
@@ -1265,8 +1230,7 @@ pub unsafe fn _mm512_mask_extractf32x8_ps<const IMM8: i32>(
 pub unsafe fn _mm512_maskz_extractf32x8_ps<const IMM8: i32>(k: __mmask8, a: __m512) -> __m256 {
     static_assert_uimm_bits!(IMM8, 1);
     let b = _mm512_extractf32x8_ps::<IMM8>(a);
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, b.as_f32x8(), zero))
+    transmute(simd_select_bitmask(k, b.as_f32x8(), f32x8::ZERO))
 }
 
 /// Extracts 128 bits (composed of 2 packed double-precision (64-bit) floating-point elements) from a,
@@ -1318,8 +1282,7 @@ pub unsafe fn _mm256_mask_extractf64x2_pd<const IMM8: i32>(
 pub unsafe fn _mm256_maskz_extractf64x2_pd<const IMM8: i32>(k: __mmask8, a: __m256d) -> __m128d {
     static_assert_uimm_bits!(IMM8, 1);
     let b = _mm256_extractf64x2_pd::<IMM8>(a);
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, b.as_f64x2(), zero))
+    transmute(simd_select_bitmask(k, b.as_f64x2(), f64x2::ZERO))
 }
 
 /// Extracts 128 bits (composed of 2 packed double-precision (64-bit) floating-point elements) from a,
@@ -1373,8 +1336,7 @@ pub unsafe fn _mm512_mask_extractf64x2_pd<const IMM8: i32>(
 pub unsafe fn _mm512_maskz_extractf64x2_pd<const IMM8: i32>(k: __mmask8, a: __m512d) -> __m128d {
     static_assert_uimm_bits!(IMM8, 2);
     let b = _mm512_extractf64x2_pd::<IMM8>(a).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x2::ZERO))
 }
 
 /// Extracts 256 bits (composed of 8 packed 32-bit integers) from a, selected with IMM8, and stores
@@ -1426,8 +1388,7 @@ pub unsafe fn _mm512_mask_extracti32x8_epi32<const IMM8: i32>(
 pub unsafe fn _mm512_maskz_extracti32x8_epi32<const IMM8: i32>(k: __mmask8, a: __m512i) -> __m256i {
     static_assert_uimm_bits!(IMM8, 1);
     let b = _mm512_extracti32x8_epi32::<IMM8>(a).as_i32x8();
-    let zero = _mm256_setzero_si256().as_i32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i32x8::ZERO))
 }
 
 /// Extracts 128 bits (composed of 2 packed 64-bit integers) from a, selected with IMM8, and stores
@@ -1478,8 +1439,7 @@ pub unsafe fn _mm256_mask_extracti64x2_epi64<const IMM8: i32>(
 pub unsafe fn _mm256_maskz_extracti64x2_epi64<const IMM8: i32>(k: __mmask8, a: __m256i) -> __m128i {
     static_assert_uimm_bits!(IMM8, 1);
     let b = _mm256_extracti64x2_epi64::<IMM8>(a).as_i64x2();
-    let zero = _mm_setzero_si128().as_i64x2();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x2::ZERO))
 }
 
 /// Extracts 128 bits (composed of 2 packed 64-bit integers) from a, selected with IMM8, and stores
@@ -1532,8 +1492,7 @@ pub unsafe fn _mm512_mask_extracti64x2_epi64<const IMM8: i32>(
 pub unsafe fn _mm512_maskz_extracti64x2_epi64<const IMM8: i32>(k: __mmask8, a: __m512i) -> __m128i {
     static_assert_uimm_bits!(IMM8, 2);
     let b = _mm512_extracti64x2_epi64::<IMM8>(a).as_i64x2();
-    let zero = _mm_setzero_si128().as_i64x2();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x2::ZERO))
 }
 
 // Insert
@@ -1601,8 +1560,7 @@ pub unsafe fn _mm512_maskz_insertf32x8<const IMM8: i32>(
 ) -> __m512 {
     static_assert_uimm_bits!(IMM8, 1);
     let c = _mm512_insertf32x8::<IMM8>(a, b).as_f32x16();
-    let zero = _mm512_setzero_ps().as_f32x16();
-    transmute(simd_select_bitmask(k, c, zero))
+    transmute(simd_select_bitmask(k, c, f32x16::ZERO))
 }
 
 /// Copy a to dst, then insert 128 bits (composed of 2 packed double-precision (64-bit) floating-point
@@ -1660,8 +1618,7 @@ pub unsafe fn _mm256_maskz_insertf64x2<const IMM8: i32>(
 ) -> __m256d {
     static_assert_uimm_bits!(IMM8, 1);
     let c = _mm256_insertf64x2::<IMM8>(a, b).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, c, zero))
+    transmute(simd_select_bitmask(k, c, f64x4::ZERO))
 }
 
 /// Copy a to dst, then insert 128 bits (composed of 2 packed double-precision (64-bit) floating-point
@@ -1721,8 +1678,7 @@ pub unsafe fn _mm512_maskz_insertf64x2<const IMM8: i32>(
 ) -> __m512d {
     static_assert_uimm_bits!(IMM8, 2);
     let c = _mm512_insertf64x2::<IMM8>(a, b).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, c, zero))
+    transmute(simd_select_bitmask(k, c, f64x8::ZERO))
 }
 
 /// Copy a to dst, then insert 256 bits (composed of 8 packed 32-bit integers) from b into dst at the
@@ -1790,8 +1746,7 @@ pub unsafe fn _mm512_maskz_inserti32x8<const IMM8: i32>(
 ) -> __m512i {
     static_assert_uimm_bits!(IMM8, 1);
     let c = _mm512_inserti32x8::<IMM8>(a, b).as_i32x16();
-    let zero = _mm512_setzero_si512().as_i32x16();
-    transmute(simd_select_bitmask(k, c, zero))
+    transmute(simd_select_bitmask(k, c, i32x16::ZERO))
 }
 
 /// Copy a to dst, then insert 128 bits (composed of 2 packed 64-bit integers) from b into dst at the
@@ -1850,8 +1805,7 @@ pub unsafe fn _mm256_maskz_inserti64x2<const IMM8: i32>(
 ) -> __m256i {
     static_assert_uimm_bits!(IMM8, 1);
     let c = _mm256_inserti64x2::<IMM8>(a, b).as_i64x4();
-    let zero = _mm256_setzero_si256().as_i64x4();
-    transmute(simd_select_bitmask(k, c, zero))
+    transmute(simd_select_bitmask(k, c, i64x4::ZERO))
 }
 
 /// Copy a to dst, then insert 128 bits (composed of 2 packed 64-bit integers) from b into dst at the
@@ -1912,8 +1866,7 @@ pub unsafe fn _mm512_maskz_inserti64x2<const IMM8: i32>(
 ) -> __m512i {
     static_assert_uimm_bits!(IMM8, 2);
     let c = _mm512_inserti64x2::<IMM8>(a, b).as_i64x8();
-    let zero = _mm512_setzero_si512().as_i64x8();
-    transmute(simd_select_bitmask(k, c, zero))
+    transmute(simd_select_bitmask(k, c, i64x8::ZERO))
 }
 
 // Convert
@@ -1921,11 +1874,11 @@ pub unsafe fn _mm512_maskz_inserti64x2<const IMM8: i32>(
 /// Convert packed signed 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundepi64_pd&ig_expand=1437)
 #[inline]
@@ -1942,11 +1895,11 @@ pub unsafe fn _mm512_cvt_roundepi64_pd<const ROUNDING: i32>(a: __m512i) -> __m51
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundepi64_pd&ig_expand=1438)
 #[inline]
@@ -1968,11 +1921,11 @@ pub unsafe fn _mm512_mask_cvt_roundepi64_pd<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundepi64_pd&ig_expand=1439)
 #[inline]
@@ -1986,8 +1939,7 @@ pub unsafe fn _mm512_maskz_cvt_roundepi64_pd<const ROUNDING: i32>(
 ) -> __m512d {
     static_assert_rounding!(ROUNDING);
     let b = _mm512_cvt_roundepi64_pd::<ROUNDING>(a).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x8::ZERO))
 }
 
 /// Convert packed signed 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
@@ -2026,8 +1978,7 @@ pub unsafe fn _mm_mask_cvtepi64_pd(src: __m128d, k: __mmask8, a: __m128i) -> __m
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_cvtepi64_pd(k: __mmask8, a: __m128i) -> __m128d {
     let b = _mm_cvtepi64_pd(a).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x2::ZERO))
 }
 
 /// Convert packed signed 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
@@ -2066,8 +2017,7 @@ pub unsafe fn _mm256_mask_cvtepi64_pd(src: __m256d, k: __mmask8, a: __m256i) -> 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_cvtepi64_pd(k: __mmask8, a: __m256i) -> __m256d {
     let b = _mm256_cvtepi64_pd(a).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x4::ZERO))
 }
 
 /// Convert packed signed 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
@@ -2106,18 +2056,17 @@ pub unsafe fn _mm512_mask_cvtepi64_pd(src: __m512d, k: __mmask8, a: __m512i) -> 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_cvtepi64_pd(k: __mmask8, a: __m512i) -> __m512d {
     let b = _mm512_cvtepi64_pd(a).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x8::ZERO))
 }
 
 /// Convert packed signed 64-bit integers in a to packed single-precision (32-bit) floating-point elements,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundepi64_ps&ig_expand=1443)
 #[inline]
@@ -2134,11 +2083,11 @@ pub unsafe fn _mm512_cvt_roundepi64_ps<const ROUNDING: i32>(a: __m512i) -> __m25
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundepi64_ps&ig_expand=1444)
 #[inline]
@@ -2160,11 +2109,11 @@ pub unsafe fn _mm512_mask_cvt_roundepi64_ps<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundepi64_ps&ig_expand=1445)
 #[inline]
@@ -2178,8 +2127,7 @@ pub unsafe fn _mm512_maskz_cvt_roundepi64_ps<const ROUNDING: i32>(
 ) -> __m256 {
     static_assert_rounding!(ROUNDING);
     let b = _mm512_cvt_roundepi64_ps::<ROUNDING>(a).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x8::ZERO))
 }
 
 /// Convert packed signed 64-bit integers in a to packed single-precision (32-bit) floating-point elements,
@@ -2255,8 +2203,7 @@ pub unsafe fn _mm256_mask_cvtepi64_ps(src: __m128, k: __mmask8, a: __m256i) -> _
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_cvtepi64_ps(k: __mmask8, a: __m256i) -> __m128 {
     let b = _mm256_cvtepi64_ps(a).as_f32x4();
-    let zero = _mm_setzero_ps().as_f32x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x4::ZERO))
 }
 
 /// Convert packed signed 64-bit integers in a to packed single-precision (32-bit) floating-point elements,
@@ -2295,18 +2242,17 @@ pub unsafe fn _mm512_mask_cvtepi64_ps(src: __m256, k: __mmask8, a: __m512i) -> _
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_cvtepi64_ps(k: __mmask8, a: __m512i) -> __m256 {
     let b = _mm512_cvtepi64_ps(a).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x8::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundepu64_pd&ig_expand=1455)
 #[inline]
@@ -2323,11 +2269,11 @@ pub unsafe fn _mm512_cvt_roundepu64_pd<const ROUNDING: i32>(a: __m512i) -> __m51
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundepu64_pd&ig_expand=1456)
 #[inline]
@@ -2349,11 +2295,11 @@ pub unsafe fn _mm512_mask_cvt_roundepu64_pd<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundepu64_pd&ig_expand=1457)
 #[inline]
@@ -2367,8 +2313,7 @@ pub unsafe fn _mm512_maskz_cvt_roundepu64_pd<const ROUNDING: i32>(
 ) -> __m512d {
     static_assert_rounding!(ROUNDING);
     let b = _mm512_cvt_roundepu64_pd::<ROUNDING>(a).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x8::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
@@ -2407,8 +2352,7 @@ pub unsafe fn _mm_mask_cvtepu64_pd(src: __m128d, k: __mmask8, a: __m128i) -> __m
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_cvtepu64_pd(k: __mmask8, a: __m128i) -> __m128d {
     let b = _mm_cvtepu64_pd(a).as_f64x2();
-    let zero = _mm_setzero_pd().as_f64x2();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x2::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
@@ -2447,8 +2391,7 @@ pub unsafe fn _mm256_mask_cvtepu64_pd(src: __m256d, k: __mmask8, a: __m256i) -> 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_cvtepu64_pd(k: __mmask8, a: __m256i) -> __m256d {
     let b = _mm256_cvtepu64_pd(a).as_f64x4();
-    let zero = _mm256_setzero_pd().as_f64x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x4::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed double-precision (64-bit) floating-point elements,
@@ -2487,18 +2430,17 @@ pub unsafe fn _mm512_mask_cvtepu64_pd(src: __m512d, k: __mmask8, a: __m512i) -> 
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_cvtepu64_pd(k: __mmask8, a: __m512i) -> __m512d {
     let b = _mm512_cvtepu64_pd(a).as_f64x8();
-    let zero = _mm512_setzero_pd().as_f64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f64x8::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed single-precision (32-bit) floating-point elements,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundepu64_ps&ig_expand=1461)
 #[inline]
@@ -2515,11 +2457,11 @@ pub unsafe fn _mm512_cvt_roundepu64_ps<const ROUNDING: i32>(a: __m512i) -> __m25
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundepu64_ps&ig_expand=1462)
 #[inline]
@@ -2541,11 +2483,11 @@ pub unsafe fn _mm512_mask_cvt_roundepu64_ps<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundepu64_ps&ig_expand=1463)
 #[inline]
@@ -2559,8 +2501,7 @@ pub unsafe fn _mm512_maskz_cvt_roundepu64_ps<const ROUNDING: i32>(
 ) -> __m256 {
     static_assert_rounding!(ROUNDING);
     let b = _mm512_cvt_roundepu64_ps::<ROUNDING>(a).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x8::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed single-precision (32-bit) floating-point elements,
@@ -2636,8 +2577,7 @@ pub unsafe fn _mm256_mask_cvtepu64_ps(src: __m128, k: __mmask8, a: __m256i) -> _
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_cvtepu64_ps(k: __mmask8, a: __m256i) -> __m128 {
     let b = _mm256_cvtepu64_ps(a).as_f32x4();
-    let zero = _mm_setzero_ps().as_f32x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x4::ZERO))
 }
 
 /// Convert packed unsigned 64-bit integers in a to packed single-precision (32-bit) floating-point elements,
@@ -2676,18 +2616,17 @@ pub unsafe fn _mm512_mask_cvtepu64_ps(src: __m256, k: __mmask8, a: __m512i) -> _
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_cvtepu64_ps(k: __mmask8, a: __m512i) -> __m256 {
     let b = _mm512_cvtepu64_ps(a).as_f32x8();
-    let zero = _mm256_setzero_ps().as_f32x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, f32x8::ZERO))
 }
 
 /// Convert packed double-precision (64-bit) floating-point elements in a to packed signed 64-bit integers,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundpd_epi64&ig_expand=1472)
 #[inline]
@@ -2704,11 +2643,11 @@ pub unsafe fn _mm512_cvt_roundpd_epi64<const ROUNDING: i32>(a: __m512d) -> __m51
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundpd_epi64&ig_expand=1473)
 #[inline]
@@ -2729,11 +2668,11 @@ pub unsafe fn _mm512_mask_cvt_roundpd_epi64<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundpd_epi64&ig_expand=1474)
 #[inline]
@@ -2868,11 +2807,11 @@ pub unsafe fn _mm512_maskz_cvtpd_epi64(k: __mmask8, a: __m512d) -> __m512i {
 /// Convert packed single-precision (32-bit) floating-point elements in a to packed signed 64-bit integers,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundps_epi64&ig_expand=1514)
 #[inline]
@@ -2889,11 +2828,11 @@ pub unsafe fn _mm512_cvt_roundps_epi64<const ROUNDING: i32>(a: __m256) -> __m512
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundps_epi64&ig_expand=1515)
 #[inline]
@@ -2914,11 +2853,11 @@ pub unsafe fn _mm512_mask_cvt_roundps_epi64<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundps_epi64&ig_expand=1516)
 #[inline]
@@ -3053,11 +2992,11 @@ pub unsafe fn _mm512_maskz_cvtps_epi64(k: __mmask8, a: __m256) -> __m512i {
 /// Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 64-bit integers,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundpd_epu64&ig_expand=1478)
 #[inline]
@@ -3074,11 +3013,11 @@ pub unsafe fn _mm512_cvt_roundpd_epu64<const ROUNDING: i32>(a: __m512d) -> __m51
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundpd_epu64&ig_expand=1479)
 #[inline]
@@ -3099,11 +3038,11 @@ pub unsafe fn _mm512_mask_cvt_roundpd_epu64<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundpd_epu64&ig_expand=1480)
 #[inline]
@@ -3238,11 +3177,11 @@ pub unsafe fn _mm512_maskz_cvtpd_epu64(k: __mmask8, a: __m512d) -> __m512i {
 /// Convert packed single-precision (32-bit) floating-point elements in a to packed unsigned 64-bit integers,
 /// and store the results in dst. Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvt_roundps_epu64&ig_expand=1520)
 #[inline]
@@ -3259,11 +3198,11 @@ pub unsafe fn _mm512_cvt_roundps_epu64<const ROUNDING: i32>(a: __m256) -> __m512
 /// and store the results in dst using writemask k (elements are copied from src if the corresponding bit is
 /// not set). Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvt_roundps_epu64&ig_expand=1521)
 #[inline]
@@ -3284,11 +3223,11 @@ pub unsafe fn _mm512_mask_cvt_roundps_epu64<const ROUNDING: i32>(
 /// and store the results in dst using zeromask k (elements are zeroed out if the corresponding bit is not set).
 /// Rounding is done according to the ROUNDING parameter, which can be one of:
 ///
-///     - (_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC) // round to nearest, and suppress exceptions
-///     - (_MM_FROUND_TO_NEG_INF |_MM_FROUND_NO_EXC)     // round down, and suppress exceptions
-///     - (_MM_FROUND_TO_POS_INF |_MM_FROUND_NO_EXC)     // round up, and suppress exceptions
-///     - (_MM_FROUND_TO_ZERO |_MM_FROUND_NO_EXC)        // truncate, and suppress exceptions
-///     - _MM_FROUND_CUR_DIRECTION                       // use MXCSR.RC
+/// * [`_MM_FROUND_TO_NEAREST_INT`] | [`_MM_FROUND_NO_EXC`] : round to nearest and suppress exceptions
+/// * [`_MM_FROUND_TO_NEG_INF`] | [`_MM_FROUND_NO_EXC`] : round down and suppress exceptions
+/// * [`_MM_FROUND_TO_POS_INF`] | [`_MM_FROUND_NO_EXC`] : round up and suppress exceptions
+/// * [`_MM_FROUND_TO_ZERO`] | [`_MM_FROUND_NO_EXC`] : truncate and suppress exceptions
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvt_roundps_epu64&ig_expand=1522)
 #[inline]
@@ -4131,8 +4070,7 @@ pub unsafe fn _mm_mask_mullo_epi64(src: __m128i, k: __mmask8, a: __m128i, b: __m
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm_maskz_mullo_epi64(k: __mmask8, a: __m128i, b: __m128i) -> __m128i {
     let b = _mm_mullo_epi64(a, b).as_i64x2();
-    let zero = _mm_setzero_si128().as_i64x2();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x2::ZERO))
 }
 
 /// Multiply packed 64-bit integers in `a` and `b`, producing intermediate 128-bit integers, and store
@@ -4177,8 +4115,7 @@ pub unsafe fn _mm256_mask_mullo_epi64(
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm256_maskz_mullo_epi64(k: __mmask8, a: __m256i, b: __m256i) -> __m256i {
     let b = _mm256_mullo_epi64(a, b).as_i64x4();
-    let zero = _mm256_setzero_si256().as_i64x4();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x4::ZERO))
 }
 
 /// Multiply packed 64-bit integers in `a` and `b`, producing intermediate 128-bit integers, and store
@@ -4223,8 +4160,7 @@ pub unsafe fn _mm512_mask_mullo_epi64(
 #[unstable(feature = "stdarch_x86_avx512", issue = "111137")]
 pub unsafe fn _mm512_maskz_mullo_epi64(k: __mmask8, a: __m512i, b: __m512i) -> __m512i {
     let b = _mm512_mullo_epi64(a, b).as_i64x8();
-    let zero = _mm512_setzero_si512().as_i64x8();
-    transmute(simd_select_bitmask(k, b, zero))
+    transmute(simd_select_bitmask(k, b, i64x8::ZERO))
 }
 
 // Mask Registers
@@ -5475,11 +5411,11 @@ pub unsafe fn _mm_maskz_range_ss<const IMM8: i32>(k: __mmask8, a: __m128, b: __m
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -5500,11 +5436,11 @@ pub unsafe fn _mm512_reduce_round_pd<const IMM8: i32, const SAE: i32>(a: __m512d
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -5529,11 +5465,11 @@ pub unsafe fn _mm512_mask_reduce_round_pd<const IMM8: i32, const SAE: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -5556,11 +5492,11 @@ pub unsafe fn _mm512_maskz_reduce_round_pd<const IMM8: i32, const SAE: i32>(
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_pd&ig_expand=5411)
 #[inline]
@@ -5578,11 +5514,11 @@ pub unsafe fn _mm_reduce_pd<const IMM8: i32>(a: __m128d) -> __m128d {
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_pd&ig_expand=5409)
 #[inline]
@@ -5604,11 +5540,11 @@ pub unsafe fn _mm_mask_reduce_pd<const IMM8: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_reduce_pd&ig_expand=5410)
 #[inline]
@@ -5625,11 +5561,11 @@ pub unsafe fn _mm_maskz_reduce_pd<const IMM8: i32>(k: __mmask8, a: __m128d) -> _
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_pd&ig_expand=5414)
 #[inline]
@@ -5647,11 +5583,11 @@ pub unsafe fn _mm256_reduce_pd<const IMM8: i32>(a: __m256d) -> __m256d {
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_pd&ig_expand=5412)
 #[inline]
@@ -5673,11 +5609,11 @@ pub unsafe fn _mm256_mask_reduce_pd<const IMM8: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_reduce_pd&ig_expand=5413)
 #[inline]
@@ -5694,11 +5630,11 @@ pub unsafe fn _mm256_maskz_reduce_pd<const IMM8: i32>(k: __mmask8, a: __m256d) -
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_reduce_pd&ig_expand=5417)
 #[inline]
@@ -5716,11 +5652,11 @@ pub unsafe fn _mm512_reduce_pd<const IMM8: i32>(a: __m512d) -> __m512d {
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_reduce_pd&ig_expand=5415)
 #[inline]
@@ -5748,11 +5684,11 @@ pub unsafe fn _mm512_mask_reduce_pd<const IMM8: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_reduce_pd&ig_expand=5416)
 #[inline]
@@ -5769,11 +5705,11 @@ pub unsafe fn _mm512_maskz_reduce_pd<const IMM8: i32>(k: __mmask8, a: __m512d) -
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -5794,11 +5730,11 @@ pub unsafe fn _mm512_reduce_round_ps<const IMM8: i32, const SAE: i32>(a: __m512)
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -5823,11 +5759,11 @@ pub unsafe fn _mm512_mask_reduce_round_ps<const IMM8: i32, const SAE: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -5850,11 +5786,11 @@ pub unsafe fn _mm512_maskz_reduce_round_ps<const IMM8: i32, const SAE: i32>(
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_ps&ig_expand=5429)
 #[inline]
@@ -5872,11 +5808,11 @@ pub unsafe fn _mm_reduce_ps<const IMM8: i32>(a: __m128) -> __m128 {
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_ps&ig_expand=5427)
 #[inline]
@@ -5894,11 +5830,11 @@ pub unsafe fn _mm_mask_reduce_ps<const IMM8: i32>(src: __m128, k: __mmask8, a: _
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_reduce_ps&ig_expand=5428)
 #[inline]
@@ -5915,11 +5851,11 @@ pub unsafe fn _mm_maskz_reduce_ps<const IMM8: i32>(k: __mmask8, a: __m128) -> __
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_ps&ig_expand=5432)
 #[inline]
@@ -5937,11 +5873,11 @@ pub unsafe fn _mm256_reduce_ps<const IMM8: i32>(a: __m256) -> __m256 {
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_ps&ig_expand=5430)
 #[inline]
@@ -5963,11 +5899,11 @@ pub unsafe fn _mm256_mask_reduce_ps<const IMM8: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_reduce_ps&ig_expand=5431)
 #[inline]
@@ -5984,11 +5920,11 @@ pub unsafe fn _mm256_maskz_reduce_ps<const IMM8: i32>(k: __mmask8, a: __m256) ->
 /// the number of bits specified by imm8, and store the results in dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_reduce_ps&ig_expand=5435)
 #[inline]
@@ -6006,11 +5942,11 @@ pub unsafe fn _mm512_reduce_ps<const IMM8: i32>(a: __m512) -> __m512 {
 /// copied from src to dst if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_reduce_ps&ig_expand=5433)
 #[inline]
@@ -6038,11 +5974,11 @@ pub unsafe fn _mm512_mask_reduce_ps<const IMM8: i32>(
 /// zeroed out if the corresponding mask bit is not set).
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_reduce_ps&ig_expand=5434)
 #[inline]
@@ -6060,11 +5996,11 @@ pub unsafe fn _mm512_maskz_reduce_ps<const IMM8: i32>(k: __mmask16, a: __m512) -
 /// the upper element from a to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -6089,11 +6025,11 @@ pub unsafe fn _mm_reduce_round_sd<const IMM8: i32, const SAE: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -6127,11 +6063,11 @@ pub unsafe fn _mm_mask_reduce_round_sd<const IMM8: i32, const SAE: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -6157,11 +6093,11 @@ pub unsafe fn _mm_maskz_reduce_round_sd<const IMM8: i32, const SAE: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_sd&ig_expand=5456)
 #[inline]
@@ -6180,11 +6116,11 @@ pub unsafe fn _mm_reduce_sd<const IMM8: i32>(a: __m128d, b: __m128d) -> __m128d 
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_sd&ig_expand=5454)
 #[inline]
@@ -6215,11 +6151,11 @@ pub unsafe fn _mm_mask_reduce_sd<const IMM8: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_reduce_sd&ig_expand=5455)
 #[inline]
@@ -6238,11 +6174,11 @@ pub unsafe fn _mm_maskz_reduce_sd<const IMM8: i32>(k: __mmask8, a: __m128d, b: _
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -6264,11 +6200,11 @@ pub unsafe fn _mm_reduce_round_ss<const IMM8: i32, const SAE: i32>(a: __m128, b:
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -6302,11 +6238,11 @@ pub unsafe fn _mm_mask_reduce_round_ss<const IMM8: i32, const SAE: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// Exceptions can be suppressed by passing _MM_FROUND_NO_EXC in the sae parameter.
 ///
@@ -6332,11 +6268,11 @@ pub unsafe fn _mm_maskz_reduce_round_ss<const IMM8: i32, const SAE: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_ss&ig_expand=5462)
 #[inline]
@@ -6355,11 +6291,11 @@ pub unsafe fn _mm_reduce_ss<const IMM8: i32>(a: __m128, b: __m128) -> __m128 {
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_ss&ig_expand=5460)
 #[inline]
@@ -6390,11 +6326,11 @@ pub unsafe fn _mm_mask_reduce_ss<const IMM8: i32>(
 /// to the upper element of dst.
 /// Rounding is done according to the imm8 parameter, which can be one of:
 ///
-///     - _MM_FROUND_TO_NEAREST_INT // round to nearest
-///     - _MM_FROUND_TO_NEG_INF     // round down
-///     - _MM_FROUND_TO_POS_INF     // round up
-///     - _MM_FROUND_TO_ZERO        // truncate
-///     - _MM_FROUND_CUR_DIRECTION  // use MXCSR.RC; see _MM_SET_ROUNDING_MODE
+/// * [`_MM_FROUND_TO_NEAREST_INT`] : round to nearest
+/// * [`_MM_FROUND_TO_NEG_INF`] : round down
+/// * [`_MM_FROUND_TO_POS_INF`] : round up
+/// * [`_MM_FROUND_TO_ZERO`] : truncate
+/// * [`_MM_FROUND_CUR_DIRECTION`] : use `MXCSR.RC` - see [`_MM_SET_ROUNDING_MODE`]
 ///
 /// [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_reduce_ss&ig_expand=5461)
 #[inline]

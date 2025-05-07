@@ -9,10 +9,10 @@
 //! algorithm can be found in "ParseNumberF64 by Simple Decimal Conversion",
 //! available online: <https://nigeltao.github.io/blog/2020/parse-number-f64-simple.html>.
 
-use crate::num::dec2flt::common::{is_8digits, ByteSlice};
+use crate::num::dec2flt::common::{ByteSlice, is_8digits};
 
 #[derive(Clone)]
-pub struct Decimal {
+pub(super) struct Decimal {
     /// The number of significant digits in the decimal.
     pub num_digits: usize,
     /// The offset of the decimal point in the significant digits.
@@ -29,6 +29,13 @@ impl Default for Decimal {
     }
 }
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl Decimal {
     /// The maximum number of digits required to unambiguously round a float.
     ///
@@ -55,13 +62,13 @@ impl Decimal {
     ///
     /// In Python:
     ///     `-emin + p2 + math.floor((emin+ 1)*math.log(2, b)-math.log(1-2**(-p2), b))`
-    pub const MAX_DIGITS: usize = 768;
+    pub(super) const MAX_DIGITS: usize = 768;
     /// The max digits that can be exactly represented in a 64-bit integer.
-    pub const MAX_DIGITS_WITHOUT_OVERFLOW: usize = 19;
-    pub const DECIMAL_POINT_RANGE: i32 = 2047;
+    pub(super) const MAX_DIGITS_WITHOUT_OVERFLOW: usize = 19;
+    pub(super) const DECIMAL_POINT_RANGE: i32 = 2047;
 
     /// Append a digit to the buffer.
-    pub fn try_add_digit(&mut self, digit: u8) {
+    pub(super) fn try_add_digit(&mut self, digit: u8) {
         if self.num_digits < Self::MAX_DIGITS {
             self.digits[self.num_digits] = digit;
         }
@@ -69,7 +76,9 @@ impl Decimal {
     }
 
     /// Trim trailing zeros from the buffer.
-    pub fn trim(&mut self) {
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
+    pub(super) fn trim(&mut self) {
         // All of the following calls to `Decimal::trim` can't panic because:
         //
         //  1. `parse_decimal` sets `num_digits` to a max of `Decimal::MAX_DIGITS`.
@@ -83,7 +92,7 @@ impl Decimal {
         }
     }
 
-    pub fn round(&self) -> u64 {
+    pub(super) fn round(&self) -> u64 {
         if self.num_digits == 0 || self.decimal_point < 0 {
             return 0;
         } else if self.decimal_point > 18 {
@@ -111,7 +120,7 @@ impl Decimal {
     }
 
     /// Computes decimal * 2^shift.
-    pub fn left_shift(&mut self, shift: usize) {
+    pub(super) fn left_shift(&mut self, shift: usize) {
         if self.num_digits == 0 {
             return;
         }
@@ -121,6 +130,8 @@ impl Decimal {
         let mut n = 0_u64;
         while read_index != 0 {
             read_index -= 1;
+            // flux_verify_error: condition matching
+            flux_assume(write_index >= 1);
             write_index -= 1;
             n += (self.digits[read_index] as u64) << shift;
             let quotient = n / 10;
@@ -133,6 +144,8 @@ impl Decimal {
             n = quotient;
         }
         while n > 0 {
+            // flux_verify_error: condition matching
+            flux_assume(write_index >= 1);
             write_index -= 1;
             let quotient = n / 10;
             let remainder = n - (10 * quotient);
@@ -152,7 +165,7 @@ impl Decimal {
     }
 
     /// Computes decimal * 2^-shift.
-    pub fn right_shift(&mut self, shift: usize) {
+    pub(super) fn right_shift(&mut self, shift: usize) {
         let mut read_index = 0;
         let mut write_index = 0;
         let mut n = 0_u64;
@@ -178,7 +191,10 @@ impl Decimal {
             self.truncated = false;
             return;
         }
-        let mask = (1_u64 << shift) - 1;
+        let shift_1_u64 = 1_u64 << shift;
+        // flux_verify_error: bit shift
+        flux_assume(shift_1_u64 >= 1);
+        let mask = shift_1_u64 - 1;
         while read_index < self.num_digits {
             let new_digit = (n >> shift) as u8;
             n = (10 * (n & mask)) + self.digits[read_index] as u64;
@@ -202,7 +218,7 @@ impl Decimal {
 }
 
 /// Parse a big integer representation of the float as a decimal.
-pub fn parse_decimal(mut s: &[u8]) -> Decimal {
+pub(super) fn parse_decimal(mut s: &[u8]) -> Decimal {
     let mut d = Decimal::default();
     let start = s;
 
@@ -226,17 +242,25 @@ pub fn parse_decimal(mut s: &[u8]) -> Decimal {
             if !is_8digits(v) {
                 break;
             }
+            // flux_verify_error: char cast magic
+            flux_assume(v >= 0x3030_3030_3030_3030);
             d.digits[d.num_digits..].write_u64(v - 0x3030_3030_3030_3030);
             d.num_digits += 8;
             s = &s[8..];
         }
         s = s.parse_digits(|digit| d.try_add_digit(digit));
         d.decimal_point = s.len() as i32 - first.len() as i32;
+        // flux_verify_error: vector length
+        flux_assume(d.decimal_point>=0);
     }
     if d.num_digits != 0 {
         // Ignore the trailing zeros if there are any
         let mut n_trailing_zeros = 0;
-        for &c in start[..(start.len() - s.len())].iter().rev() {
+        let start_len = start.len();
+        let s_len = s.len();
+        // flux_verify_error: sub vector length
+        flux_assume(start_len > s_len);
+        for &c in start[..(start_len - s_len)].iter().rev() {
             if c == b'0' {
                 n_trailing_zeros += 1;
             } else if c != b'.' {
@@ -244,6 +268,8 @@ pub fn parse_decimal(mut s: &[u8]) -> Decimal {
             }
         }
         d.decimal_point += n_trailing_zeros as i32;
+        // flux_verify_error: sub vector length
+        flux_assume(d.num_digits >= n_trailing_zeros);
         d.num_digits -= n_trailing_zeros;
         d.decimal_point += d.num_digits as i32;
         if d.num_digits > Decimal::MAX_DIGITS {
@@ -273,6 +299,10 @@ pub fn parse_decimal(mut s: &[u8]) -> Decimal {
         }
     }
     for i in d.num_digits..Decimal::MAX_DIGITS_WITHOUT_OVERFLOW {
+        // flux_verify_error: loop
+        flux_assume(i >= d.num_digits);
+        // flux_verify_error: loop
+        flux_assume(i < Decimal::MAX_DIGITS_WITHOUT_OVERFLOW);
         d.digits[i] = 0;
     }
     d
@@ -337,13 +367,21 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
     ];
 
     shift &= 63;
+    // flux_verify_error: bit mask
+    flux_assume(shift < 64);
     let x_a = TABLE[shift];
     let x_b = TABLE[shift + 1];
     let num_new_digits = (x_a >> 11) as _;
     let pow5_a = (0x7FF & x_a) as usize;
     let pow5_b = (0x7FF & x_b) as usize;
     let pow5 = &TABLE_POW5[pow5_a..];
+    // flux_verify_complex: unknown
+    flux_assume(pow5_b >= pow5_a);
     for (i, &p5) in pow5.iter().enumerate().take(pow5_b - pow5_a) {
+        // flux_verify_complex: unknown
+        flux_assume(i < 64);
+        // flux_verify_complex: unknown
+        flux_assume(num_new_digits >= 1);
         if i >= d.num_digits {
             return num_new_digits - 1;
         } else if d.digits[i] == p5 {

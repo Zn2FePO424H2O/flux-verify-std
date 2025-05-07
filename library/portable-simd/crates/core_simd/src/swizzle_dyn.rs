@@ -1,6 +1,8 @@
 use crate::simd::{LaneCount, Simd, SupportedLaneCount};
 use core::mem;
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<const N: usize> Simd<u8, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -133,6 +135,8 @@ unsafe fn avx2_pshufb(bytes: Simd<u8, 32>, idxs: Simd<u8, 32>) -> Simd<u8, 32> {
 /// The correctness of this function hinges on the sizes agreeing in actuality.
 #[allow(dead_code)]
 #[inline(always)]
+// flux_verify_ice: type parameter out of range
+#[flux_attrs::trusted]
 unsafe fn transize<T, const N: usize>(
     f: unsafe fn(T, T) -> T,
     a: Simd<u8, N>,

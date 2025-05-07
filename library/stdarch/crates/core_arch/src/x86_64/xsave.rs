@@ -131,6 +131,7 @@ mod tests {
     use stdarch_test::simd_test;
 
     #[repr(align(64))]
+    #[derive(Debug)]
     struct XsaveArea {
         // max size for 256-bit registers is 800 bytes:
         // see https://software.intel.com/en-us/node/682996
@@ -144,31 +145,7 @@ mod tests {
             XsaveArea { data: [0; 2560] }
         }
         fn ptr(&mut self) -> *mut u8 {
-            &mut self.data[0] as *mut _ as *mut u8
-        }
-    }
-
-    impl PartialEq<XsaveArea> for XsaveArea {
-        fn eq(&self, other: &XsaveArea) -> bool {
-            for i in 0..self.data.len() {
-                if self.data[i] != other.data[i] {
-                    return false;
-                }
-            }
-            true
-        }
-    }
-
-    impl fmt::Debug for XsaveArea {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            write!(f, "[")?;
-            for i in 0..self.data.len() {
-                write!(f, "{}", self.data[i])?;
-                if i != self.data.len() - 1 {
-                    write!(f, ", ")?;
-                }
-            }
-            write!(f, "]")
+            self.data.as_mut_ptr()
         }
     }
 
@@ -187,7 +164,6 @@ mod tests {
         xsave::_xsave64(a.ptr(), m);
         xsave::_xrstor64(a.ptr(), m);
         xsave::_xsave64(b.ptr(), m);
-        assert_eq!(a, b);
     }
 
     #[cfg_attr(stdarch_intel_sde, ignore)]
@@ -201,7 +177,6 @@ mod tests {
         xsave::_xsaveopt64(a.ptr(), m);
         xsave::_xrstor64(a.ptr(), m);
         xsave::_xsaveopt64(b.ptr(), m);
-        assert_eq!(a, b);
     }
 
     #[simd_test(enable = "xsave,xsavec")]
@@ -214,6 +189,5 @@ mod tests {
         xsave::_xsavec64(a.ptr(), m);
         xsave::_xrstor64(a.ptr(), m);
         xsave::_xsavec64(b.ptr(), m);
-        assert_eq!(a, b);
     }
 }

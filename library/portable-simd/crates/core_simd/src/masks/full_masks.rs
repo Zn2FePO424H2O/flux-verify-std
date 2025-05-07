@@ -96,6 +96,8 @@ macro_rules! impl_reverse_bits {
 
 impl_reverse_bits! { u8, u16, u32, u64 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Mask<T, N>
 where
     T: MaskElement,

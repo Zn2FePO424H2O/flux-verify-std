@@ -1,14 +1,23 @@
 //! This module contains the entry points for `slice::sort`.
 
+#[cfg(not(any(feature = "optimize_for_size", target_pointer_width = "16")))]
+use crate::cmp;
+use crate::intrinsics;
 use crate::mem::{self, MaybeUninit, SizedTypeProperties};
+#[cfg(not(any(feature = "optimize_for_size", target_pointer_width = "16")))]
 use crate::slice::sort::shared::smallsort::{
-    insertion_sort_shift_left, StableSmallSortTypeImpl, SMALL_SORT_GENERAL_SCRATCH_LEN,
+    SMALL_SORT_GENERAL_SCRATCH_LEN, StableSmallSortTypeImpl, insertion_sort_shift_left,
 };
-use crate::{cmp, intrinsics};
 
-pub(crate) mod drift;
 pub(crate) mod merge;
+
+#[cfg(not(any(feature = "optimize_for_size", target_pointer_width = "16")))]
+pub(crate) mod drift;
+#[cfg(not(any(feature = "optimize_for_size", target_pointer_width = "16")))]
 pub(crate) mod quicksort;
+
+#[cfg(any(feature = "optimize_for_size", target_pointer_width = "16"))]
+pub(crate) mod tiny;
 
 /// Stable sort called driftsort by Orson Peters and Lukas Bergdoll.
 /// Design document:
@@ -30,25 +39,58 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], is_less
         return;
     }
 
-    // More advanced sorting methods than insertion sort are faster if called in
-    // a hot loop for small inputs, but for general-purpose code the small
-    // binary size of insertion sort is more important. The instruction cache in
-    // modern processors is very valuable, and for a single sort call in general
-    // purpose code any gains from an advanced method are cancelled by i-cache
-    // misses during the sort, and thrashing the i-cache for surrounding code.
-    const MAX_LEN_ALWAYS_INSERTION_SORT: usize = 20;
-    if intrinsics::likely(len <= MAX_LEN_ALWAYS_INSERTION_SORT) {
-        insertion_sort_shift_left(v, 1, is_less);
-        return;
-    }
+    cfg_if! {
+        if #[cfg(any(feature = "optimize_for_size", target_pointer_width = "16"))] {
+            let alloc_len = len / 2;
 
-    driftsort_main::<T, F, BufT>(v, is_less);
+            cfg_if! {
+                if #[cfg(target_pointer_width = "16")] {
+                    let mut heap_buf = BufT::with_capacity(alloc_len);
+                    let scratch = heap_buf.as_uninit_slice_mut();
+                } else {
+                    // For small inputs 4KiB of stack storage suffices, which allows us to avoid
+                    // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
+                    let mut stack_buf = AlignedStorage::<T, 4096>::new();
+                    let stack_scratch = stack_buf.as_uninit_slice_mut();
+                    let mut heap_buf;
+                    let scratch = if stack_scratch.len() >= alloc_len {
+                        stack_scratch
+                    } else {
+                        heap_buf = BufT::with_capacity(alloc_len);
+                        heap_buf.as_uninit_slice_mut()
+                    };
+                }
+            }
+
+            tiny::mergesort(v, scratch, is_less);
+        } else {
+            // More advanced sorting methods than insertion sort are faster if called in
+            // a hot loop for small inputs, but for general-purpose code the small
+            // binary size of insertion sort is more important. The instruction cache in
+            // modern processors is very valuable, and for a single sort call in general
+            // purpose code any gains from an advanced method are cancelled by i-cache
+            // misses during the sort, and thrashing the i-cache for surrounding code.
+            const MAX_LEN_ALWAYS_INSERTION_SORT: usize = 20;
+            if intrinsics::likely(len <= MAX_LEN_ALWAYS_INSERTION_SORT) {
+                insertion_sort_shift_left(v, 1, is_less);
+                return;
+            }
+
+            driftsort_main::<T, F, BufT>(v, is_less);
+        }
+    }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 /// See [`sort`]
 ///
 /// Deliberately don't inline the main sorting routine entrypoint to ensure the
 /// inlined insertion sort i-cache footprint remains minimal.
+#[cfg(not(any(feature = "optimize_for_size", target_pointer_width = "16")))]
 #[inline(never)]
 fn driftsort_main<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], is_less: &mut F) {
     // By allocating n elements of memory we can ensure the entire input can
@@ -60,7 +102,10 @@ fn driftsort_main<T, F: FnMut(&T, &T) -> bool, BufT: BufGuard<T>>(v: &mut [T], i
     // also need to ensure our alloc >= MIN_SMALL_SORT_SCRATCH_LEN, as the
     // small-sort always needs this much memory.
     const MAX_FULL_ALLOC_BYTES: usize = 8_000_000; // 8MB
-    let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem::size_of::<T>();
+    let mem_size_of_t = mem::size_of::<T>();
+    // flux_verify_complex: unknown
+    flux_assume(mem_size_of_t != 0);
+    let max_full_alloc = MAX_FULL_ALLOC_BYTES / mem_size_of_t;
     let len = v.len();
     let alloc_len =
         cmp::max(cmp::max(len / 2, cmp::min(len, max_full_alloc)), SMALL_SORT_GENERAL_SCRATCH_LEN);
@@ -100,11 +145,15 @@ struct AlignedStorage<T, const N: usize> {
     storage: [MaybeUninit<u8>; N],
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> AlignedStorage<T, N> {
     fn new() -> Self {
         Self { _align: [], storage: [const { MaybeUninit::uninit() }; N] }
     }
 
+    // flux_verify_complex: refinement type error slice
+    #[flux_attrs::trusted]
     fn as_uninit_slice_mut(&mut self) -> &mut [MaybeUninit<T>] {
         let len = N / mem::size_of::<T>();
 

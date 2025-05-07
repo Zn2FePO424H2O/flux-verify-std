@@ -11,7 +11,7 @@ use crate::iter::{
 use crate::marker::PhantomData;
 use crate::mem::{self, SizedTypeProperties};
 use crate::num::NonZero;
-use crate::ptr::{self, without_provenance, without_provenance_mut, NonNull};
+use crate::ptr::{NonNull, without_provenance, without_provenance_mut};
 use crate::{cmp, fmt};
 
 #[stable(feature = "boxed_slice_into_iter", since = "1.80.0")]
@@ -46,11 +46,17 @@ impl<'a, T> IntoIterator for &'a mut [T] {
 /// Basic usage:
 ///
 /// ```
-/// // First, we declare a type which has `iter` method to get the `Iter` struct (`&[usize]` here):
+/// // First, we need a slice to call the `iter` method on:
 /// let slice = &[1, 2, 3];
 ///
-/// // Then, we iterate over it:
+/// // Then we call `iter` on the slice to get the `Iter` iterator,
+/// // and iterate over it:
 /// for element in slice.iter() {
+///     println!("{element}");
+/// }
+///
+/// // This for loop actually already works without calling `iter`:
+/// for element in slice {
 ///     println!("{element}");
 /// }
 /// ```
@@ -68,7 +74,7 @@ pub struct Iter<'a, T: 'a> {
     ptr: NonNull<T>,
     /// For non-ZSTs, the non-null pointer to the past-the-end element.
     ///
-    /// For ZSTs, this is `ptr::dangling(len)`.
+    /// For ZSTs, this is `ptr::without_provenance_mut(len)`.
     end_or_len: *const T,
     _marker: PhantomData<&'a T>,
 }
@@ -101,27 +107,29 @@ impl<'a, T> Iter<'a, T> {
 
     /// Views the underlying data as a subslice of the original data.
     ///
-    /// This has the same lifetime as the original slice, and so the
-    /// iterator can continue to be used while this exists.
-    ///
     /// # Examples
     ///
     /// Basic usage:
     ///
     /// ```
-    /// // First, we declare a type which has the `iter` method to get the `Iter`
-    /// // struct (`&[usize]` here):
+    /// // First, we need a slice to call the `iter` method on:
     /// let slice = &[1, 2, 3];
     ///
-    /// // Then, we get the iterator:
+    /// // Then we call `iter` on the slice to get the `Iter` iterator:
     /// let mut iter = slice.iter();
-    /// // So if we print what `as_slice` method returns here, we have "[1, 2, 3]":
+    /// // Here `as_slice` still returns the whole slice, so this prints "[1, 2, 3]":
     /// println!("{:?}", iter.as_slice());
     ///
-    /// // Next, we move to the second element of the slice:
+    /// // Now, we call the `next` method to remove the first element from the iterator:
     /// iter.next();
-    /// // Now `as_slice` returns "[2, 3]":
+    /// // Here the iterator does not contain the first element of the slice any more,
+    /// // so `as_slice` only returns the last two elements of the slice,
+    /// // and so this prints "[2, 3]":
     /// println!("{:?}", iter.as_slice());
+    ///
+    /// // The underlying slice has not been modified and still contains three elements,
+    /// // so this prints "[1, 2, 3]":
+    /// println!("{:?}", slice);
     /// ```
     #[must_use]
     #[stable(feature = "iter_to_slice", since = "1.4.0")]
@@ -166,11 +174,11 @@ impl<T> AsRef<[T]> for Iter<'_, T> {
 /// Basic usage:
 ///
 /// ```
-/// // First, we declare a type which has `iter_mut` method to get the `IterMut`
-/// // struct (`&[usize]` here):
-/// let mut slice = &mut [1, 2, 3];
+/// // First, we need a slice to call the `iter_mut` method on:
+/// let slice = &mut [1, 2, 3];
 ///
-/// // Then, we iterate over it and increment each element value:
+/// // Then we call `iter_mut` on the slice to get the `IterMut` iterator,
+/// // iterate over it and increment each element value:
 /// for element in slice.iter_mut() {
 ///     *element += 1;
 /// }
@@ -247,28 +255,21 @@ impl<'a, T> IterMut<'a, T> {
     /// Basic usage:
     ///
     /// ```
-    /// // First, we declare a type which has `iter_mut` method to get the `IterMut`
-    /// // struct (`&[usize]` here):
+    /// // First, we need a slice to call the `iter_mut` method on:
     /// let mut slice = &mut [1, 2, 3];
     ///
-    /// {
-    ///     // Then, we get the iterator:
-    ///     let mut iter = slice.iter_mut();
-    ///     // We move to next element:
-    ///     iter.next();
-    ///     // So if we print what `into_slice` method returns here, we have "[2, 3]":
-    ///     println!("{:?}", iter.into_slice());
-    /// }
-    ///
-    /// // Now let's modify a value of the slice:
-    /// {
-    ///     // First we get back the iterator:
-    ///     let mut iter = slice.iter_mut();
-    ///     // We change the value of the first element of the slice returned by the `next` method:
-    ///     *iter.next().unwrap() += 1;
-    /// }
-    /// // Now slice is "[2, 2, 3]":
-    /// println!("{slice:?}");
+    /// // Then we call `iter_mut` on the slice to get the `IterMut` struct:
+    /// let mut iter = slice.iter_mut();
+    /// // Now, we call the `next` method to remove the first element of the iterator,
+    /// // unwrap and dereference what we get from `next` and increase its value by 1:
+    /// *iter.next().unwrap() += 1;
+    /// // Here the iterator does not contain the first element of the slice any more,
+    /// // so `into_slice` only returns the last two elements of the slice,
+    /// // and so this prints "[2, 3]":
+    /// println!("{:?}", iter.into_slice());
+    /// // The underlying slice still contains three elements, but its first element
+    /// // was increased by 1, so this prints "[2, 2, 3]":
+    /// println!("{:?}", slice);
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(feature = "iter_to_slice", since = "1.4.0")]
@@ -281,25 +282,30 @@ impl<'a, T> IterMut<'a, T> {
 
     /// Views the underlying data as a subslice of the original data.
     ///
-    /// To avoid creating `&mut [T]` references that alias, the returned slice
-    /// borrows its lifetime from the iterator the method is applied on.
-    ///
     /// # Examples
     ///
     /// Basic usage:
     ///
     /// ```
-    /// let mut slice: &mut [usize] = &mut [1, 2, 3];
+    /// // First, we need a slice to call the `iter_mut` method on:
+    /// let slice = &mut [1, 2, 3];
     ///
-    /// // First, we get the iterator:
+    /// // Then we call `iter_mut` on the slice to get the `IterMut` iterator:
     /// let mut iter = slice.iter_mut();
-    /// // So if we check what the `as_slice` method returns here, we have "[1, 2, 3]":
-    /// assert_eq!(iter.as_slice(), &[1, 2, 3]);
+    /// // Here `as_slice` still returns the whole slice, so this prints "[1, 2, 3]":
+    /// println!("{:?}", iter.as_slice());
     ///
-    /// // Next, we move to the second element of the slice:
-    /// iter.next();
-    /// // Now `as_slice` returns "[2, 3]":
-    /// assert_eq!(iter.as_slice(), &[2, 3]);
+    /// // Now, we call the `next` method to remove the first element from the iterator
+    /// // and increment its value:
+    /// *iter.next().unwrap() += 1;
+    /// // Here the iterator does not contain the first element of the slice any more,
+    /// // so `as_slice` only returns the last two elements of the slice,
+    /// // and so this prints "[2, 3]":
+    /// println!("{:?}", iter.as_slice());
+    ///
+    /// // The underlying slice still contains three elements, but its first element
+    /// // was increased by 1, so this prints "[2, 2, 3]":
+    /// println!("{:?}", slice);
     /// ```
     #[must_use]
     #[stable(feature = "slice_iter_mut_as_slice", since = "1.53.0")]
@@ -309,9 +315,6 @@ impl<'a, T> IterMut<'a, T> {
     }
 
     /// Views the underlying data as a mutable subslice of the original data.
-    ///
-    /// To avoid creating `&mut [T]` references that alias, the returned slice
-    /// borrows its lifetime from the iterator the method is applied on.
     ///
     /// # Examples
     ///
@@ -449,6 +452,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -456,6 +461,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -488,11 +495,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -513,11 +524,15 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a [T]> {
         if self.finished {
             None
@@ -593,6 +608,8 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for SplitInclusive<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -600,6 +617,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -629,11 +648,15 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for SplitInclusive<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.finished {
             return None;
@@ -698,11 +721,15 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             None
@@ -714,6 +741,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -721,6 +750,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -754,11 +785,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -832,6 +867,8 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for SplitInclusiveMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -839,6 +876,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -873,11 +912,15 @@ where
 }
 
 #[stable(feature = "split_inclusive", since = "1.51.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for SplitInclusiveMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
         if self.finished {
             return None;
@@ -967,6 +1010,8 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -974,6 +1019,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         self.inner.next_back()
     }
@@ -985,22 +1032,30 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         self.inner.next()
     }
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a [T]> {
         self.inner.finish()
     }
@@ -1053,17 +1108,23 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> SplitIter for RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn finish(&mut self) -> Option<&'a mut [T]> {
         self.inner.finish()
     }
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> Iterator for RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
@@ -1071,6 +1132,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a mut [T]> {
         self.inner.next_back()
     }
@@ -1082,11 +1145,15 @@ where
 }
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, P> DoubleEndedIterator for RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
         self.inner.next()
     }
@@ -1104,10 +1171,14 @@ struct GenericSplitN<I> {
     count: usize,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, I: SplitIter<Item = T>> Iterator for GenericSplitN<I> {
     type Item = T;
 
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<T> {
         match self.count {
             0 => None,
@@ -1365,7 +1436,11 @@ impl<'a, T> Iterator for Windows<'a, T> {
         if self.size.get() > self.v.len() {
             (0, Some(0))
         } else {
-            let size = self.v.len() - self.size.get() + 1;
+            let self_v_len = self.v.len();
+            let self_size_get = self.size.get();
+            // flux_verify_error: condition matching
+            flux_assume(self_v_len >= self_size_get);
+            let size = self_v_len - self_size_get + 1;
             (size, Some(size))
         }
     }
@@ -1393,7 +1468,11 @@ impl<'a, T> Iterator for Windows<'a, T> {
         if self.size.get() > self.v.len() {
             None
         } else {
-            let start = self.v.len() - self.size.get();
+            let self_v_len = self.v.len();
+            let self_size_get = self.size.get();
+            // flux_verify_error: condition matching
+            flux_assume(self_v_len >= self_size_get);
+            let start = self_v_len - self_size_get;
             Some(&self.v[start..])
         }
     }
@@ -1408,8 +1487,12 @@ impl<'a, T> Iterator for Windows<'a, T> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for Windows<'a, T> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.size.get() > self.v.len() {
             None
@@ -1421,6 +1504,8 @@ impl<'a, T> DoubleEndedIterator for Windows<'a, T> {
     }
 
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let (end, overflow) = self.v.len().overflowing_sub(n);
         if end < self.size.get() || overflow {
@@ -1477,13 +1562,16 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for Windows<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
+#[flux_attrs::refined_by()]
 pub struct Chunks<'a, T: 'a> {
     v: &'a [T],
+    #[field(usize{v: v > 0})]
     chunk_size: usize,
 }
 
 impl<'a, T: 'a> Chunks<'a, T> {
     #[inline]
+    #[flux_attrs::sig(fn (_,usize{x:x>0}) -> _)]
     pub(super) fn new(slice: &'a [T], size: usize) -> Self {
         Self { v: slice, chunk_size: size }
     }
@@ -1552,7 +1640,10 @@ impl<'a, T> Iterator for Chunks<'a, T> {
         if self.v.is_empty() {
             None
         } else {
-            let start = (self.v.len() - 1) / self.chunk_size * self.chunk_size;
+            let self_v_len = self.v.len();
+            // flux_verify_error: ZST
+            flux_assume(self_v_len >= 1);
+            let start = (self_v_len - 1) / self.chunk_size * self.chunk_size;
             Some(&self.v[start..])
         }
     }
@@ -1596,7 +1687,10 @@ impl<'a, T> DoubleEndedIterator for Chunks<'a, T> {
             // `self.v.len() % self.chunk_size` would return nonzero (note that
             // in this branch of the `if`, we already know that `self.v` is
             // non-empty).
-            let (fst, snd) = unsafe { self.v.split_at_unchecked(self.v.len() - chunksz) };
+            let self_v_len = self.v.len();
+            // flux_verify_complex: unknown
+            flux_assume(self_v_len >= chunksz);
+            let (fst, snd) = unsafe { self.v.split_at_unchecked(self_v_len - chunksz) };
             self.v = fst;
             Some(snd)
         }
@@ -1680,6 +1774,8 @@ impl<'a, T: 'a> ChunksMut<'a, T> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for ChunksMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -1715,6 +1811,8 @@ impl<'a, T> Iterator for ChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<&'a mut [T]> {
         let (start, overflow) = n.overflowing_mul(self.chunk_size);
         if start >= self.v.len() || overflow {
@@ -1762,6 +1860,8 @@ impl<'a, T> Iterator for ChunksMut<'a, T> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_mark: impl
+    #[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for ChunksMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -1780,6 +1880,8 @@ impl<'a, T> DoubleEndedIterator for ChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -1852,17 +1954,26 @@ unsafe impl<T> Sync for ChunksMut<'_, T> where T: Sync {}
 #[derive(Debug)]
 #[stable(feature = "chunks_exact", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
+#[flux_attrs::refined_by()]
 pub struct ChunksExact<'a, T: 'a> {
     v: &'a [T],
     rem: &'a [T],
+    #[field(usize{v: v > 0})]
     chunk_size: usize,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> ChunksExact<'a, T> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
-        let fst_len = slice.len() - rem;
+        let slice_len = slice.len();
+        // flux_verify_error: logic constraint
+        flux_assume(slice_len >= rem);
+        let fst_len = slice_len - rem;
         // SAFETY: 0 <= fst_len <= slice.len() by construction above
         let (fst, snd) = unsafe { slice.split_at_unchecked(fst_len) };
         Self { v: fst, rem: snd, chunk_size }
@@ -1958,7 +2069,11 @@ impl<'a, T> DoubleEndedIterator for ChunksExact<'a, T> {
         if self.v.len() < self.chunk_size {
             None
         } else {
-            let (fst, snd) = self.v.split_at(self.v.len() - self.chunk_size);
+            let self_v_len = self.v.len();
+            let self_chunk_size = self.chunk_size;
+            // flux_verify_error: logic constraint
+            flux_assume (self_v_len >= self_chunk_size);
+            let (fst, snd) = self.v.split_at(self_v_len - self_chunk_size);
             self.v = fst;
             Some(snd)
         }
@@ -2038,11 +2153,18 @@ pub struct ChunksExactMut<'a, T: 'a> {
     _marker: PhantomData<&'a mut T>,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> ChunksExactMut<'a, T> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
-        let fst_len = slice.len() - rem;
+        let slice_len = slice.len();
+        // flux_verify_error: logic constraint
+        flux_assume (slice_len >= rem);
+        let fst_len = slice_len - rem;
         // SAFETY: 0 <= fst_len <= slice.len() by construction above
         let (fst, snd) = unsafe { slice.split_at_mut_unchecked(fst_len) };
         Self { v: fst, rem: snd, chunk_size, _marker: PhantomData }
@@ -2059,6 +2181,8 @@ impl<'a, T> ChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "chunks_exact", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for ChunksExactMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -2082,6 +2206,8 @@ impl<'a, T> Iterator for ChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn count(self) -> usize {
         self.len()
     }
@@ -2113,6 +2239,8 @@ impl<'a, T> Iterator for ChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "chunks_exact", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for ChunksExactMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -2128,6 +2256,8 @@ impl<'a, T> DoubleEndedIterator for ChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -2205,8 +2335,12 @@ pub struct ArrayWindows<'a, T: 'a, const N: usize> {
     marker: PhantomData<&'a [T; N]>,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, const N: usize> ArrayWindows<'a, T, N> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T]) -> Self {
         let num_windows = slice.len().saturating_sub(N - 1);
         Self { slice_head: slice.as_ptr(), num: num_windows, marker: PhantomData }
@@ -2214,10 +2348,14 @@ impl<'a, T: 'a, const N: usize> ArrayWindows<'a, T, N> {
 }
 
 #[unstable(feature = "array_windows", issue = "75027")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
     type Item = &'a [T; N];
 
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.num == 0 {
             return None;
@@ -2244,6 +2382,8 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
     }
 
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<Self::Item> {
         if self.num <= n {
             self.num = 0;
@@ -2266,8 +2406,12 @@ impl<'a, T, const N: usize> Iterator for ArrayWindows<'a, T, N> {
 }
 
 #[unstable(feature = "array_windows", issue = "75027")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T, const N: usize> DoubleEndedIterator for ArrayWindows<'a, T, N> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T; N]> {
         if self.num == 0 {
             return None;
@@ -2279,6 +2423,8 @@ impl<'a, T, const N: usize> DoubleEndedIterator for ArrayWindows<'a, T, N> {
     }
 
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<&'a [T; N]> {
         if self.num <= n {
             self.num = 0;
@@ -2590,6 +2736,8 @@ impl<T> Clone for RChunks<'_, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunks<'a, T> {
     type Item = &'a [T];
 
@@ -2605,6 +2753,8 @@ impl<'a, T> Iterator for RChunks<'a, T> {
             // chunksz` overflows. This could only happen if `chunksz > len`,
             // which is impossible as we initialize it as the `min` of `len` and
             // `self.chunk_size`.
+            // flux_verify_error: vector length
+            flux_assume(len >= chunksz);
             let (fst, snd) = unsafe { self.v.split_at_unchecked(len - chunksz) };
             self.v = fst;
             Some(snd)
@@ -2636,7 +2786,10 @@ impl<'a, T> Iterator for RChunks<'a, T> {
             None
         } else {
             // Can't underflow because of the check above
-            let end = self.v.len() - end;
+            let self_v_len = self.v.len();
+            // flux_verify_error: logic constraint
+            flux_assume(self_v_len >= end);
+            let end = self_v_len - end;
             let start = match end.checked_sub(self.chunk_size) {
                 Some(sum) => sum,
                 None => 0,
@@ -2648,6 +2801,8 @@ impl<'a, T> Iterator for RChunks<'a, T> {
     }
 
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         if self.v.is_empty() {
             None
@@ -2659,19 +2814,29 @@ impl<'a, T> Iterator for RChunks<'a, T> {
     }
 
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
-        let end = self.v.len() - idx * self.chunk_size;
+        let self_v_len = self.v.len();
+        let idx_self_chunk_size = idx * self.chunk_size;
+        // flux_verify_error: logic constraint
+        flux_assume(self_v_len >= idx_self_chunk_size);
+        let end = self_v_len - idx_self_chunk_size;
         let start = match end.checked_sub(self.chunk_size) {
             None => 0,
             Some(start) => start,
         };
         // SAFETY: mostly identical to `Chunks::__iterator_get_unchecked`.
+        // flux_verify_error: logic constraint
+        flux_assume(end >= start);
         unsafe { from_raw_parts(self.v.as_ptr().add(start), end - start) }
     }
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunks<'a, T> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<&'a [T]> {
         if self.v.is_empty() {
             None
@@ -2694,7 +2859,10 @@ impl<'a, T> DoubleEndedIterator for RChunks<'a, T> {
         } else {
             // can't underflow because `n < len`
             let offset_from_end = (len - 1 - n) * self.chunk_size;
-            let end = self.v.len() - offset_from_end;
+            let self_v_len = self.v.len();
+            // flux_verify_error: logic constraint
+            flux_assume(self_v_len >= offset_from_end);
+            let end = self_v_len - offset_from_end;
             let start = end.saturating_sub(self.chunk_size);
             let nth_back = &self.v[start..end];
             self.v = &self.v[end..];
@@ -2762,6 +2930,8 @@ impl<'a, T: 'a> RChunksMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunksMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -2802,6 +2972,8 @@ impl<'a, T> Iterator for RChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<&'a mut [T]> {
         let (end, overflow) = n.overflowing_mul(self.chunk_size);
         if end >= self.v.len() || overflow {
@@ -2851,6 +3023,8 @@ impl<'a, T> Iterator for RChunksMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunksMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -2868,6 +3042,8 @@ impl<'a, T> DoubleEndedIterator for RChunksMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -2945,8 +3121,12 @@ pub struct RChunksExact<'a, T: 'a> {
     chunk_size: usize,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> RChunksExact<'a, T> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         // SAFETY: 0 <= rem <= slice.len() by construction above
@@ -2987,10 +3167,14 @@ impl<'a, T> Clone for RChunksExact<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunksExact<'a, T> {
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_error: logic constraint
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<&'a [T]> {
         if self.v.len() < self.chunk_size {
             None
@@ -3019,7 +3203,10 @@ impl<'a, T> Iterator for RChunksExact<'a, T> {
             self.v = &[];
             None
         } else {
-            let (fst, _) = self.v.split_at(self.v.len() - end);
+            let self_v_len = self.v.len();
+            // flux_verify_error: condition matching
+            flux_assume(self_v_len >= end);
+            let (fst, _) = self.v.split_at(self_v_len - end);
             self.v = fst;
             self.next()
         }
@@ -3030,6 +3217,8 @@ impl<'a, T> Iterator for RChunksExact<'a, T> {
         self.next_back()
     }
 
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
         let end = self.v.len() - idx * self.chunk_size;
         let start = end - self.chunk_size;
@@ -3061,7 +3250,10 @@ impl<'a, T> DoubleEndedIterator for RChunksExact<'a, T> {
             // now that we know that `n` corresponds to a chunk,
             // none of these operations can underflow/overflow
             let offset = (len - n) * self.chunk_size;
-            let start = self.v.len() - offset;
+            let self_v_len = self.v.len();
+            // flux_verify_error: logic constraint
+            flux_assume(self_v_len >= offset);
+            let start = self_v_len - offset;
             let end = start + self.chunk_size;
             let nth_back = &self.v[start..end];
             self.v = &self.v[end..];
@@ -3069,6 +3261,11 @@ impl<'a, T> DoubleEndedIterator for RChunksExact<'a, T> {
         }
     }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
 
 #[stable(feature = "rchunks", since = "1.31.0")]
 impl<'a, T> ExactSizeIterator for RChunksExact<'a, T> {
@@ -3127,8 +3324,12 @@ pub struct RChunksExactMut<'a, T: 'a> {
     chunk_size: usize,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> RChunksExactMut<'a, T> {
     #[inline]
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     pub(super) fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let rem = slice.len() % chunk_size;
         // SAFETY: 0 <= rem <= slice.len() by construction above
@@ -3147,6 +3348,8 @@ impl<'a, T> RChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> Iterator for RChunksExactMut<'a, T> {
     type Item = &'a mut [T];
 
@@ -3176,6 +3379,8 @@ impl<'a, T> Iterator for RChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth(&mut self, n: usize) -> Option<&'a mut [T]> {
         let (end, overflow) = n.overflowing_mul(self.chunk_size);
         if end >= self.v.len() || overflow {
@@ -3204,6 +3409,8 @@ impl<'a, T> Iterator for RChunksExactMut<'a, T> {
 }
 
 #[stable(feature = "rchunks", since = "1.31.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T> DoubleEndedIterator for RChunksExactMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut [T]> {
@@ -3219,6 +3426,8 @@ impl<'a, T> DoubleEndedIterator for RChunksExactMut<'a, T> {
     }
 
     #[inline]
+    // flux_verify_ice: unsupported unsize cast
+    #[flux_attrs::trusted_impl]
     fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
         let len = self.len();
         if n >= len {
@@ -3311,6 +3520,8 @@ impl<'a, T: 'a, P> ChunkBy<'a, T, P> {
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> Iterator for ChunkBy<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
@@ -3318,6 +3529,8 @@ where
     type Item = &'a [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None
@@ -3339,17 +3552,23 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn last(mut self) -> Option<Self::Item> {
         self.next_back()
     }
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> DoubleEndedIterator for ChunkBy<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None
@@ -3398,6 +3617,8 @@ impl<'a, T: 'a, P> ChunkByMut<'a, T, P> {
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> Iterator for ChunkByMut<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
@@ -3405,6 +3626,8 @@ where
     type Item = &'a mut [T];
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None
@@ -3427,17 +3650,23 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn last(mut self) -> Option<Self::Item> {
         self.next_back()
     }
 }
 
 #[stable(feature = "slice_group_by", since = "1.77.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, T: 'a, P> DoubleEndedIterator for ChunkByMut<'a, T, P>
 where
     P: FnMut(&T, &T) -> bool,
 {
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<Self::Item> {
         if self.slice.is_empty() {
             None

@@ -34,6 +34,8 @@ impl<I: fmt::Debug, P> fmt::Debug for SkipWhile<I, P> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I: Iterator, P> Iterator for SkipWhile<I, P>
 where
     P: FnMut(&I::Item) -> bool,
@@ -41,6 +43,8 @@ where
     type Item = I::Item;
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<I::Item> {
         fn check<'a, T>(
             flag: &'a mut bool,

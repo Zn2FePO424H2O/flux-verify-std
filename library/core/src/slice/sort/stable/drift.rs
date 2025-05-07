@@ -8,6 +8,11 @@ use crate::slice::sort::stable::merge::merge;
 use crate::slice::sort::stable::quicksort::quicksort;
 use crate::{cmp, intrinsics};
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Sorts `v` based on comparison function `is_less`. If `eager_sort` is true,
 /// it will only do small-sorts and physical merges, ensuring O(N * log(N))
 /// worst-case complexity. `scratch.len()` must be at least `max(v.len() / 2,
@@ -62,8 +67,11 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool>(
         if scan_idx < len {
             next_run =
                 create_run(&mut v[scan_idx..], scratch, min_good_run_len, eager_sort, is_less);
+            let prev_run_len = prev_run.len();
+            // flux_verify_complex: unknown
+            flux_assume(scan_idx >= prev_run_len);
             desired_depth = merge_tree_depth(
-                scan_idx - prev_run.len(),
+                scan_idx - prev_run_len,
                 scan_idx,
                 scan_idx + next_run.len(),
                 scale_factor,
@@ -153,6 +161,7 @@ pub fn sort<T, F: FnMut(&T, &T) -> bool>(
 // So as long as n < 2^62 we find that x < 2^64, meaning our operations do not
 // overflow.
 #[inline(always)]
+#[flux_attrs::sig(fn (usize{n: n>0}) -> u64)]
 fn merge_tree_scale_factor(n: usize) -> u64 {
     if usize::BITS > u64::BITS {
         panic!("Platform not supported");

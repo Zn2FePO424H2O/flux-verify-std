@@ -35,6 +35,8 @@ struct Parser<'a> {
     state: &'a [u8],
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a> Parser<'a> {
     fn new(input: &'a [u8]) -> Parser<'a> {
         Parser { state: input }
@@ -112,18 +114,18 @@ impl<'a> Parser<'a> {
         max_digits: Option<usize>,
         allow_zero_prefix: bool,
     ) -> Option<T> {
-        // If max_digits.is_some(), then we are parsing a `u8` or `u16` and
-        // don't need to use checked arithmetic since it fits within a `u32`.
-        if let Some(max_digits) = max_digits {
-            // u32::MAX = 4_294_967_295u32, which is 10 digits long.
-            // `max_digits` must be less than 10 to not overflow a `u32`.
-            debug_assert!(max_digits < 10);
+        self.read_atomically(move |p| {
+            let mut digit_count = 0;
+            let has_leading_zero = p.peek_char() == Some('0');
 
-            self.read_atomically(move |p| {
+            // If max_digits.is_some(), then we are parsing a `u8` or `u16` and
+            // don't need to use checked arithmetic since it fits within a `u32`.
+            let result = if let Some(max_digits) = max_digits {
+                // u32::MAX = 4_294_967_295u32, which is 10 digits long.
+                // `max_digits` must be less than 10 to not overflow a `u32`.
+                debug_assert!(max_digits < 10);
+
                 let mut result = 0_u32;
-                let mut digit_count = 0;
-                let has_leading_zero = p.peek_char() == Some('0');
-
                 while let Some(digit) = p.read_atomically(|p| p.read_char()?.to_digit(radix)) {
                     result *= radix;
                     result += digit;
@@ -134,19 +136,9 @@ impl<'a> Parser<'a> {
                     }
                 }
 
-                if digit_count == 0 {
-                    None
-                } else if !allow_zero_prefix && has_leading_zero && digit_count > 1 {
-                    None
-                } else {
-                    result.try_into().ok()
-                }
-            })
-        } else {
-            self.read_atomically(move |p| {
+                result.try_into().ok()
+            } else {
                 let mut result = T::ZERO;
-                let mut digit_count = 0;
-                let has_leading_zero = p.peek_char() == Some('0');
 
                 while let Some(digit) = p.read_atomically(|p| p.read_char()?.to_digit(radix)) {
                     result = result.checked_mul(radix)?;
@@ -154,15 +146,17 @@ impl<'a> Parser<'a> {
                     digit_count += 1;
                 }
 
-                if digit_count == 0 {
-                    None
-                } else if !allow_zero_prefix && has_leading_zero && digit_count > 1 {
-                    None
-                } else {
-                    Some(result)
-                }
-            })
-        }
+                Some(result)
+            };
+
+            if digit_count == 0 {
+                None
+            } else if !allow_zero_prefix && has_leading_zero && digit_count > 1 {
+                None
+            } else {
+                result
+            }
+        })
     }
 
     /// Reads an IPv4 address.
@@ -189,6 +183,8 @@ impl<'a> Parser<'a> {
         /// trailing IPv4 address was read. Specifically, read a series of
         /// colon-separated IPv6 groups (0x0000 - 0xFFFF), with an optional
         /// trailing embedded IPv4 address.
+        // flux_verify_ice: expected array or slice type
+        #[flux_attrs::trusted]
         fn read_groups(p: &mut Parser<'_>, groups: &mut [u16]) -> (usize, bool) {
             let limit = groups.len();
 
@@ -250,6 +246,8 @@ impl<'a> Parser<'a> {
     }
 
     /// Reads an IP address, either IPv4 or IPv6.
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn read_ip_addr(&mut self) -> Option<IpAddr> {
         self.read_ipv4_addr().map(IpAddr::V4).or_else(move || self.read_ipv6_addr().map(IpAddr::V6))
     }
@@ -293,6 +291,8 @@ impl<'a> Parser<'a> {
     }
 
     /// Reads an IP address with a port.
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted]
     fn read_socket_addr(&mut self) -> Option<SocketAddr> {
         self.read_socket_addr_v4()
             .map(SocketAddr::V4)

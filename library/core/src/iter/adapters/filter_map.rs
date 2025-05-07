@@ -3,7 +3,6 @@ use crate::iter::{FusedIterator, InPlaceIterable, TrustedFused};
 use crate::mem::{ManuallyDrop, MaybeUninit};
 use crate::num::NonZero;
 use crate::ops::{ControlFlow, Try};
-use crate::ptr::addr_of;
 use crate::{array, fmt};
 
 /// An iterator that uses `f` to both filter and map elements from `iter`.
@@ -54,6 +53,8 @@ fn filter_map_try_fold<'a, T, B, Acc, R: Try<Output = Acc>>(
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<B, I: Iterator, F> Iterator for FilterMap<I, F>
 where
     F: FnMut(I::Item) -> Option<B>,
@@ -66,6 +67,8 @@ where
     }
 
     #[inline]
+    // flux_verify_ice: unsupported terminator
+    #[flux_attrs::trusted_impl]
     fn next_chunk<const N: usize>(
         &mut self,
     ) -> Result<[Self::Item; N], array::IntoIter<Self::Item, N>> {
@@ -82,9 +85,7 @@ where
                 if const { crate::mem::needs_drop::<T>() } {
                     // SAFETY: self.initialized is always <= N, which also is the length of the array.
                     unsafe {
-                        core::ptr::drop_in_place(MaybeUninit::slice_assume_init_mut(
-                            self.array.get_unchecked_mut(..self.initialized),
-                        ));
+                        self.array.get_unchecked_mut(..self.initialized).assume_init_drop();
                     }
                 }
             }
@@ -101,7 +102,7 @@ where
 
             unsafe {
                 let opt_payload_at: *const MaybeUninit<B> =
-                    addr_of!(val).byte_add(core::mem::offset_of!(Option<B>, Some.0)).cast();
+                    (&raw const val).byte_add(core::mem::offset_of!(Option<B>, Some.0)).cast();
                 let dst = guard.array.as_mut_ptr().add(idx);
                 crate::ptr::copy_nonoverlapping(opt_payload_at, dst, 1);
                 crate::mem::forget(val);
@@ -151,11 +152,15 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<B, I: DoubleEndedIterator, F> DoubleEndedIterator for FilterMap<I, F>
 where
     F: FnMut(I::Item) -> Option<B>,
 {
     #[inline]
+    // flux_verify_ice: unexpected escaping region BoundRegion
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<B> {
         #[inline]
         fn find<T, B>(

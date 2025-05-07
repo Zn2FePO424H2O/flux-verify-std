@@ -1,5 +1,5 @@
 use crate::intrinsics;
-use crate::iter::{from_fn, TrustedLen, TrustedRandomAccess};
+use crate::iter::{TrustedLen, TrustedRandomAccess, from_fn};
 use crate::num::NonZero;
 use crate::ops::{Range, Try};
 
@@ -216,6 +216,8 @@ unsafe trait StepByBackImpl<I> {
         F: FnMut(Acc, Self::Item) -> Acc;
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
     type Item = I::Item;
 
@@ -339,6 +341,8 @@ unsafe impl<I: Iterator> StepByImpl<I> for StepBy<I> {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for StepBy<I> {
     type Item = I::Item;
 
@@ -362,7 +366,6 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         F: FnMut(Acc, Self::Item) -> R,
         R: Try<Output = Acc>,
     {
-        #[inline]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
             step_minus_one: usize,
@@ -385,7 +388,6 @@ unsafe impl<I: DoubleEndedIterator + ExactSizeIterator> StepByBackImpl<I> for St
         Self: Sized,
         F: FnMut(Acc, I::Item) -> Acc,
     {
-        #[inline]
         fn nth_back<I: DoubleEndedIterator>(
             iter: &mut I,
             step_minus_one: usize,

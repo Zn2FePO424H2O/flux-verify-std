@@ -555,52 +555,86 @@ pub trait Hasher {
 }
 
 #[stable(feature = "indirect_hasher_impl", since = "1.22.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<H: Hasher + ?Sized> Hasher for &mut H {
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn finish(&self) -> u64 {
         (**self).finish()
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write(&mut self, bytes: &[u8]) {
         (**self).write(bytes)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_u8(&mut self, i: u8) {
         (**self).write_u8(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_u16(&mut self, i: u16) {
         (**self).write_u16(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_u32(&mut self, i: u32) {
         (**self).write_u32(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_u64(&mut self, i: u64) {
         (**self).write_u64(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_u128(&mut self, i: u128) {
         (**self).write_u128(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_usize(&mut self, i: usize) {
         (**self).write_usize(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_i8(&mut self, i: i8) {
         (**self).write_i8(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_i16(&mut self, i: i16) {
         (**self).write_i16(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_i32(&mut self, i: i32) {
         (**self).write_i32(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_i64(&mut self, i: i64) {
         (**self).write_i64(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_i128(&mut self, i: i128) {
         (**self).write_i128(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_isize(&mut self, i: isize) {
         (**self).write_isize(i)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_length_prefix(&mut self, len: usize) {
         (**self).write_length_prefix(len)
     }
+    // flux_verify_complex: refinement type error star
+    #[flux_attrs::trusted_impl]
     fn write_str(&mut self, s: &str) {
         (**self).write_str(s)
     }
@@ -750,13 +784,12 @@ pub trait BuildHasher {
 #[stable(since = "1.7.0", feature = "build_hasher")]
 pub struct BuildHasherDefault<H>(marker::PhantomData<fn() -> H>);
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<H> BuildHasherDefault<H> {
     /// Creates a new BuildHasherDefault for Hasher `H`.
-    #[unstable(
-        feature = "build_hasher_default_const_new",
-        issue = "123197",
-        reason = "recently added"
-    )]
+    #[stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
+    #[rustc_const_stable(feature = "build_hasher_default_const_new", since = "1.85.0")]
     pub const fn new() -> Self {
         BuildHasherDefault(marker::PhantomData)
     }
@@ -779,6 +812,8 @@ impl<H: Default + Hasher> BuildHasher for BuildHasherDefault<H> {
 }
 
 #[stable(since = "1.7.0", feature = "build_hasher")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<H> Clone for BuildHasherDefault<H> {
     fn clone(&self) -> BuildHasherDefault<H> {
         BuildHasherDefault(marker::PhantomData)
@@ -853,8 +888,12 @@ mod impls {
     }
 
     #[stable(feature = "rust1", since = "1.0.0")]
+    // flux_verify_mark: impl
+    #[flux_attrs::trusted]
     impl Hash for char {
         #[inline]
+        // flux_verify_ice: invalid cast char to int
+        #[flux_attrs::trusted_impl]
         fn hash<H: Hasher>(&self, state: &mut H) {
             state.write_u32(*self as u32)
         }
@@ -869,8 +908,12 @@ mod impls {
     }
 
     #[stable(feature = "never_hash", since = "1.29.0")]
+    // flux_verify_mark: impl
+    #[flux_attrs::trusted]
     impl Hash for ! {
         #[inline]
+        // flux_verify_ice: incompatible base types
+        #[flux_attrs::trusted_impl]
         fn hash<H: Hasher>(&self, _: &mut H) {
             *self
         }

@@ -122,7 +122,7 @@ functions.
     issue = "none"
 )]
 
-pub use self::decoder::{decode, DecodableFloat, Decoded, FullDecoded};
+pub use self::decoder::{DecodableFloat, Decoded, FullDecoded, decode};
 use super::fmt::{Formatted, Part};
 use crate::mem::MaybeUninit;
 
@@ -145,6 +145,8 @@ pub const MAX_SIG_DIGITS: usize = 17;
 /// When `d` contains decimal digits, increase the last digit and propagate carry.
 /// Returns a next digit when it causes the length to change.
 #[doc(hidden)]
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn round_up(d: &mut [u8]) -> Option<u8> {
     match d.iter().rposition(|&c| c != b'9') {
         Some(i) => {
@@ -178,6 +180,8 @@ pub fn round_up(d: &mut [u8]) -> Option<u8> {
 /// it will be ignored and full digits will be printed. It is only used to print
 /// additional zeroes after rendered digits. Thus `frac_digits` of 0 means that
 /// it will only print given digits and nothing else.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 fn digits_to_dec_str<'a>(
     buf: &'a [u8],
     exp: i16,
@@ -210,10 +214,10 @@ fn digits_to_dec_str<'a>(
         if frac_digits > buf.len() && frac_digits - buf.len() > minus_exp {
             parts[3] = MaybeUninit::new(Part::Zero((frac_digits - buf.len()) - minus_exp));
             // SAFETY: we just initialized the elements `..4`.
-            unsafe { MaybeUninit::slice_assume_init_ref(&parts[..4]) }
+            unsafe { parts[..4].assume_init_ref() }
         } else {
             // SAFETY: we just initialized the elements `..3`.
-            unsafe { MaybeUninit::slice_assume_init_ref(&parts[..3]) }
+            unsafe { parts[..3].assume_init_ref() }
         }
     } else {
         let exp = exp as usize;
@@ -225,10 +229,10 @@ fn digits_to_dec_str<'a>(
             if frac_digits > buf.len() - exp {
                 parts[3] = MaybeUninit::new(Part::Zero(frac_digits - (buf.len() - exp)));
                 // SAFETY: we just initialized the elements `..4`.
-                unsafe { MaybeUninit::slice_assume_init_ref(&parts[..4]) }
+                unsafe { parts[..4].assume_init_ref() }
             } else {
                 // SAFETY: we just initialized the elements `..3`.
-                unsafe { MaybeUninit::slice_assume_init_ref(&parts[..3]) }
+                unsafe { parts[..3].assume_init_ref() }
             }
         } else {
             // the decimal point is after rendered digits: [1234][____0000] or [1234][__][.][__].
@@ -238,10 +242,10 @@ fn digits_to_dec_str<'a>(
                 parts[2] = MaybeUninit::new(Part::Copy(b"."));
                 parts[3] = MaybeUninit::new(Part::Zero(frac_digits));
                 // SAFETY: we just initialized the elements `..4`.
-                unsafe { MaybeUninit::slice_assume_init_ref(&parts[..4]) }
+                unsafe { parts[..4].assume_init_ref() }
             } else {
                 // SAFETY: we just initialized the elements `..2`.
-                unsafe { MaybeUninit::slice_assume_init_ref(&parts[..2]) }
+                unsafe { parts[..2].assume_init_ref() }
             }
         }
     }
@@ -256,6 +260,8 @@ fn digits_to_dec_str<'a>(
 /// it will be ignored and full digits will be printed. It is only used to print
 /// additional zeroes after rendered digits. Thus, `min_digits == 0` means that
 /// it will only print the given digits and nothing else.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 fn digits_to_exp_str<'a>(
     buf: &'a [u8],
     exp: i16,
@@ -292,7 +298,7 @@ fn digits_to_exp_str<'a>(
         parts[n + 1] = MaybeUninit::new(Part::Num(exp as u16));
     }
     // SAFETY: we just initialized the elements `..n + 2`.
-    unsafe { MaybeUninit::slice_assume_init_ref(&parts[..n + 2]) }
+    unsafe { parts[..n + 2].assume_init_ref() }
 }
 
 /// Sign formatting options.
@@ -345,6 +351,8 @@ fn determine_sign(sign: Sign, decoded: &FullDecoded, negative: bool) -> &'static
 /// The byte buffer should be at least `MAX_SIG_DIGITS` bytes long.
 /// There should be at least 4 parts available, due to the worst case like
 /// `[+][0.][0000][2][0000]` with `frac_digits = 10`.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn to_shortest_str<'a, T, F>(
     mut format_shortest: F,
     v: T,
@@ -366,12 +374,12 @@ where
         FullDecoded::Nan => {
             parts[0] = MaybeUninit::new(Part::Copy(b"NaN"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Infinite => {
             parts[0] = MaybeUninit::new(Part::Copy(b"inf"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Zero => {
             if frac_digits > 0 {
@@ -381,14 +389,14 @@ where
                 Formatted {
                     sign,
                     // SAFETY: we just initialized the elements `..2`.
-                    parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..2]) },
+                    parts: unsafe { parts[..2].assume_init_ref() },
                 }
             } else {
                 parts[0] = MaybeUninit::new(Part::Copy(b"0"));
                 Formatted {
                     sign,
                     // SAFETY: we just initialized the elements `..1`.
-                    parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) },
+                    parts: unsafe { parts[..1].assume_init_ref() },
                 }
             }
         }
@@ -419,6 +427,8 @@ where
 /// The byte buffer should be at least `MAX_SIG_DIGITS` bytes long.
 /// There should be at least 6 parts available, due to the worst case like
 /// `[+][1][.][2345][e][-][6]`.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn to_shortest_exp_str<'a, T, F>(
     mut format_shortest: F,
     v: T,
@@ -442,12 +452,12 @@ where
         FullDecoded::Nan => {
             parts[0] = MaybeUninit::new(Part::Copy(b"NaN"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Infinite => {
             parts[0] = MaybeUninit::new(Part::Copy(b"inf"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Zero => {
             parts[0] = if dec_bounds.0 <= 0 && 0 < dec_bounds.1 {
@@ -456,7 +466,7 @@ where
                 MaybeUninit::new(Part::Copy(if upper { b"0E0" } else { b"0e0" }))
             };
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Finite(ref decoded) => {
             let (buf, exp) = format_shortest(decoded, buf);
@@ -511,6 +521,8 @@ fn estimate_max_buf_len(exp: i16) -> usize {
 /// (The tipping point for `f64` is about 800, so 1000 bytes should be enough.)
 /// There should be at least 6 parts available, due to the worst case like
 /// `[+][1][.][2345][e][-][6]`.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn to_exact_exp_str<'a, T, F>(
     mut format_exact: F,
     v: T,
@@ -533,12 +545,12 @@ where
         FullDecoded::Nan => {
             parts[0] = MaybeUninit::new(Part::Copy(b"NaN"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Infinite => {
             parts[0] = MaybeUninit::new(Part::Copy(b"inf"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Zero => {
             if ndigits > 1 {
@@ -549,14 +561,14 @@ where
                 Formatted {
                     sign,
                     // SAFETY: we just initialized the elements `..3`.
-                    parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..3]) },
+                    parts: unsafe { parts[..3].assume_init_ref() },
                 }
             } else {
                 parts[0] = MaybeUninit::new(Part::Copy(if upper { b"0E0" } else { b"0e0" }));
                 Formatted {
                     sign,
                     // SAFETY: we just initialized the elements `..1`.
-                    parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) },
+                    parts: unsafe { parts[..1].assume_init_ref() },
                 }
             }
         }
@@ -587,6 +599,8 @@ where
 /// (The tipping point for `f64` is about 800, and 1000 bytes should be enough.)
 /// There should be at least 4 parts available, due to the worst case like
 /// `[+][0.][0000][2][0000]` with `frac_digits = 10`.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn to_exact_fixed_str<'a, T, F>(
     mut format_exact: F,
     v: T,
@@ -607,12 +621,12 @@ where
         FullDecoded::Nan => {
             parts[0] = MaybeUninit::new(Part::Copy(b"NaN"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Infinite => {
             parts[0] = MaybeUninit::new(Part::Copy(b"inf"));
             // SAFETY: we just initialized the elements `..1`.
-            Formatted { sign, parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) } }
+            Formatted { sign, parts: unsafe { parts[..1].assume_init_ref() } }
         }
         FullDecoded::Zero => {
             if frac_digits > 0 {
@@ -622,14 +636,14 @@ where
                 Formatted {
                     sign,
                     // SAFETY: we just initialized the elements `..2`.
-                    parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..2]) },
+                    parts: unsafe { parts[..2].assume_init_ref() },
                 }
             } else {
                 parts[0] = MaybeUninit::new(Part::Copy(b"0"));
                 Formatted {
                     sign,
                     // SAFETY: we just initialized the elements `..1`.
-                    parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) },
+                    parts: unsafe { parts[..1].assume_init_ref() },
                 }
             }
         }
@@ -654,14 +668,14 @@ where
                     Formatted {
                         sign,
                         // SAFETY: we just initialized the elements `..2`.
-                        parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..2]) },
+                        parts: unsafe { parts[..2].assume_init_ref() },
                     }
                 } else {
                     parts[0] = MaybeUninit::new(Part::Copy(b"0"));
                     Formatted {
                         sign,
                         // SAFETY: we just initialized the elements `..1`.
-                        parts: unsafe { MaybeUninit::slice_assume_init_ref(&parts[..1]) },
+                        parts: unsafe { parts[..1].assume_init_ref() },
                     }
                 }
             } else {

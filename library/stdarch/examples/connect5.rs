@@ -74,6 +74,7 @@ const SCORE_NONE: i32 = -EVAL_INF - 1;
 /// DIRECTION 2: top left to bottom right\
 /// DIRECTION 3: top right to bottom left
 #[rustfmt::skip]
+#[allow(clippy::identity_op)]
 const DIRECTION: [[i32; 5]; 4] = [ [1, 2, 3, 4, 5],
                                    [1 * (FILE_SIZE + 1), 2 * (FILE_SIZE + 1), 3 * (FILE_SIZE + 1), 4 * (FILE_SIZE + 1), 5 * (FILE_SIZE + 1)],
                                    [1 * (FILE_SIZE + 2), 2 * (FILE_SIZE + 2), 3 * (FILE_SIZE + 2), 4 * (FILE_SIZE + 2), 5 * (FILE_SIZE + 2)],
@@ -81,7 +82,7 @@ const DIRECTION: [[i32; 5]; 4] = [ [1, 2, 3, 4, 5],
 
 /// A table to encode each location to a value in bit 31-0 in the bitboard for 4 direction
 #[rustfmt::skip]
-const MAPMOVEVALUE: [[i32; 239]; 4] = [ [// Direction 0 
+const MAPMOVEVALUE: [[i32; 239]; 4] = [ [// Direction 0
                                          1<<31, 1<<30, 1<<29, 1<<28, 1<<27, 1<<26, 1<<25, 1<<24, 1<<23, 1<<22, 1<<21, 1<<20, 1<<19, 1<<18, 1<<17, 0,
                                          1<<31, 1<<30, 1<<29, 1<<28, 1<<27, 1<<26, 1<<25, 1<<24, 1<<23, 1<<22, 1<<21, 1<<20, 1<<19, 1<<18, 1<<17, 0,
                                          1<<31, 1<<30, 1<<29, 1<<28, 1<<27, 1<<26, 1<<25, 1<<24, 1<<23, 1<<22, 1<<21, 1<<20, 1<<19, 1<<18, 1<<17, 0,
@@ -113,7 +114,7 @@ const MAPMOVEVALUE: [[i32; 239]; 4] = [ [// Direction 0
                                          1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 0,
                                          1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 1<<18, 0,
                                          1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17, 1<<17],
-                                        [// Direction 2 
+                                        [// Direction 2
                                          1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 1<<15, 0,     0,     0,     0,     0,
                                          1<<15, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 1<<14, 0,     0,     0,     0,
                                          1<<15, 1<<14, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 1<<13, 0,     0,     0,
@@ -147,9 +148,9 @@ const MAPMOVEVALUE: [[i32; 239]; 4] = [ [// Direction 0
                                          1<<1,  1<<2,  1<<3,  1<<4,  1<<5,  1<<6,  1<<1,  1<<1,  1<<1,  1<<1,  1<<1,  0,     0,     0,     0]
                                         ];
 
-/// A table to encode each location to an index in the bitboard for 4 direction 
+/// A table to encode each location to an index in the bitboard for 4 direction
 #[rustfmt::skip]
-const MAPMOVEIDX: [[i32; 239]; 4] = [ [// Direction 0 
+const MAPMOVEIDX: [[i32; 239]; 4] = [ [// Direction 0
                                        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
                                        1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,
                                        2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  0,
@@ -165,7 +166,7 @@ const MAPMOVEIDX: [[i32; 239]; 4] = [ [// Direction 0
                                        12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 0,
                                        13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 0,
                                        14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14],
-                                      [// Direction 1 
+                                      [// Direction 1
                                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0,
                                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0,
                                        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0,
@@ -311,7 +312,7 @@ impl Pos {
 
         match self.p_turn {
             Color::Black => {
-                self.state[mv as usize] = Color::Black;
+                self.state[mv] = Color::Black;
                 // update black move and remove empty move in bitboard
                 self.bitboard[black][0][MAPMOVEIDX[0][mv] as usize] |= MAPMOVEVALUE[0][mv];
                 self.bitboard[empty][0][MAPMOVEIDX[0][mv] as usize] ^= MAPMOVEVALUE[0][mv];
@@ -323,7 +324,7 @@ impl Pos {
                 self.bitboard[empty][1][MAPMOVEIDX[3][mv] as usize] ^= MAPMOVEVALUE[3][mv];
             }
             Color::White => {
-                self.state[mv as usize] = Color::White;
+                self.state[mv] = Color::White;
                 // update white move and remove empty move in bitboard
                 self.bitboard[white][0][MAPMOVEIDX[0][mv] as usize] |= MAPMOVEVALUE[0][mv];
                 self.bitboard[empty][0][MAPMOVEIDX[0][mv] as usize] ^= MAPMOVEVALUE[0][mv];
@@ -345,11 +346,7 @@ impl Pos {
     }
 
     pub fn can_play(&self, from: Square) -> bool {
-        if self.state[from as usize] == Color::Empty {
-            true
-        } else {
-            false
-        }
+        self.state[from as usize] == Color::Empty
     }
 }
 
@@ -376,18 +373,9 @@ impl List {
 
     pub fn shuffle(&mut self) {
         let mut rng = thread_rng();
-        let num = self.p_size;
-        let mut new_move: Vec<Move> = vec![];
+        let num = self.p_size as usize;
 
-        for x in 0..(num as usize) {
-            new_move.push(self.p_move[x]);
-        }
-
-        new_move.shuffle(&mut rng);
-
-        for x in 0..(self.p_size as usize) {
-            self.p_move[x] = new_move[x];
-        }
+        self.p_move[..num].shuffle(&mut rng);
     }
 }
 
@@ -421,18 +409,13 @@ fn pos_is_draw(pos: &Pos) -> bool {
                 break;
             }
 
-            if found == false {
+            if !found {
                 break;
             }
         }
     }
 
-    let mut out: bool = false;
-    if found == true && !pos_is_winner(pos) {
-        out = true;
-    }
-
-    out
+    found && !pos_is_winner(pos)
 }
 
 #[target_feature(enable = "avx512f,avx512bw")]
@@ -447,19 +430,11 @@ unsafe fn pos_is_draw_avx512(pos: &Pos) -> bool {
     // if all empty is 0, all board is filled.
     let temp_mask = _mm512_mask_cmpneq_epi32_mask(0b11111111_11111111, answer, board0org);
 
-    if _popcnt32(temp_mask as i32) == 0 && !pos_is_winner_avx512(pos) {
-        return true;
-    } else {
-        return false;
-    }
+    _popcnt32(temp_mask as i32) == 0 && !pos_is_winner_avx512(pos)
 }
 
 fn pos_is_end(pos: &Pos) -> bool {
-    if pos_is_winner(pos) || pos_is_draw(pos) {
-        true
-    } else {
-        false
-    }
+    pos_is_winner(pos) || pos_is_draw(pos)
 }
 
 fn pos_disp(pos: &Pos) {
@@ -475,7 +450,7 @@ fn pos_disp(pos: &Pos) {
             }
         }
 
-        println!("");
+        println!();
     }
 
     match pos.turn() {
@@ -581,7 +556,7 @@ fn search(pos: &Pos, alpha: i32, beta: i32, depth: i32, _ply: i32) -> i32 {
         }
     }
 
-    assert!(bm != MOVE_NONE);
+    assert_ne!(bm, MOVE_NONE);
     assert!(bs >= -EVAL_INF && bs <= EVAL_INF);
 
     if _ply == 0 {
@@ -773,11 +748,7 @@ fn check_pattern5(pos: &Pos, sd: Side) -> bool {
         }
     }
 
-    if n > 0 {
-        true
-    } else {
-        false
-    }
+    n > 0
 }
 
 /// Check <b>-OOOO-</b>
@@ -809,11 +780,7 @@ fn check_patternlive4(pos: &Pos, sd: Side) -> bool {
         }
     }
 
-    if n > 0 {
-        true
-    } else {
-        false
-    }
+    n > 0
 }
 
 /// Check <b>OOOO-, OOO-O, OO-OO, O-OOO, -OOOO</b>
@@ -961,11 +928,7 @@ unsafe fn pos_is_winner_avx512(pos: &Pos) -> bool {
         }
     }
 
-    if count_match > 0 {
-        return true;
-    } else {
-        return false;
-    }
+    count_match > 0
 }
 
 #[target_feature(enable = "avx512f,avx512bw")]
@@ -1027,11 +990,7 @@ unsafe fn check_patternlive4_avx512(pos: &Pos, sd: Side) -> bool {
         }
     }
 
-    if count_match > 0 {
-        return true;
-    } else {
-        return false;
-    }
+    count_match > 0
 }
 
 #[target_feature(enable = "avx512f,avx512bw")]

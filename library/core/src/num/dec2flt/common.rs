@@ -17,8 +17,12 @@ pub(crate) trait ByteSlice {
     fn parse_digits(&self, func: impl FnMut(u8)) -> &Self;
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl ByteSlice for [u8] {
     #[inline(always)] // inlining this is crucial to remove bound checks
+    // flux_verify_complex: refinement type error slice
+    #[flux_attrs::trusted]
     fn read_u64(&self) -> u64 {
         let mut tmp = [0; 8];
         tmp.copy_from_slice(&self[..8]);
@@ -55,6 +59,7 @@ impl ByteSlice for [u8] {
 
 /// Determine if 8 bytes are all decimal digits.
 /// This does not care about the order in which the bytes were loaded.
+/// fn (v:u64) -> bool[v >= ....]
 pub(crate) fn is_8digits(v: u64) -> bool {
     let a = v.wrapping_add(0x4646_4646_4646_4646);
     let b = v.wrapping_sub(0x3030_3030_3030_3030);

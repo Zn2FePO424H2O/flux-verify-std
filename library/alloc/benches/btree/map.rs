@@ -1,9 +1,9 @@
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
 
-use rand::seq::SliceRandom;
 use rand::Rng;
-use test::{black_box, Bencher};
+use rand::seq::SliceRandom;
+use test::{Bencher, black_box};
 
 macro_rules! map_insert_rand_bench {
     ($name: ident, $n: expr, $map: ident) => {
@@ -353,6 +353,7 @@ pub fn iter_10k(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg_attr(target_os = "emscripten", ignore)] // hits an OOM
 pub fn iter_1m(b: &mut Bencher) {
     bench_iter(b, 1_000, 1_000_000);
 }

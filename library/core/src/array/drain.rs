@@ -16,6 +16,8 @@ use crate::slice;
 ///
 /// The function-taking-a-closure structure makes it safe, as it keeps callers
 /// from looking at already-dropped elements.
+// flux_verify_ice: unsupported unsize cast
+#[flux_attrs::trusted]
 pub(crate) fn drain_array_with<T, R, const N: usize>(
     array: [T; N],
     func: impl for<'a> FnOnce(Drain<'a, T>) -> R,

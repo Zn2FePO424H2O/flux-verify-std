@@ -30,6 +30,8 @@ impl<I: Iterator> Peekable<I> {
 // It ensures that `.peek(); .peek();` or `.peek(); .next();` only advances the
 // underlying iterator at most once. This does not by itself make the iterator
 // fused.
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 #[stable(feature = "rust1", since = "1.0.0")]
 impl<I: Iterator> Iterator for Peekable<I> {
     type Item = I::Item;
@@ -44,6 +46,8 @@ impl<I: Iterator> Iterator for Peekable<I> {
 
     #[inline]
     #[rustc_inherit_overflow_checks]
+    // flux_verify_ice: unsupported terminator
+    #[flux_attrs::trusted_impl]
     fn count(mut self) -> usize {
         match self.peeked.take() {
             Some(None) => 0,
@@ -269,7 +273,7 @@ impl<I: Iterator> Peekable<I> {
     /// let mut iter = (0..5).peekable();
     /// // The first item of the iterator is 0; consume it.
     /// assert_eq!(iter.next_if(|&x| x == 0), Some(0));
-    /// // The next item returned is now 1, so `consume` will return `false`.
+    /// // The next item returned is now 1, so `next_if` will return `None`.
     /// assert_eq!(iter.next_if(|&x| x == 0), None);
     /// // `next_if` saves the value of the next item if it was not equal to `expected`.
     /// assert_eq!(iter.next(), Some(1));
@@ -304,7 +308,7 @@ impl<I: Iterator> Peekable<I> {
     /// let mut iter = (0..5).peekable();
     /// // The first item of the iterator is 0; consume it.
     /// assert_eq!(iter.next_if_eq(&0), Some(0));
-    /// // The next item returned is now 1, so `consume` will return `false`.
+    /// // The next item returned is now 1, so `next_if` will return `None`.
     /// assert_eq!(iter.next_if_eq(&0), None);
     /// // `next_if_eq` saves the value of the next item if it was not equal to `expected`.
     /// assert_eq!(iter.next(), Some(1));

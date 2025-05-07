@@ -48,12 +48,12 @@ pub use self::map_while::MapWhile;
 pub use self::map_windows::MapWindows;
 #[stable(feature = "iterator_step_by", since = "1.28.0")]
 pub use self::step_by::StepBy;
-#[stable(feature = "iter_zip", since = "1.59.0")]
-pub use self::zip::zip;
 #[unstable(feature = "trusted_random_access", issue = "none")]
 pub use self::zip::TrustedRandomAccess;
 #[unstable(feature = "trusted_random_access", issue = "none")]
 pub use self::zip::TrustedRandomAccessNoCoerce;
+#[stable(feature = "iter_zip", since = "1.59.0")]
+pub use self::zip::zip;
 #[stable(feature = "rust1", since = "1.0.0")]
 pub use self::{
     chain::Chain, cycle::Cycle, enumerate::Enumerate, filter::Filter, filter_map::FilterMap,
@@ -71,7 +71,7 @@ pub use self::{
 /// this can be useful for specializing [`FromIterator`] implementations or recovering the
 /// remaining elements after an iterator has been partially exhausted.
 ///
-/// Note that implementations do not necessarily have to provide access to the inner-most
+/// Note that implementations do not necessarily have to provide access to the innermost
 /// source of a pipeline. A stateful intermediate adapter might eagerly evaluate a part
 /// of the pipeline and expose its internal storage as source.
 ///
@@ -149,6 +149,8 @@ pub(crate) struct GenericShunt<'a, I, R> {
 /// Process the given iterator as if it yielded the item's `Try::Output`
 /// type instead. Any `Try::Residual`s encountered will stop the inner iterator
 /// and be propagated back to the overall result.
+// flux_verify_ice: Unimplemented
+#[flux_attrs::trusted]
 pub(crate) fn try_process<I, T, R, F, U>(iter: I, mut f: F) -> ChangeOutputType<I::Item, U>
 where
     I: Iterator<Item: Try<Output = T, Residual = R>>,
@@ -164,12 +166,16 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, R> Iterator for GenericShunt<'_, I, R>
 where
     I: Iterator<Item: Try<Residual = R>>,
 {
     type Item = <I::Item as Try>::Output;
 
+    // flux_verify_ice: generics_of called
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         self.try_for_each(ControlFlow::Break).break_value()
     }

@@ -25,11 +25,15 @@ impl<I> Cloned<I> {
     }
 }
 
+// flux_verify_panic: escaping bound vars
+#[flux_attrs::trusted]
 fn clone_try_fold<T: Clone, Acc, R>(mut f: impl FnMut(Acc, T) -> R) -> impl FnMut(Acc, &T) -> R {
     move |acc, elt| f(acc, elt.clone())
 }
 
 #[stable(feature = "iter_cloned", since = "1.1.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, I, T: 'a> Iterator for Cloned<I>
 where
     I: Iterator<Item = &'a T>,
@@ -45,6 +49,8 @@ where
         self.it.size_hint()
     }
 
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted]
     fn try_fold<B, F, R>(&mut self, init: B, f: F) -> R
     where
         Self: Sized,
@@ -54,6 +60,8 @@ where
         self.it.try_fold(init, clone_try_fold(f))
     }
 
+    // flux_verify_ice: unsupported terminator
+    //#[flux_attrs::trusted_impl]
     fn fold<Acc, F>(self, init: Acc, f: F) -> Acc
     where
         F: FnMut(Acc, Self::Item) -> Acc,
@@ -72,6 +80,8 @@ where
 }
 
 #[stable(feature = "iter_cloned", since = "1.1.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<'a, I, T: 'a> DoubleEndedIterator for Cloned<I>
 where
     I: DoubleEndedIterator<Item = &'a T>,
@@ -90,6 +100,8 @@ where
         self.it.try_rfold(init, clone_try_fold(f))
     }
 
+    // flux_verify_ice: unsupported terminator
+    #[flux_attrs::trusted_impl]
     fn rfold<Acc, F>(self, init: Acc, f: F) -> Acc
     where
         F: FnMut(Acc, Self::Item) -> Acc,

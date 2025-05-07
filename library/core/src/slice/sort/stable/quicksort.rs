@@ -1,9 +1,9 @@
 //! This module contains a stable quicksort and partition implementation.
 
 use crate::mem::{self, ManuallyDrop, MaybeUninit};
+use crate::slice::sort::shared::FreezeMarker;
 use crate::slice::sort::shared::pivot::choose_pivot;
 use crate::slice::sort::shared::smallsort::StableSmallSortTypeImpl;
-use crate::slice::sort::shared::FreezeMarker;
 use crate::{intrinsics, ptr};
 
 /// Sorts `v` recursively using quicksort.
@@ -11,6 +11,8 @@ use crate::{intrinsics, ptr};
 /// `limit` when initialized with `c*log(v.len())` for some c ensures we do not
 /// overflow the stack or go quadratic.
 #[inline(never)]
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn quicksort<T, F: FnMut(&T, &T) -> bool>(
     mut v: &mut [T],
     scratch: &mut [MaybeUninit<T>],
@@ -85,6 +87,9 @@ pub fn quicksort<T, F: FnMut(&T, &T) -> bool>(
 ///
 /// If `is_less` is not a strict total order or panics, `scratch.len() < v.len()`,
 /// or `pivot_pos >= v.len()`, the result and `v`'s state is sound but unspecified.
+// flux_verify_ice: cannot unfold in `NoUnfold` mode
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 fn stable_partition<T, F: FnMut(&T, &T) -> bool>(
     v: &mut [T],
     scratch: &mut [MaybeUninit<T>],

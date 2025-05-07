@@ -3,8 +3,8 @@
 //! suggestions from rustc if you get anything slightly wrong in here, and overall
 //! helps with clarity as we're also referring to `char` intentionally in here.
 
-use crate::fmt;
 use crate::mem::transmute;
+use crate::{assert_unsafe_precondition, fmt};
 
 /// One of the 128 Unicode characters from U+0000 through U+007F,
 /// often known as the [ASCII] subset.
@@ -444,6 +444,8 @@ pub enum AsciiChar {
     Delete = 127,
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl AsciiChar {
     /// Creates an ascii character from the byte `b`,
     /// or returns `None` if it's too large.
@@ -497,14 +499,18 @@ impl AsciiChar {
     /// Notably, it should not be expected to return hex digits, or any other
     /// reasonable extension of the decimal digits.
     ///
-    /// (This lose safety condition is intended to simplify soundness proofs
+    /// (This loose safety condition is intended to simplify soundness proofs
     /// when writing code using this method, since the implementation doesn't
     /// need something really specific, not to make those other arguments do
     /// something useful. It might be tightened before stabilization.)
     #[unstable(feature = "ascii_char", issue = "110998")]
     #[inline]
     pub const unsafe fn digit_unchecked(d: u8) -> Self {
-        debug_assert!(d < 10);
+        assert_unsafe_precondition!(
+            check_language_ub,
+            "`ascii::Char::digit_unchecked` input cannot exceed 9.",
+            (d: u8 = d) => d < 10
+        );
 
         // SAFETY: `'0'` through `'9'` are U+00030 through U+0039,
         // so because `d` must be 64 or less the addition can return at most
@@ -580,6 +586,11 @@ impl fmt::Display for AsciiChar {
     }
 }
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}
+
 #[unstable(feature = "ascii_char", issue = "110998")]
 impl fmt::Debug for AsciiChar {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -600,8 +611,14 @@ impl fmt::Debug for AsciiChar {
                 const HEX_DIGITS: [AsciiChar; 16] = *b"0123456789abcdef".as_ascii().unwrap();
 
                 let byte = self.to_u8();
-                let hi = HEX_DIGITS[usize::from(byte >> 4)];
-                let lo = HEX_DIGITS[usize::from(byte & 0xf)];
+                let byte_shift_4 = usize::from(byte >> 4);
+                let byte_and_0xf = usize::from(byte & 0xf);
+                // flux_verify_error: bit shift
+                flux_assume(byte_shift_4<16);
+                // flux_verify_error: bit mask
+                flux_assume(byte_and_0xf<16);
+                let hi = HEX_DIGITS[byte_shift_4];
+                let lo = HEX_DIGITS[byte_and_0xf];
                 ([Apostrophe, Backslash, AsciiChar::SmallX, hi, lo, Apostrophe], 6)
             }
             _ => ([Apostrophe, *self, Apostrophe, Null, Null, Null], 3),

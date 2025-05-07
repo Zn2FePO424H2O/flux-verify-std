@@ -1,6 +1,6 @@
 use crate::fmt;
-use crate::iter::adapters::SourceIter;
 use crate::iter::InPlaceIterable;
+use crate::iter::adapters::SourceIter;
 use crate::num::NonZero;
 use crate::ops::{ControlFlow, Try};
 
@@ -34,6 +34,8 @@ impl<I: fmt::Debug, St: fmt::Debug, F> fmt::Debug for Scan<I, St, F> {
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<B, I, St, F> Iterator for Scan<I, St, F>
 where
     I: Iterator,
@@ -42,6 +44,8 @@ where
     type Item = B;
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<B> {
         let a = self.iter.next()?;
         (self.f)(&mut self.state, a)

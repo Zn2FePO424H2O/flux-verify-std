@@ -84,7 +84,12 @@ pub fn assert(shim_addr: usize, fnname: &str, expected: &str) {
     // 2. It is a mark, indicating that the instruction will be
     // compiled into other instructions - mainly because of llvm
     // optimization.
-    let found = expected == "nop" || instrs.iter().any(|s| s.contains(expected));
+    let expected = if expected == "unknown" {
+        "<unknown>" // Workaround for rust-lang/stdarch#1674, todo: remove when the issue is fixed
+    } else {
+        expected
+    };
+    let found = expected == "nop" || instrs.iter().any(|s| s.starts_with(expected));
 
     // Look for subroutine call instructions in the disassembly to detect whether
     // inlining failed: all intrinsics are `#[inline(always)]`, so calling one
@@ -169,10 +174,7 @@ pub fn assert(shim_addr: usize, fnname: &str, expected: &str) {
     }
 
     if !found {
-        panic!(
-            "failed to find instruction `{}` in the disassembly",
-            expected
-        );
+        panic!("failed to find instruction `{expected}` in the disassembly");
     } else if !probably_only_one_instruction {
         panic!(
             "instruction found, but the disassembly contains too many \

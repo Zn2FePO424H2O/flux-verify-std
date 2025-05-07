@@ -33,8 +33,12 @@ impl From<Infallible> for TryFromIntError {
 }
 
 #[unstable(feature = "never_type", issue = "35121")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl From<!> for TryFromIntError {
     #[inline]
+    // flux_verify_ice: incompatible base types
+    #[flux_attrs::trusted_impl]
     fn from(never: !) -> TryFromIntError {
         // Match rather than coerce to make sure that code like
         // `From<Infallible> for TryFromIntError` above will keep working
@@ -113,7 +117,7 @@ pub enum IntErrorKind {
 impl ParseIntError {
     /// Outputs the detailed cause of parsing an integer failing.
     #[must_use]
-    #[rustc_const_stable(feature = "const_int_from_str", since = "CURRENT_RUSTC_VERSION")]
+    #[rustc_const_stable(feature = "const_int_from_str", since = "1.82.0")]
     #[stable(feature = "int_error_matching", since = "1.55.0")]
     pub const fn kind(&self) -> &IntErrorKind {
         &self.kind

@@ -50,39 +50,98 @@ macro_rules! static_assert_simm_bits {
 
 #[allow(unused)]
 macro_rules! types {
-    ($(
-        $(#[$doc:meta])*
-        pub struct $name:ident($($fields:tt)*);
-    )*) => ($(
+    (
+        #![$stability_first:meta]
+        $(
+            #![$stability_more:meta]
+        )*
+
+        $(
+            $(#[$doc:meta])*
+            $(stability: [$stability_already: meta])*
+            pub struct $name:ident($len:literal x $v:vis $elem_type:ty);
+        )*
+    ) => (types! {
+        $(
+            #![$stability_more]
+        )*
+
+        $(
+            $(#[$doc])*
+            $(stability: [$stability_already])*
+            stability: [$stability_first]
+            pub struct $name($len x $v $elem_type);
+        )*
+    });
+
+    (
+        $(
+            $(#[$doc:meta])*
+            $(stability: [$stability: meta])+
+            pub struct $name:ident($len:literal x $v:vis $elem_type:ty);
+        )*
+    ) => ($(
         $(#[$doc])*
-        #[derive(Copy, Clone, Debug)]
+        $(#[$stability])+
+        #[derive(Copy, Clone)]
         #[allow(non_camel_case_types)]
         #[repr(simd)]
         #[allow(clippy::missing_inline_in_public_items)]
-        pub struct $name($($fields)*);
-    )*)
+        pub struct $name($v [$elem_type; $len]);
+
+        impl $name {
+            /// Using `my_simd([x; N])` seemingly fails tests,
+            /// so use this internal helper for it instead.
+            #[inline(always)]
+            $v fn splat(value: $elem_type) -> $name {
+                #[derive(Copy, Clone)]
+                #[repr(simd)]
+                struct JustOne([$elem_type; 1]);
+                let one = JustOne([value]);
+                // SAFETY: 0 is always in-bounds because we're shuffling
+                // a simd type with exactly one element.
+                unsafe { simd_shuffle!(one, one, [0; $len]) }
+            }
+        }
+
+        $(#[$stability])+
+        impl crate::fmt::Debug for $name {
+            #[inline]
+            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+                crate::core_arch::simd::debug_simd_finish(f, stringify!($name), self.0)
+            }
+        }
+    )*);
 }
+
+#[allow(unused)]
+#[repr(simd)]
+pub(crate) struct SimdShuffleIdx<const LEN: usize>(pub(crate) [u32; LEN]);
 
 #[allow(unused)]
 macro_rules! simd_shuffle {
     ($x:expr, $y:expr, $idx:expr $(,)?) => {{
-        simd_shuffle::<_, [u32; _], _>($x, $y, const { $idx })
+        $crate::intrinsics::simd::simd_shuffle(
+            $x,
+            $y,
+            const { $crate::core_arch::macros::SimdShuffleIdx($idx) },
+        )
     }};
 }
 
 #[allow(unused)]
 macro_rules! simd_insert {
     ($x:expr, $idx:expr, $val:expr $(,)?) => {{
-        simd_insert($x, const { $idx }, $val)
+        $crate::intrinsics::simd::simd_insert($x, const { $idx }, $val)
     }};
 }
 
 #[allow(unused)]
 macro_rules! simd_extract {
     ($x:expr, $idx:expr $(,)?) => {{
-        simd_extract($x, const { $idx })
+        $crate::intrinsics::simd::simd_extract($x, const { $idx })
     }};
     ($x:expr, $idx:expr, $ty:ty $(,)?) => {{
-        simd_extract::<_, $ty>($x, const { $idx })
+        $crate::intrinsics::simd::simd_extract::<_, $ty>($x, const { $idx })
     }};
 }

@@ -4,23 +4,15 @@ use std::hash::{BuildHasher, Hash, Hasher};
 use std::ptr;
 use std::rc::Rc;
 
+#[derive(Default)]
 struct MyHasher {
     hash: u64,
 }
 
-impl Default for MyHasher {
-    fn default() -> MyHasher {
-        MyHasher { hash: 0 }
-    }
-}
-
 impl Hasher for MyHasher {
     fn write(&mut self, buf: &[u8]) {
-        // FIXME(const_trait_impl): change to for loop
-        let mut i = 0;
-        while i < buf.len() {
-            self.hash += buf[i] as u64;
-            i += 1;
+        for byte in buf {
+            self.hash += *byte as u64;
         }
     }
     fn write_str(&mut self, s: &str) {
@@ -110,6 +102,8 @@ fn test_writer_hasher() {
 struct Custom {
     hash: u64,
 }
+
+#[derive(Default)]
 struct CustomHasher {
     output: u64,
 }
@@ -123,12 +117,6 @@ impl Hasher for CustomHasher {
     }
     fn write_u64(&mut self, data: u64) {
         self.output = data;
-    }
-}
-
-impl Default for CustomHasher {
-    fn default() -> CustomHasher {
-        CustomHasher { output: 0 }
     }
 }
 
@@ -153,9 +141,6 @@ fn test_custom_state() {
     // const { assert!(hash(&Custom { hash: 6 }) == 6) };
 }
 
-// FIXME: Instantiated functions with i128 in the signature is not supported in Emscripten.
-// See https://github.com/kripken/emscripten-fastcomp/issues/169
-#[cfg(not(target_os = "emscripten"))]
 #[test]
 fn test_indirect_hasher() {
     let mut hasher = MyHasher { hash: 0 };
@@ -167,7 +152,7 @@ fn test_indirect_hasher() {
 }
 
 #[test]
-fn test_build_hasher_object_safe() {
+fn test_build_hasher_dyn_compatible() {
     use std::hash::{DefaultHasher, RandomState};
 
     let _: &dyn BuildHasher<Hasher = DefaultHasher> = &RandomState::new();

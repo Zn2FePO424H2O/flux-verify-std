@@ -12,7 +12,6 @@ use super::SymbolName;
 use addr2line::gimli;
 use core::convert::TryInto;
 use core::mem;
-use core::u32;
 use libc::c_void;
 use mystd::ffi::OsString;
 use mystd::fs::File;
@@ -53,7 +52,10 @@ cfg_if::cfg_if! {
     }
 }
 
+mod lru;
 mod stash;
+
+use lru::Lru;
 
 const MAPPINGS_CACHE_SIZE: usize = 4;
 
@@ -100,7 +102,7 @@ impl Mapping {
             // only borrow `map` and `stash` and we're preserving them below.
             cx: unsafe { core::mem::transmute::<Context<'_>, Context<'static>>(cx) },
             _map: data,
-            stash: stash,
+            stash,
         })
     }
 }
@@ -122,13 +124,11 @@ impl<'data> Context<'data> {
             if cfg!(not(target_os = "aix")) {
                 let data = object.section(stash, id.name()).unwrap_or(&[]);
                 Ok(EndianSlice::new(data, Endian))
+            } else if let Some(name) = id.xcoff_name() {
+                let data = object.section(stash, name).unwrap_or(&[]);
+                Ok(EndianSlice::new(data, Endian))
             } else {
-                if let Some(name) = id.xcoff_name() {
-                    let data = object.section(stash, name).unwrap_or(&[]);
-                    Ok(EndianSlice::new(data, Endian))
-                } else {
-                    Ok(EndianSlice::new(&[], Endian))
-                }
+                Ok(EndianSlice::new(&[], Endian))
             }
         })
         .ok()?;
@@ -189,7 +189,7 @@ impl<'data> Context<'data> {
 fn mmap(path: &Path) -> Option<Mmap> {
     let file = File::open(path).ok()?;
     let len = file.metadata().ok()?.len().try_into().ok()?;
-    unsafe { Mmap::map(&file, len) }
+    unsafe { Mmap::map(&file, len, 0) }
 }
 
 cfg_if::cfg_if! {
@@ -226,7 +226,8 @@ cfg_if::cfg_if! {
             target_os = "hurd",
             target_os = "openbsd",
             target_os = "netbsd",
-            all(target_os = "android", feature = "dl_iterate_phdr"),
+            target_os = "nto",
+            target_os = "android",
         ),
         not(target_env = "uclibc"),
     ))] {
@@ -265,11 +266,26 @@ struct Cache {
     ///
     /// Note that this is basically an LRU cache and we'll be shifting things
     /// around in here as we symbolize addresses.
-    mappings: Vec<(usize, Mapping)>,
+    mappings: Lru<(usize, Mapping), MAPPINGS_CACHE_SIZE>,
 }
 
 struct Library {
     name: OsString,
+    #[cfg(target_os = "android")]
+    /// On Android, the dynamic linker [can map libraries directly from a
+    /// ZIP archive][ndk-linker-changes] (typically an `.apk`).
+    ///
+    /// The linker requires that these libraries are stored uncompressed
+    /// and page-aligned.
+    ///
+    /// These "embedded" libraries have filepaths of the form
+    /// `/path/to/my.apk!/lib/mylib.so` (where `/path/to/my.apk` is the archive
+    /// and `lib/mylib.so` is the name of the library within the archive).
+    ///
+    /// This mechanism is present on Android since API level 23.
+    ///
+    /// [ndk-linker-changes]: https://android.googlesource.com/platform/bionic/+/main/android-changes-for-ndk-developers.md#opening-shared-libraries-directly-from-an-apk
+    zip_offset: Option<u64>,
     #[cfg(target_os = "aix")]
     /// On AIX, the library mmapped can be a member of a big-archive file.
     /// For example, with a big-archive named libfoo.a containing libbar.so,
@@ -296,17 +312,31 @@ struct LibrarySegment {
     len: usize,
 }
 
-#[cfg(target_os = "aix")]
 fn create_mapping(lib: &Library) -> Option<Mapping> {
-    let name = &lib.name;
-    let member_name = &lib.member_name;
-    Mapping::new(name.as_ref(), member_name)
+    cfg_if::cfg_if! {
+        if #[cfg(target_os = "aix")] {
+            Mapping::new(lib.name.as_ref(), &lib.member_name)
+        } else if #[cfg(target_os = "android")] {
+            Mapping::new_android(lib.name.as_ref(), lib.zip_offset)
+        } else {
+            Mapping::new(lib.name.as_ref())
+        }
+    }
 }
 
-#[cfg(not(target_os = "aix"))]
-fn create_mapping(lib: &Library) -> Option<Mapping> {
-    let name = &lib.name;
-    Mapping::new(name.as_ref())
+/// Try to extract the archive path from an "embedded" library path
+/// (e.g. `/path/to/my.apk` from `/path/to/my.apk!/mylib.so`).
+///
+/// Returns `None` if the path does not contain a `!/` separator.
+#[cfg(target_os = "android")]
+fn extract_zip_path_android(path: &mystd::ffi::OsStr) -> Option<&mystd::ffi::OsStr> {
+    use mystd::os::unix::ffi::OsStrExt;
+
+    path.as_bytes()
+        .windows(2)
+        .enumerate()
+        .find(|(_, chunk)| chunk == b"!/")
+        .map(|(index, _)| mystd::ffi::OsStr::from_bytes(path.as_bytes().split_at(index).0))
 }
 
 // unsafe because this is required to be externally synchronized
@@ -317,7 +347,7 @@ pub unsafe fn clear_symbol_cache() {
 impl Cache {
     fn new() -> Cache {
         Cache {
-            mappings: Vec::with_capacity(MAPPINGS_CACHE_SIZE),
+            mappings: Lru::default(),
             libraries: native_libraries(),
         }
     }
@@ -336,7 +366,9 @@ impl Cache {
         // never happen, and symbolicating backtraces would be ssssllllooooowwww.
         static mut MAPPINGS_CACHE: Option<Cache> = None;
 
-        f(MAPPINGS_CACHE.get_or_insert_with(|| Cache::new()))
+        // FIXME: https://github.com/rust-lang/backtrace-rs/issues/678
+        #[allow(static_mut_refs)]
+        f(MAPPINGS_CACHE.get_or_insert_with(Cache::new))
     }
 
     fn avma_to_svma(&self, addr: *const u8) -> Option<(usize, *const u8)> {
@@ -374,31 +406,18 @@ impl Cache {
     }
 
     fn mapping_for_lib<'a>(&'a mut self, lib: usize) -> Option<(&'a mut Context<'a>, &'a Stash)> {
-        let idx = self.mappings.iter().position(|(idx, _)| *idx == lib);
+        let cache_idx = self.mappings.iter().position(|(lib_id, _)| *lib_id == lib);
 
-        // Invariant: after this conditional completes without early returning
-        // from an error, the cache entry for this path is at index 0.
-
-        if let Some(idx) = idx {
-            // When the mapping is already in the cache, move it to the front.
-            if idx != 0 {
-                let entry = self.mappings.remove(idx);
-                self.mappings.insert(0, entry);
-            }
+        let cache_entry = if let Some(idx) = cache_idx {
+            self.mappings.move_to_front(idx)
         } else {
-            // When the mapping is not in the cache, create a new mapping,
-            // insert it into the front of the cache, and evict the oldest cache
-            // entry if necessary.
-            let mapping = create_mapping(&self.libraries[lib])?;
+            // When the mapping is not in the cache, create a new mapping and insert it,
+            // which will also evict the oldest entry.
+            create_mapping(&self.libraries[lib])
+                .and_then(|mapping| self.mappings.push_front((lib, mapping)))
+        };
 
-            if self.mappings.len() == MAPPINGS_CACHE_SIZE {
-                self.mappings.pop();
-            }
-
-            self.mappings.insert(0, (lib, mapping));
-        }
-
-        let mapping = &mut self.mappings[0].1;
+        let (_, mapping) = cache_entry?;
         let cx: &'a mut Context<'static> = &mut mapping.cx;
         let stash: &'a Stash = &mapping.stash;
         // don't leak the `'static` lifetime, make sure it's scoped to just

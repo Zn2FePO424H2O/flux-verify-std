@@ -94,7 +94,7 @@ impl<'data> BorrowedBuf<'data> {
         // SAFETY: We only slice the filled part of the buffer, which is always valid
         unsafe {
             let buf = self.buf.get_unchecked(..self.filled);
-            MaybeUninit::slice_assume_init_ref(buf)
+            buf.assume_init_ref()
         }
     }
 
@@ -104,7 +104,27 @@ impl<'data> BorrowedBuf<'data> {
         // SAFETY: We only slice the filled part of the buffer, which is always valid
         unsafe {
             let buf = self.buf.get_unchecked_mut(..self.filled);
-            MaybeUninit::slice_assume_init_mut(buf)
+            buf.assume_init_mut()
+        }
+    }
+
+    /// Returns a shared reference to the filled portion of the buffer with its original lifetime.
+    #[inline]
+    pub fn into_filled(self) -> &'data [u8] {
+        // SAFETY: We only slice the filled part of the buffer, which is always valid
+        unsafe {
+            let buf = self.buf.get_unchecked(..self.filled);
+            buf.assume_init_ref()
+        }
+    }
+
+    /// Returns a mutable reference to the filled portion of the buffer with its original lifetime.
+    #[inline]
+    pub fn into_filled_mut(self) -> &'data mut [u8] {
+        // SAFETY: We only slice the filled part of the buffer, which is always valid
+        unsafe {
+            let buf = self.buf.get_unchecked_mut(..self.filled);
+            buf.assume_init_mut()
         }
     }
 
@@ -195,7 +215,11 @@ impl<'a> BorrowedCursor<'a> {
     /// Returns the available space in the cursor.
     #[inline]
     pub fn capacity(&self) -> usize {
-        self.buf.capacity() - self.buf.filled
+        let self_buf_capacity = self.buf.capacity();
+        let self_buf_filled = self.buf.filled;
+        // flux_verify_error: logic constraint
+        flux_assume(self_buf_capacity >= self_buf_filled);
+        self_buf_capacity - self_buf_filled
     }
 
     /// Returns the number of bytes written to this cursor since it was created from a `BorrowedBuf`.
@@ -204,7 +228,11 @@ impl<'a> BorrowedCursor<'a> {
     /// count written via either cursor, not the count since the cursor was reborrowed.
     #[inline]
     pub fn written(&self) -> usize {
-        self.buf.filled - self.start
+        let self_buf_filled = self.buf.filled;
+        let self_start = self.start;
+        // flux_verify_error: logic constraint
+        flux_assume(self_buf_filled >= self_start);
+        self_buf_filled - self_start
     }
 
     /// Returns a shared reference to the initialized portion of the cursor.
@@ -213,7 +241,7 @@ impl<'a> BorrowedCursor<'a> {
         // SAFETY: We only slice the initialized part of the buffer, which is always valid
         unsafe {
             let buf = self.buf.buf.get_unchecked(self.buf.filled..self.buf.init);
-            MaybeUninit::slice_assume_init_ref(buf)
+            buf.assume_init_ref()
         }
     }
 
@@ -223,7 +251,7 @@ impl<'a> BorrowedCursor<'a> {
         // SAFETY: We only slice the initialized part of the buffer, which is always valid
         unsafe {
             let buf = self.buf.buf.get_unchecked_mut(self.buf.filled..self.buf.init);
-            MaybeUninit::slice_assume_init_mut(buf)
+            buf.assume_init_mut()
         }
     }
 
@@ -324,7 +352,7 @@ impl<'a> BorrowedCursor<'a> {
 
         // SAFETY: we do not de-initialize any of the elements of the slice
         unsafe {
-            MaybeUninit::copy_from_slice(&mut self.as_mut()[..buf.len()], buf);
+            self.as_mut()[..buf.len()].write_copy_of_slice(buf);
         }
 
         // SAFETY: We just added the entire contents of buf to the filled section.
@@ -334,3 +362,8 @@ impl<'a> BorrowedCursor<'a> {
         self.buf.filled += buf.len();
     }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}

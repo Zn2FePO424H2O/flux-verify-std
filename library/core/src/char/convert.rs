@@ -11,7 +11,7 @@ use crate::ub_checks::assert_unsafe_precondition;
 #[must_use]
 #[inline]
 pub(super) const fn from_u32(i: u32) -> Option<char> {
-    // FIXME: once Result::ok is const fn, use it here
+    // FIXME(const-hack): once Result::ok is const fn, use it here
     match char_try_from_u32(i) {
         Ok(c) => Some(c),
         Err(_) => None,
@@ -34,6 +34,8 @@ pub(super) const unsafe fn from_u32_unchecked(i: u32) -> char {
 }
 
 #[stable(feature = "char_convert", since = "1.13.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl From<char> for u32 {
     /// Converts a [`char`] into a [`u32`].
     ///
@@ -53,6 +55,8 @@ impl From<char> for u32 {
 }
 
 #[stable(feature = "more_char_conversions", since = "1.51.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl From<char> for u64 {
     /// Converts a [`char`] into a [`u64`].
     ///
@@ -74,6 +78,8 @@ impl From<char> for u64 {
 }
 
 #[stable(feature = "more_char_conversions", since = "1.51.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl From<char> for u128 {
     /// Converts a [`char`] into a [`u128`].
     ///
@@ -161,6 +167,8 @@ impl TryFrom<char> for u16 {
 /// for a superset of Windows-1252 that fills the remaining blanks with corresponding
 /// C0 and C1 control codes.
 #[stable(feature = "char_convert", since = "1.13.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl From<u8> for char {
     /// Converts a [`u8`] into a [`char`].
     ///
@@ -279,6 +287,8 @@ impl fmt::Display for CharTryFromError {
 /// Converts a digit in the given radix to a `char`. See [`char::from_digit`].
 #[inline]
 #[must_use]
+// flux_verify_ice: invalid cast char to int
+#[flux_attrs::trusted]
 pub(super) const fn from_digit(num: u32, radix: u32) -> Option<char> {
     if radix > 36 {
         panic!("from_digit: radix is too high (maximum 36)");

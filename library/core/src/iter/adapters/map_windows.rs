@@ -61,6 +61,8 @@ impl<I: Iterator, F, const N: usize> MapWindows<I, F, N> {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
     #[inline]
     fn new(iter: I) -> Self {
@@ -88,6 +90,8 @@ impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
         self.buffer.as_ref().map(Buffer::as_array_ref)
     }
 
+    // flux_verify_complex: unknown
+    #[flux_attrs::trusted_impl]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let Some(ref iter) = self.iter else { return (0, Some(0)) };
         let (lo, hi) = iter.size_hint();
@@ -104,6 +108,8 @@ impl<I: Iterator, const N: usize> MapWindowsInner<I, N> {
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> Buffer<T, N> {
     fn try_from_iter(iter: &mut impl Iterator<Item = T>) -> Option<Self> {
         let first_half = crate::array::iter_next_chunk(iter).ok()?;
@@ -118,6 +124,8 @@ impl<T, const N: usize> Buffer<T, N> {
     }
 
     #[inline]
+    // flux_verify_complex: refinement type error slice
+    #[flux_attrs::trusted]
     fn buffer_mut_ptr(&mut self) -> *mut MaybeUninit<T> {
         self.buffer.as_mut_ptr().cast()
     }
@@ -235,6 +243,8 @@ impl<T, const N: usize> Drop for Buffer<T, N> {
 }
 
 #[unstable(feature = "iter_map_windows", reason = "recently added", issue = "87155")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, F, R, const N: usize> Iterator for MapWindows<I, F, N>
 where
     I: Iterator,
@@ -242,6 +252,8 @@ where
 {
     type Item = R;
 
+    // flux_verify_ice: impossible case reached
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<Self::Item> {
         let window = self.inner.next_window()?;
         let out = (self.f)(window);

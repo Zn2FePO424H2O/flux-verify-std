@@ -1,6 +1,11 @@
 use crate::mem::{self, MaybeUninit, SizedTypeProperties};
 use crate::{cmp, ptr};
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 /// Rotates the range `[mid-left, mid+right)` such that the element at `mid` becomes the first
 /// element. Equivalently, rotates the range `left` elements to the left or `right` elements to the
 /// right.
@@ -60,11 +65,14 @@ use crate::{cmp, ptr};
 /// we cannot swap any more, but a smaller rotation problem is left to solve
 /// ```
 /// when `left < right` the swapping happens from the left instead.
-pub unsafe fn ptr_rotate<T>(mut left: usize, mut mid: *mut T, mut right: usize) {
+pub(super) unsafe fn ptr_rotate<T>(mut left: usize, mut mid: *mut T, mut right: usize) {
     type BufType = [usize; 32];
     if T::IS_ZST {
         return;
     }
+    let mem_size_of_t = mem::size_of::<T>();
+    // flux_verify_error: ZST
+    flux_assume(mem_size_of_t!=0);
     loop {
         // N.B. the below algorithms can fail if these cases are not checked
         if (right == 0) || (left == 0) {
@@ -160,7 +168,7 @@ pub unsafe fn ptr_rotate<T>(mut left: usize, mut mid: *mut T, mut right: usize) 
             return;
         // `T` is not a zero-sized type, so it's okay to divide by its size.
         } else if !cfg!(feature = "optimize_for_size")
-            && cmp::min(left, right) <= mem::size_of::<BufType>() / mem::size_of::<T>()
+            && cmp::min(left, right) <= mem::size_of::<BufType>() / mem_size_of_t
         {
             // Algorithm 2
             // The `[T; 0]` here is to ensure this is appropriately aligned for T

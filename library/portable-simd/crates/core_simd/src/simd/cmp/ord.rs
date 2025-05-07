@@ -218,31 +218,43 @@ macro_rules! impl_mask {
 
 impl_mask! { i8, i16, i32, i64, isize }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> SimdPartialOrd for Simd<*const T, N>
 where
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_lt(self, other: Self) -> Self::Mask {
         self.addr().simd_lt(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_le(self, other: Self) -> Self::Mask {
         self.addr().simd_le(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_gt(self, other: Self) -> Self::Mask {
         self.addr().simd_gt(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_ge(self, other: Self) -> Self::Mask {
         self.addr().simd_ge(other.addr())
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> SimdOrd for Simd<*const T, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -259,6 +271,8 @@ where
 
     #[inline]
     #[track_caller]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_clamp(self, min: Self, max: Self) -> Self {
         assert!(
             min.simd_le(max).all(),
@@ -268,31 +282,43 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> SimdPartialOrd for Simd<*mut T, N>
 where
     LaneCount<N>: SupportedLaneCount,
 {
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_lt(self, other: Self) -> Self::Mask {
         self.addr().simd_lt(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_le(self, other: Self) -> Self::Mask {
         self.addr().simd_le(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_gt(self, other: Self) -> Self::Mask {
         self.addr().simd_gt(other.addr())
     }
 
     #[inline]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_ge(self, other: Self) -> Self::Mask {
         self.addr().simd_ge(other.addr())
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<T, const N: usize> SimdOrd for Simd<*mut T, N>
 where
     LaneCount<N>: SupportedLaneCount,
@@ -309,6 +335,8 @@ where
 
     #[inline]
     #[track_caller]
+    // flux_verify_panic: cannot infer substitution
+    #[flux_attrs::trusted_impl]
     fn simd_clamp(self, min: Self, max: Self) -> Self {
         assert!(
             min.simd_le(max).all(),

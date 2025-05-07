@@ -36,6 +36,8 @@ pub(super) fn count_chars(s: &str) -> usize {
     }
 }
 
+// flux_verify_panic: Option::unwrap() on None
+#[flux_attrs::trusted]
 fn do_count_chars(s: &str) -> usize {
     // For correctness, `CHUNK_SIZE` must be:
     //

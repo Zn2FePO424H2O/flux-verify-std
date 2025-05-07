@@ -8,7 +8,7 @@ use crate::cmp::Ordering;
 use crate::mem::MaybeUninit;
 use crate::num::bignum::{Big32x40 as Big, Digit32 as Digit};
 use crate::num::flt2dec::estimator::estimate_scaling_factor;
-use crate::num::flt2dec::{round_up, Decoded, MAX_SIG_DIGITS};
+use crate::num::flt2dec::{Decoded, MAX_SIG_DIGITS, round_up};
 
 static POW10: [Digit; 10] =
     [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000];
@@ -26,17 +26,29 @@ static POW5TO256: [Digit; 19] = [
     0xf46eeddc, 0x5fdcefce, 0x553f7,
 ];
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
+
 #[doc(hidden)]
 pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     debug_assert!(n < 512);
     // Save ourself the left shift for the smallest cases.
     if n < 8 {
-        return x.mul_small(POW10[n & 7]);
+        let n_and = n & 7;
+        // flux_verify_error: bit mask
+        flux_assume(n_and <= 7);
+        return x.mul_small(POW10[n_and]);
     }
     // Multiply by the powers of 5 and shift the 2s in at the end.
     // This keeps the intermediate products smaller and faster.
     if n & 7 != 0 {
-        x.mul_small(POW10[n & 7] >> (n & 7));
+        let n_and = n & 7;
+        // flux_verify_error: bit mask
+        flux_assume(n_and <= 7);
+        x.mul_small(POW10[n_and] >> (n_and));
     }
     if n & 8 != 0 {
         x.mul_small(POW10[8] >> 8);
@@ -60,7 +72,10 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
 }
 
 fn div_2pow10(x: &mut Big, mut n: usize) -> &mut Big {
-    let largest = POW10.len() - 1;
+    let pow10_len = POW10.len();
+    // flux_verify_error: vector length
+    flux_assume(pow10_len == 10);
+    let largest = pow10_len - 1;
     while n > largest {
         x.div_rem_small(POW10[largest]);
         n -= largest;
@@ -99,6 +114,8 @@ fn div_rem_upto_16<'a>(
 }
 
 /// The shortest mode implementation for Dragon.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn format_shortest<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -247,7 +264,7 @@ pub fn format_shortest<'a>(
         // it seems that this condition is very hard to satisfy (possibly impossible),
         // but we are just being safe and consistent here.
         // SAFETY: we initialized that memory above.
-        if let Some(c) = round_up(unsafe { MaybeUninit::slice_assume_init_mut(&mut buf[..i]) }) {
+        if let Some(c) = round_up(unsafe { buf[..i].assume_init_mut() }) {
             buf[i] = MaybeUninit::new(c);
             i += 1;
             k += 1;
@@ -255,10 +272,12 @@ pub fn format_shortest<'a>(
     }
 
     // SAFETY: we initialized that memory above.
-    (unsafe { MaybeUninit::slice_assume_init_ref(&buf[..i]) }, k)
+    (unsafe { buf[..i].assume_init_ref() }, k)
 }
 
 /// The exact and fixed mode implementation for Dragon.
+// flux_verify_ice: expected array or slice type
+#[flux_attrs::trusted]
 pub fn format_exact<'a>(
     d: &Decoded,
     buf: &'a mut [MaybeUninit<u8>],
@@ -333,7 +352,7 @@ pub fn format_exact<'a>(
                     *c = MaybeUninit::new(b'0');
                 }
                 // SAFETY: we initialized that memory above.
-                return (unsafe { MaybeUninit::slice_assume_init_ref(&buf[..len]) }, k);
+                return (unsafe { buf[..len].assume_init_ref() }, k);
             }
 
             let mut d = 0;
@@ -372,7 +391,7 @@ pub fn format_exact<'a>(
         // if rounding up changes the length, the exponent should also change.
         // but we've been requested a fixed number of digits, so do not alter the buffer...
         // SAFETY: we initialized that memory above.
-        if let Some(c) = round_up(unsafe { MaybeUninit::slice_assume_init_mut(&mut buf[..len]) }) {
+        if let Some(c) = round_up(unsafe { buf[..len].assume_init_mut() }) {
             // ...unless we've been requested the fixed precision instead.
             // we also need to check that, if the original buffer was empty,
             // the additional digit can only be added when `k == limit` (edge case).
@@ -385,5 +404,5 @@ pub fn format_exact<'a>(
     }
 
     // SAFETY: we initialized that memory above.
-    (unsafe { MaybeUninit::slice_assume_init_ref(&buf[..len]) }, k)
+    (unsafe { buf[..len].assume_init_ref() }, k)
 }

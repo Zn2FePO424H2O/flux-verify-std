@@ -1,7 +1,7 @@
 use crate::iter::adapters::SourceIter;
 use crate::iter::{
-    Cloned, Copied, Empty, Filter, FilterMap, Fuse, FusedIterator, InPlaceIterable, Map, Once,
-    OnceWith, TrustedFused, TrustedLen,
+    Cloned, Copied, Empty, Filter, FilterMap, Fuse, FusedIterator, Map, Once, OnceWith,
+    TrustedFused, TrustedLen,
 };
 use crate::num::NonZero;
 use crate::ops::{ControlFlow, Try};
@@ -53,6 +53,8 @@ where
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I: Iterator, U: IntoIterator, F> Iterator for FlatMap<I, U, F>
 where
     F: FnMut(I::Item) -> U,
@@ -155,21 +157,6 @@ where
     F: FnMut(I::Item) -> U,
     FlattenCompat<Map<I, F>, <U as IntoIterator>::IntoIter>: TrustedLen,
 {
-}
-
-#[unstable(issue = "none", feature = "inplace_iteration")]
-unsafe impl<I, U, F> InPlaceIterable for FlatMap<I, U, F>
-where
-    I: InPlaceIterable,
-    U: BoundedSize + IntoIterator,
-{
-    const EXPAND_BY: Option<NonZero<usize>> = const {
-        match (I::EXPAND_BY, U::UPPER_BOUND) {
-            (Some(m), Some(n)) => m.checked_mul(n),
-            _ => None,
-        }
-    };
-    const MERGE_BY: Option<NonZero<usize>> = I::MERGE_BY;
 }
 
 #[unstable(issue = "none", feature = "inplace_iteration")]
@@ -387,21 +374,6 @@ where
 }
 
 #[unstable(issue = "none", feature = "inplace_iteration")]
-unsafe impl<I> InPlaceIterable for Flatten<I>
-where
-    I: InPlaceIterable + Iterator,
-    <I as Iterator>::Item: IntoIterator + BoundedSize,
-{
-    const EXPAND_BY: Option<NonZero<usize>> = const {
-        match (I::EXPAND_BY, I::Item::UPPER_BOUND) {
-            (Some(m), Some(n)) => m.checked_mul(n),
-            _ => None,
-        }
-    };
-    const MERGE_BY: Option<NonZero<usize>> = I::MERGE_BY;
-}
-
-#[unstable(issue = "none", feature = "inplace_iteration")]
 unsafe impl<I> SourceIter for Flatten<I>
 where
     I: SourceIter + TrustedFused + Iterator,
@@ -453,6 +425,8 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, U> FlattenCompat<I, U>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U>>,
@@ -522,6 +496,8 @@ where
     }
 }
 
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, U> FlattenCompat<I, U>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U>>,
@@ -535,7 +511,6 @@ where
     where
         Fold: FnMut(Acc, U) -> Acc,
     {
-        #[inline]
         fn flatten<T: IntoIterator, Acc>(
             fold: &mut impl FnMut(Acc, T::IntoIter) -> Acc,
         ) -> impl FnMut(Acc, T) -> Acc + '_ {
@@ -592,6 +567,8 @@ where
 }
 
 // See also the `OneShot` specialization below.
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, U> Iterator for FlattenCompat<I, U>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -707,6 +684,8 @@ where
 }
 
 // See also the `OneShot` specialization below.
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, U> DoubleEndedIterator for FlattenCompat<I, U>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
@@ -726,6 +705,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: escaping bound vars
+    #[flux_attrs::trusted_impl]
     default fn try_rfold<Acc, Fold, R>(&mut self, init: Acc, fold: Fold) -> R
     where
         Self: Sized,
@@ -904,13 +885,23 @@ fn try_flatten_one<I: IntoIterator<IntoIter: OneShot>, Acc, R: Try<Output = Acc>
     }
 }
 
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+fn flux_assume(_:bool) {}
+
 #[inline]
 fn advance_by_one<I>(n: NonZero<usize>, inner: I) -> Option<NonZero<usize>>
 where
     I: IntoIterator<IntoIter: OneShot>,
 {
     match inner.into_iter().next() {
-        Some(_) => NonZero::new(n.get() - 1),
+        Some(_) => {
+            let n_get = n.get();
+            // flux_verify_complex: unknown
+            flux_assume(n_get > 0);
+            NonZero::new(n_get - 1)
+        },
         None => Some(n),
     }
 }
@@ -927,12 +918,16 @@ where
 //
 // An exception to that is `advance_by(0)` and `advance_back_by(0)`, where the generic impls may set
 // `frontiter` or `backiter` without consuming the item, so we **must** override those.
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, U> Iterator for FlattenCompat<I, U>
 where
     I: Iterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
     U: Iterator + OneShot,
 {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next(&mut self) -> Option<U::Item> {
         while let Some(inner) = self.iter.next() {
             if let item @ Some(_) = inner.into_iter().next() {
@@ -986,6 +981,8 @@ where
     }
 
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn last(self) -> Option<Self::Item> {
         self.iter.filter_map(into_item).last()
     }
@@ -993,12 +990,16 @@ where
 
 // Note: We don't actually care about `U: DoubleEndedIterator`, since forward and backward are the
 // same for a one-shot iterator, but we have to keep that to match the default specialization.
+// flux_verify_mark: impl
+#[flux_attrs::trusted]
 impl<I, U> DoubleEndedIterator for FlattenCompat<I, U>
 where
     I: DoubleEndedIterator<Item: IntoIterator<IntoIter = U, Item = U::Item>>,
     U: DoubleEndedIterator + OneShot,
 {
     #[inline]
+    // flux_verify_panic: Option::unwrap() on None
+    #[flux_attrs::trusted_impl]
     fn next_back(&mut self) -> Option<U::Item> {
         while let Some(inner) = self.iter.next_back() {
             if let item @ Some(_) = inner.into_iter().next() {

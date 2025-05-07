@@ -65,16 +65,27 @@
 #[cfg(test)]
 use stdarch_test::assert_instr;
 
-use crate::{core_arch::arm::dsp::int16x2_t, mem::transmute};
+use crate::mem::transmute;
 
-types! {
-    /// ARM-specific 32-bit wide vector of four packed `i8`.
-    #[unstable(feature = "stdarch_arm_dsp", issue = "117237")]
-    pub struct int8x4_t(i8, i8, i8, i8);
-    /// ARM-specific 32-bit wide vector of four packed `u8`.
-    #[unstable(feature = "stdarch_arm_dsp", issue = "117237")]
-    pub struct uint8x4_t(u8, u8, u8, u8);
-}
+/// ARM-specific vector of four packed `i8` packed into a 32-bit integer.
+#[allow(non_camel_case_types)]
+#[unstable(feature = "stdarch_arm_dsp", issue = "117237")]
+pub type int8x4_t = i32;
+
+/// ARM-specific vector of four packed `u8` packed into a 32-bit integer.
+#[allow(non_camel_case_types)]
+#[unstable(feature = "stdarch_arm_dsp", issue = "117237")]
+pub type uint8x4_t = u32;
+
+/// ARM-specific vector of two packed `i16` packed into a 32-bit integer.
+#[allow(non_camel_case_types)]
+#[unstable(feature = "stdarch_arm_dsp", issue = "117237")]
+pub type int16x2_t = i32;
+
+/// ARM-specific vector of two packed `u16` packed into a 32-bit integer.
+#[allow(non_camel_case_types)]
+#[unstable(feature = "stdarch_arm_dsp", issue = "117237")]
+pub type uint16x2_t = u32;
 
 macro_rules! dsp_call {
     ($name:expr, $a:expr, $b:expr) => {
