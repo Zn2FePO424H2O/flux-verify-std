@@ -5,10 +5,10 @@
 
 export __CARGO_TESTS_ONLY_SRC_ROOT=$(pwd)/library
 
-cleanup() {
-    rm -rf /Users/Exelica/Downloads/project/flux-verify-std/dummy
-}
-trap cleanup EXIT
+#cleanup() {
+    #rm -rf /Users/Exelica/Downloads/project/flux-verify-std/dummy
+#}
+#trap cleanup EXIT
 
 cargo new dummy
 cd dummy
@@ -22,7 +22,7 @@ case "$(uname -s)" in
     *) echo "Unsupported OS"; exit 1 ;;
 esac
 
-FLUXFLAGS="-Fcatch-bugs" cargo flux -Z build-std --target "$target" > ../log.txt 2>&1
+FLUXFLAGS="-Fcatch-bugs -Ftimings" cargo flux -Z build-std --target "$target"
 
 cd ..
 
