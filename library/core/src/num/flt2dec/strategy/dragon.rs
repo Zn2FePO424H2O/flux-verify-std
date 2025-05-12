@@ -37,18 +37,14 @@ pub fn mul_pow10(x: &mut Big, n: usize) -> &mut Big {
     debug_assert!(n < 512);
     // Save ourself the left shift for the smallest cases.
     if n < 8 {
-        let n_and = n & 7;
-        // flux_verify_error: bit mask
-        flux_assume(n_and <= 7);
-        return x.mul_small(POW10[n_and]);
+        // flux_verify_solved: bit mask
+        return x.mul_small(POW10[crate::flux_support::my_and_usize(n, 7)]);
     }
     // Multiply by the powers of 5 and shift the 2s in at the end.
     // This keeps the intermediate products smaller and faster.
     if n & 7 != 0 {
-        let n_and = n & 7;
-        // flux_verify_error: bit mask
-        flux_assume(n_and <= 7);
-        x.mul_small(POW10[n_and] >> (n_and));
+        // flux_verify_solved: bit mask
+        x.mul_small(POW10[crate::flux_support::my_and_usize(n, 7)] >> (crate::flux_support::my_and_usize(n, 7)));
     }
     if n & 8 != 0 {
         x.mul_small(POW10[8] >> 8);

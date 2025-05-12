@@ -586,7 +586,7 @@ impl CStr {
         // FIXME(const-hack) replace with range index
         // SAFETY: to_bytes_with_nul returns slice with length at least 1
         let bytes_len = bytes.len();
-        // flux_verify_complex: unknown
+        // flux_verify_error: logic constraint
         flux_assume_const(bytes_len >= 1);
         unsafe { slice::from_raw_parts(bytes.as_ptr(), bytes_len - 1) }
     }
