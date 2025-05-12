@@ -191,10 +191,8 @@ impl Decimal {
             self.truncated = false;
             return;
         }
-        let shift_1_u64 = 1_u64 << shift;
-        // flux_verify_error: bit shift
-        flux_assume(shift_1_u64 >= 1);
-        let mask = shift_1_u64 - 1;
+        // flux_verify_solved: bit shift
+        let mask = crate::flux_support::my_left_shift_u64_usize(1_u64, shift) - 1;
         while read_index < self.num_digits {
             let new_digit = (n >> shift) as u8;
             n = (10 * (n & mask)) + self.digits[read_index] as u64;
@@ -366,9 +364,8 @@ fn number_of_digits_decimal_left_shift(d: &Decimal, mut shift: usize) -> usize {
         2, 4, 0, 6, 9, 5, 9, 5, 3, 3, 6, 9, 1, 4, 0, 6, 2, 5,
     ];
 
-    shift &= 63;
-    // flux_verify_error: bit mask
-    flux_assume(shift < 64);
+    // flux_verify_solved: bit mask
+    shift = crate::flux_support::my_and_usize(shift, 63);
     let x_a = TABLE[shift];
     let x_b = TABLE[shift + 1];
     let num_new_digits = (x_a >> 11) as _;

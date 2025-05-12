@@ -29,6 +29,7 @@ Each flux_assume and trusted have a comment to show their purpose. The format is
   - ice: catched panics and internel flux errors
   - complex: refinement errors solved by trusted
   - error: refinement errors solved by assume
+  - solved: refinement errors solved by refinements at library/core/src/flux_support.rs
 
 ## Eror types
 

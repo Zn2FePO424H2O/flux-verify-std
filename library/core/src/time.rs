@@ -1509,10 +1509,8 @@ macro_rules! try_from_secs {
             let nanos_tmp = u128::from(NANOS_PER_SEC) * u128::from(t);
             let nanos = (nanos_tmp >> nanos_offset) as u32;
 
-            let nanos_offset_shift_2 = (1 << nanos_offset);
-            // flux_verify_error: bit shift
-            flux_assume(nanos_offset_shift_2 >= 1);
-            let rem_mask = nanos_offset_shift_2 - 1;
+            // flux_verify_solved: bit shift
+            let rem_mask = crate::flux_support::my_left_shift_u128(1, nanos_offset) - 1;
             let rem_msb_mask = 1 << (nanos_offset - 1);
             let rem = nanos_tmp & rem_mask;
             let is_tie = rem == rem_msb_mask;
@@ -1531,10 +1529,8 @@ macro_rules! try_from_secs {
             let nanos_tmp = <$double_ty>::from(NANOS_PER_SEC) * t;
             let nanos = (nanos_tmp >> nanos_offset) as u32;
 
-            let nanos_offset_shift_2 = (1 << nanos_offset);
-            // flux_verify_error: bit shift
-            flux_assume(nanos_offset_shift_2 >= 1);
-            let rem_mask = nanos_offset_shift_2 - 1;
+            // flux_verify_solved: bit shift
+            let rem_mask: $double_ty = (crate::flux_support::my_left_shift_u128(1, nanos_offset) - 1).try_into().unwrap();
             let rem_msb_mask = 1 << (nanos_offset - 1);
             let rem = nanos_tmp & rem_mask;
             let is_tie = rem == rem_msb_mask;

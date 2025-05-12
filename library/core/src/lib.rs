@@ -431,3 +431,6 @@ pub mod simd {
 }
 
 include!("primitive_docs.rs");
+
+
+mod flux_support;

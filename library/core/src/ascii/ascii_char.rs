@@ -612,13 +612,11 @@ impl fmt::Debug for AsciiChar {
 
                 let byte = self.to_u8();
                 let byte_shift_4 = usize::from(byte >> 4);
-                let byte_and_0xf = usize::from(byte & 0xf);
                 // flux_verify_error: bit shift
                 flux_assume(byte_shift_4<16);
-                // flux_verify_error: bit mask
-                flux_assume(byte_and_0xf<16);
                 let hi = HEX_DIGITS[byte_shift_4];
-                let lo = HEX_DIGITS[byte_and_0xf];
+                // flux_verify_solved: bit mask
+                let lo = HEX_DIGITS[crate::flux_support::my_from_usize_u8(crate::flux_support::my_and_u8(byte, 0xf))];
                 ([Apostrophe, Backslash, AsciiChar::SmallX, hi, lo, Apostrophe], 6)
             }
             _ => ([Apostrophe, *self, Apostrophe, Null, Null, Null], 3),

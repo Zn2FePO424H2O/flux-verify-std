@@ -139,8 +139,6 @@ pub mod consts {
 }
 
 #[cfg(not(test))]
-// flux_verify_mark: impl
-#[flux_attrs::trusted]
 impl f128 {
     // FIXME(f16_f128): almost all methods in this `impl` are missing examples and a const
     // implementation. Add these once we can run code on all platforms and have f16/f128 in CTFE.
@@ -526,8 +524,6 @@ impl f128 {
     #[inline]
     #[doc(alias = "nextUp")]
     #[unstable(feature = "f128", issue = "116909")]
-    // flux_verify_complex: unknown
-    #[flux_attrs::trusted_impl]
     pub const fn next_up(self) -> Self {
         // Some targets violate Rust's assumption of IEEE semantics, e.g. by flushing
         // denormals to zero. This is in general unsound and unsupported, but here
@@ -537,7 +533,9 @@ impl f128 {
             return self;
         }
 
-        let abs = bits & !Self::SIGN_MASK;
+        //let abs = bits & !Self::SIGN_MASK;
+        // flux_verify_solved: bit mask
+        let abs = crate::flux_support::my_and_u128(bits, !Self::SIGN_MASK);
         let next_bits = if abs == 0 {
             Self::TINY_BITS
         } else if bits == abs {
@@ -1368,3 +1366,8 @@ impl f128 {
         unsafe { intrinsics::copysignf128(self, sign) }
     }
 }
+
+// flux_verify_mark: assume
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (b:bool) ensures b)]
+const fn flux_assume(_:bool) {}

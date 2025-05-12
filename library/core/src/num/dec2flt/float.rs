@@ -134,10 +134,8 @@ impl RawFloat for f32 {
         const TABLE: [f32; 16] =
             [1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 0., 0., 0., 0., 0.];
         
-        let exponent15 = exponent & 15;
-        // flux_verify_error: bit mask
-        flux_assume(flux_len(TABLE)>exponent15);
-        TABLE[exponent15]
+        // flux_verify_solved: bit mask
+        TABLE[crate::flux_support::my_and_usize(exponent, 15)]
     }
 
     /// Returns the mantissa, exponent and sign as integers.
@@ -192,10 +190,8 @@ impl RawFloat for f64 {
             1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22, 0., 0., 0., 0., 0., 0., 0., 0., 0.,
         ];
 
-        let exponent31 = exponent & 31;
-        // flux_verify_error: bit mask
-        flux_assume(flux_len(TABLE)>exponent31);
-        TABLE[exponent31]
+        // flux_verify_solved: bit mask
+        TABLE[crate::flux_support::my_and_usize(exponent, 15)]
     }
 
     /// Returns the mantissa, exponent and sign as integers.

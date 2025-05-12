@@ -14,13 +14,11 @@ const MIN_19DIGIT_INT: u64 = 100_0000_0000_0000_0000;
 ///
 /// This is based off the algorithm described in "Fast numeric string to
 /// int", available here: <https://johnnylee-sde.github.io/Fast-numeric-string-to-int/>.
-#[flux_attrs::sig(fn(v: u64 { v >= 0} ) -> u64)]
+#[flux_attrs::sig(fn(v: u64 { v >= 0x3030_3030_3030_3030} ) -> u64)]
 fn parse_8digits(mut v: u64) -> u64 {
     const MASK: u64 = 0x0000_00FF_0000_00FF;
     const MUL1: u64 = 0x000F_4240_0000_0064;
     const MUL2: u64 = 0x0000_2710_0000_0001;
-    // flux_verify_error: char cast magic
-    flux_assume(v >= 0x3030_3030_3030_3030);
     v -= 0x3030_3030_3030_3030;
     v = (v * 10) + (v >> 8); // will not overflow, fits in 63 bits
     let v1 = (v & MASK).wrapping_mul(MUL1);
@@ -35,6 +33,8 @@ fn try_parse_digits(mut s: &[u8], mut x: u64) -> (&[u8], u64) {
     while s.len() >= 8 {
         let num = s.read_u64();
         if is_8digits(num) {
+            // flux_verify_error: char cast magic
+            flux_assume(num >= 0x3030_3030_3030_3030);
             x = x.wrapping_mul(1_0000_0000).wrapping_add(parse_8digits(num));
             s = &s[8..];
         } else {

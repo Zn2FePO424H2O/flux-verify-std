@@ -39,10 +39,8 @@ const fn bitset_search<
             word = !word;
         }
         // Lower 6 bits
-        let one_shift_six = 1 << 6;
-        // flux_verify_error: bit shift
-        flux_assume(one_shift_six > 1);
-        let quantity = mapping & (one_shift_six - 1);
+        // flux_verify_solved: bit shift
+        let quantity = mapping & (crate::flux_support::my_left_shift_u8(1, 6) - 1);
         if mapping & (1 << 7) != 0 {
             // shift
             word >>= quantity as u64;
@@ -60,10 +58,8 @@ const fn bitset_search<
 const fn flux_assume(_:bool) {}
 
 fn decode_prefix_sum(short_offset_run_header: u32) -> u32 {
-    let value = 1 << 21;
-    // flux_verify_error: bit shift
-    flux_assume(value>1);
-    short_offset_run_header & (value - 1)
+    // flux_verify_solved: bit shift
+    short_offset_run_header & (crate::flux_support::my_left_shift_u32(1, 21) - 1)
 }
 
 fn decode_length(short_offset_run_header: u32) -> usize {

@@ -109,9 +109,7 @@ pub(crate) fn parse_long_mantissa<F: RawFloat>(s: &[u8]) -> BiasedFp {
         power2 -= 1;
     }
     // Zero out all the bits above the explicit mantissa bits.
-    let left_mantissa = 1_u64 << F::MANTISSA_EXPLICIT_BITS;
-    // flux_verify_error: bit shift
-    flux_assume(left_mantissa >= 1);
-    mantissa &= left_mantissa - 1;
+    // flux_verify_solved: bit shift
+    mantissa &= crate::flux_support::my_left_shift_u64_usize(1_u64, F::MANTISSA_EXPLICIT_BITS) - 1;
     BiasedFp { f: mantissa, e: power2 }
 }
