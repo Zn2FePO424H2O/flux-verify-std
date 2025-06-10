@@ -1560,11 +1560,6 @@ macro_rules! try_from_secs {
     }};
 }
 
-// flux_verify_mark: assume
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-fn flux_assume(_:bool) {}
-
 impl Duration {
     /// The checked version of [`from_secs_f32`].
     ///

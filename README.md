@@ -101,3 +101,6 @@ const fn flux_const_len<T, const N: usize>(_: &[T; N]) -> usize {
 #[flux_attrs::trusted]
 #[flux_attrs::sig(fn (&[T][@n]) -> usize[n])]
 fn flux_arr_len<T> (arr:&[T]) -> usize {arr.len()}
+
+## flux Support
+crate::flux_support::

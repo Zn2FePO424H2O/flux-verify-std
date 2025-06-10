@@ -196,18 +196,23 @@ macro_rules! middle_stage {
 
         let lo = n & LOWER_HALF_1_BITS;
         let numerator = (($r as $ty) << QUARTER_BITS) | (lo >> QUARTER_BITS);
-        let denominator = ($s as $ty) << 1;
-        // flux_verify_error: bit shift
-        flux_assume(denominator > 0);
+
+        #[flux_attrs::trusted]
+        #[flux_attrs::sig(fn (a: $ty, b: u32) -> $ty{v: v >= a})]
+        const fn my_left_shift(x: $ty, y: u32) -> $ty {
+            x << y
+        }
+        
+        let denominator = my_left_shift(($s as $ty), 1);
+
         let q = numerator / denominator;
         let u = numerator % denominator;
 
-        let mut s = ($s << QUARTER_BITS) as $ty + q;
+        // flux_verify_solved: bit shift
+        let mut s = my_left_shift(($s as $ty), QUARTER_BITS) as $ty + q;
         let (mut r, overflow) =
             ((u << QUARTER_BITS) | (lo & LOWEST_QUARTER_1_BITS)).overflowing_sub(q * q);
         if overflow {
-            // flux_verify_error: bit shift
-            flux_assume(s > 0);
             r = r.wrapping_add(2 * s - 1);
             s -= 1;
         }
@@ -256,15 +261,20 @@ macro_rules! last_stage {
 
         let lo = $n & LOWER_HALF_1_BITS;
         let numerator = (($r as $ty) << QUARTER_BITS) | (lo >> QUARTER_BITS);
-        let denominator = ($s as $ty) << 1;
-        // flux_verify_error: bit shift
-        flux_assume(denominator > 0);
+
+        #[flux_attrs::trusted]
+        #[flux_attrs::sig(fn (a: $ty, b: u32) -> $ty{v: v >= a})]
+        const fn my_left_shift(x: $ty, y: u32) -> $ty {
+            x << y
+        }
+
+        // flux_verify_solved: bit shift
+        let denominator = my_left_shift(($s as $ty), 1);
         let q = numerator / denominator;
-        let mut s = ($s << QUARTER_BITS) as $ty + q;
+        // flux_verify_solved: bit shift
+        let mut s = my_left_shift(($s as $ty), QUARTER_BITS) as $ty + q;
         let (s_squared, overflow) = s.overflowing_mul(s);
         if overflow || s_squared > $n {
-            // flux_verify_error: bit shift
-            flux_assume(s > 0);
             s -= 1;
         }
         s

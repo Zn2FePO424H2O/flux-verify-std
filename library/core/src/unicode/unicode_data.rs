@@ -52,11 +52,6 @@ const fn bitset_search<
     (word & (1 << (needle % 64) as u64)) != 0
 }
 
-// flux_verify_mark: assume
-#[flux_attrs::trusted]
-#[flux_attrs::sig(fn (b:bool) ensures b)]
-const fn flux_assume(_:bool) {}
-
 fn decode_prefix_sum(short_offset_run_header: u32) -> u32 {
     // flux_verify_solved: bit shift
     short_offset_run_header & (crate::flux_support::my_left_shift_u32(1, 21) - 1)

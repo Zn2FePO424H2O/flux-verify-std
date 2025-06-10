@@ -61,11 +61,25 @@ pub const fn my_left_shift_u128(a: u128, b: u128) -> u128 { a << b }
 #[stable(feature = "downgraded_weak", since = "1.10.0")]
 #[rustc_const_stable(feature = "const_weak_new", since = "1.73.0")]
 #[flux_attrs::trusted]
-#[flux_attrs::sig(fn (a: u8, b: u8) -> u8{v: v <= a})]
-pub const fn my_right_shift_u8(a: u8, b: u8) -> u8 {
-    let r = a >> b;
-    assert!(r > crate::primitive::u8::pow(2, (8 - b) as u32));
-    r
+#[flux_attrs::sig(fn (a: u8, u8 {b: b == 4}) -> u8{v: v < 16})]
+pub const fn my_right_shift_u8_by4(a: u8, b: u8) -> u8 {
+    a >> b
+}
+
+#[stable(feature = "downgraded_weak", since = "1.10.0")]
+#[rustc_const_stable(feature = "const_weak_new", since = "1.73.0")]
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (usize {a: a<16}, usize {b: b == 1}) -> usize{v: v < 7})]
+pub const fn my_right_shift_usize_by1(a: usize, b: usize) -> usize {
+    a >> b
+}
+
+#[stable(feature = "downgraded_weak", since = "1.10.0")]
+#[rustc_const_stable(feature = "const_weak_new", since = "1.73.0")]
+#[flux_attrs::trusted]
+#[flux_attrs::sig(fn (u64 {a: a == 10000000000000000000}, usize {b: b == 19}) -> u64{v: v == 1})]
+pub const fn my_right_shift_u64_1e19_by19(a: u64, b: usize) -> u64 {
+    a >> b
 }
 
 #[stable(feature = "downgraded_weak", since = "1.10.0")]

@@ -735,9 +735,10 @@ fn udiv_1e19(n: u128) -> (u128, u64) {
     const FACTOR: u128 = 156927543384667019095894735580191660403;
 
     let quot = if n < 1 << 83 {
-        let div_shift: u64 = DIV >> 19;
-        // flux_verify_error: bit shift
-        flux_assume(div_shift != 0);
+        //let div_shift: u64 = DIV >> 19;
+        // flux_verify_solved: bit shift
+        let div_shift: u64 = crate::flux_support::my_right_shift_u64_1e19_by19(DIV, 19);
+        //flux_assume(div_shift != 0);
         ((n >> 19) as u64 / div_shift) as u128
     } else {
         u128_mulhi(n, FACTOR) >> 62
